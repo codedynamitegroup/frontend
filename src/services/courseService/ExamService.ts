@@ -108,7 +108,7 @@ export class ExamService {
         baseURL: courseServiceApiUrl,
         isAuthorization: true
       }).post(`${API.COURSE.EXAM.CREATE}`, examData);
-      if (response.status === 200) {
+      if (response.status === 201) {
         return response.data;
       }
     } catch (error: any) {

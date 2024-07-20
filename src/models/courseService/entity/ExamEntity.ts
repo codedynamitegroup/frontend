@@ -58,6 +58,7 @@ export interface ExamCreateRequest {
   gradeMethod: string;
   questionIds: ExamQuestion[];
   sectionId?: string;
+  createdBy: string;
 }
 
 export interface ExamQuestion {

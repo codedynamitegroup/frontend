@@ -407,11 +407,19 @@ export default function ExamCreated() {
       shuffleQuestions: questionCreate.shuffleQuestions,
       gradeMethod: "QUIZ_GRADEHIGHEST",
       questionIds: questionIds,
-      sectionId: formSubmitData.sectionId
+      sectionId: formSubmitData.sectionId,
+      createdBy: user.userId
     };
     ExamService.createExam(newExam)
       .then((response) => {
-        console.log(response);
+        console.log(response, "response");
+
+        const UpdateQuestionBankCommand = {
+          questionIds: questionIds.map((item: { questionId: string }) => item.questionId),
+          categoryId: response.categoryId
+        };
+        QuestionService.updateCategoryByQuestionIds(UpdateQuestionBankCommand);
+
         dispatch(clearQuestionCreate());
         dispatch(clearExamCreate());
       })

@@ -1,8 +1,10 @@
+import { Update } from "@reduxjs/toolkit";
 import { API } from "constants/API";
 import {
   PostQuestionDetailList,
   QuestionCloneRequest
 } from "models/coreService/entity/QuestionEntity";
+import { UpdateQuestionBankCommand } from "models/coreService/update/UpdateQuestionBankCommand";
 import { GetAllQuestionWithPaginationCommand } from "models/courseService/entity/QuestionEntity";
 import api from "utils/api";
 
@@ -163,6 +165,25 @@ export class QuestionService {
       }
     } catch (error: any) {
       console.error("Failed to get answer by question id", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+  static async updateCategoryByQuestionIds(updateQuestionBankCommand: UpdateQuestionBankCommand) {
+    try {
+      const response = await api({
+        baseURL: coreServiceApiUrl,
+        isAuthorization: true
+      }).patch(`${API.CORE.QUESTION.UPDATE_CATEGORY_BY_QUESTION_IDS}`, {
+        questionIds: updateQuestionBankCommand.questionIds,
+        categoryId: updateQuestionBankCommand.categoryId
+      });
+    } catch (error: any) {
+      console.error("Failed to update category by question ids", error);
       return Promise.reject({
         code: error.response?.data?.code || 503,
         status: error.response?.data?.status || "Service Unavailable",

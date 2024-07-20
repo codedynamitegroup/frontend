@@ -88,6 +88,9 @@ import "react-quill/dist/quill.bubble.css";
 import ReactQuill from "react-quill";
 import { SectionService } from "services/courseService/SectionService";
 import { SectionEntity } from "models/courseService/entity/SectionEntity";
+import { use } from "i18next";
+import { User } from "models/authService/entity/user";
+import { selectCurrentUser } from "reduxes/Auth";
 
 const drawerWidth = 400;
 
@@ -170,6 +173,7 @@ interface FormData {
 export default function ExamEdit() {
   const { courseId } = useParams();
   const { examId } = useParams<{ examId: string }>();
+  const user: User = useSelector(selectCurrentUser);
   const questionCreate = useSelector((state: RootState) => state.questionCreate);
   const questionBankCategoriesState = useSelector((state: RootState) => state.questionBankCategory);
   const dispatch = useDispatch();
@@ -428,7 +432,8 @@ export default function ExamEdit() {
       shuffleQuestions: questionCreate.shuffleQuestions,
       gradeMethod: "QUIZ_GRADEHIGHEST",
       questionIds: questionIds,
-      sectionId: formSubmitData.sectionId
+      sectionId: formSubmitData.sectionId,
+      createdBy: user.userId
     };
 
     ExamService.editExam(examId ?? "", newExam)

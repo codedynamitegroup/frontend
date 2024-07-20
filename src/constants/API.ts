@@ -61,6 +61,7 @@ export const API = {
       DELETE_BY_ID: "/core/questions/:id",
       QUESTION_DETAIL: "/core/questions/detail",
       GET_ALL_WITH_PAGINATION: "/core/questions/admin/all",
+      UPDATE_CATEGORY_BY_QUESTION_IDS: "/core/questions/update/category",
       SHORT_ANSWER_QUESTION: {
         CREATE: "/core/questions/shortanswer-question/create",
         GET_BY_ID: "/core/questions/shortanswer-question/:id",
