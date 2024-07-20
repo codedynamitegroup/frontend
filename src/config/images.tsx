@@ -71,6 +71,7 @@ import organizationIc from "assets/img/admin/organization.svg";
 import contactUsIc from "assets/img/contact_us.jpg";
 
 import organizationImageBg from "assets/img/org_admin/org.png";
+import emptyBox from "assets/img/icon/course/courseDetail/empty_box.png";
 
 const images = {
   course: {
@@ -83,7 +84,8 @@ const images = {
     courseXLS,
     coursePPT,
     assignmentIcon,
-    quizIcon
+    quizIcon,
+    emptyBox
   },
 
   background: { contestListBackground, courseCertificatesBackground, homePageBackground },

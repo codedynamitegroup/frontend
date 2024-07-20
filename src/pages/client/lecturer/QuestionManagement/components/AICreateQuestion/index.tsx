@@ -1,23 +1,16 @@
-import { Box, Container, Grid, IconButton, MenuItem, Select } from "@mui/material";
+import { Box, Container, Grid, MenuItem, Select, Skeleton } from "@mui/material";
 import Header from "components/Header";
-import InputTextField from "components/common/inputs/InputTextField";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
-import TextTitle from "components/text/TextTitle";
 import { memo, useState } from "react";
 import { useLocation, useMatches, useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
-// import Button from "@mui/joy/Button";
-import Button, { BtnType } from "components/common/buttons/Button";
+import Button from "@mui/joy/Button";
 import { routes } from "routes/routes";
-import { Textarea } from "@mui/joy";
+import { Card, Textarea, RadioGroup, Badge } from "@mui/joy";
 import Heading6 from "components/text/Heading6";
-import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Radio from "@mui/material/Radio";
 import Heading4 from "components/text/Heading4";
-import Delete from "@mui/icons-material/Delete";
-import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert from "components/common/SnackbarAlert";
 import CreateQuestionByAI, { IQuestion } from "services/AIService/CreateQuestionByAI";
 import MDEditor from "@uiw/react-md-editor";
@@ -27,6 +20,14 @@ import { RootState } from "store";
 import CustomBreadCrumb from "components/common/Breadcrumb";
 import { addQuestion } from "reduxes/CreateQuestion";
 import { useDispatch } from "react-redux";
+import { setErrorMess } from "reduxes/AppStatus";
+import TitleWithInfoTip from "components/text/TitleWithInfo";
+import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
+import ParagraphSmall from "components/text/ParagraphSmall";
+import images from "config/images";
+import Heading5 from "components/text/Heading5";
+import ReactQuill from "react-quill";
+
 interface Props {
   insideCrumb?: boolean;
   isOrg?: boolean;
@@ -57,10 +58,9 @@ export enum EAmountAnswer {
   Four = 4,
   Five = 5
 }
+
 const AICreateQuestion = (props: Props) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const matches = useMatches();
   const dispatch = useDispatch();
 
   const location = useLocation();
@@ -89,6 +89,7 @@ const AICreateQuestion = (props: Props) => {
     setLoading(true);
     setQuestions([]);
     setAnsweredQtype(qtype);
+
     try {
       const genJob = await CreateQuestionByAI(
         topic,
@@ -100,14 +101,15 @@ const AICreateQuestion = (props: Props) => {
         level
       );
       if (genJob !== undefined) {
-        console.log("genJob", genJob);
         const data = await genJob;
         const questionsTemp = data[0];
+
         setQuestions(questionsTemp);
         setLengthQuestion(questionsTemp.length);
       }
     } catch (error) {
       console.error("Error generating text:", error);
+      dispatch(setErrorMess("Error in generating question"));
     } finally {
       setLoading(false);
     }
@@ -149,112 +151,139 @@ const AICreateQuestion = (props: Props) => {
     window.open(`#${navigateLink}`);
   };
 
+  const breadCrumbData = isOrgAdmin
+    ? [
+        { navLink: routes.org_admin.question_bank.root, label: t("common_question_bank") },
+        {
+          navLink: routes.org_admin.question_bank.detail.replace(":categoryId", categoryId || ""),
+          label: categoryName || ""
+        }
+      ]
+    : [
+        { navLink: routes.lecturer.question_bank.path, label: t("common_question_bank") },
+        {
+          navLink: `${routes.lecturer.question_bank.detail.replace(":categoryId", categoryId || "")}`,
+          label: categoryName || ""
+        }
+      ];
+
   return (
     <Grid className={classes.root}>
       <Header />
       <Container
-        style={{ marginTop: `${sidebarStatus?.headerHeight}px` }}
+        sx={{
+          margin: `${sidebarStatus?.headerHeight}px 10px 20px 10px`
+        }}
         className={classes.container}
       >
-        {/* <Box className={classes.tabWrapper}>
-          <ParagraphBody className={classes.breadCump} colorname='--gray-50' fontWeight={"600"}>
-            <span
-              onClick={() => navigate("/lecturer/question-bank-management")}
-              translation-key='common_question_bank'
-            >
-              {i18next.format(t("common_question_bank"), "firstUppercase")}
-            </span>{" "}
-            {"> "}
-            <span
-              onClick={() =>
-                navigate(`/lecturer/question-bank-management/${urlParams["categoryId"]}`)
-              }
-            >
-              Học OOP
-            </span>{" "}
-            {"> "}
-            <span>Tạo câu hỏi</span>
-          </ParagraphBody>
-        </Box> */}
         <CustomBreadCrumb
-          breadCrumbData={[
-            { navLink: routes.lecturer.question_bank.path, label: t("common_question_bank") },
-            {
-              navLink: `${routes.lecturer.question_bank.detail.replace(
-                ":categoryId",
-                `${urlParams["categoryId"]}`
-              )}`,
-              label: categoryName || ""
-            },
-            { navLink: "", label: t("create_question_code") }
-          ]}
-          lastBreadCrumbLabel={t("detail_problem_submission_details")}
+          breadCrumbData={breadCrumbData}
+          lastBreadCrumbLabel={t("create_question_ai")}
         />
-        <Grid container spacing={1} columns={12}>
-          <Grid item xs={6}>
-            <Box component='form' className={classes.formBody} autoComplete='off'>
-              <Heading1 fontWeight={"500"} translation-key='common_add_question'>
-                {t("common_add_question")}
-              </Heading1>
-              <Grid container spacing={1} columns={12}>
-                <Grid item xs={12} md={3}>
-                  <TextTitle>Danh mục</TextTitle>
-                </Grid>
-                <Grid item xs={12} md={9}>
-                  <Select value={1} fullWidth={true} size='small' required>
-                    <MenuItem value={1}>Ten</MenuItem>
-                    <MenuItem value={2}>Twenty</MenuItem>
-                    <MenuItem value={3}>Thirty</MenuItem>
-                  </Select>
-                </Grid>
-                <Grid item xs={12} md={3}>
-                  <TextTitle>Chủ đề</TextTitle>
-                </Grid>
-                <Grid item xs={12} md={9}>
-                  <InputTextField
+        <Heading1 fontWeight={"500"} translation-key='common_add_question'>
+          {t("common_add_question")}
+        </Heading1>
+        <Grid
+          container
+          spacing={1}
+          sx={{
+            paddingRight: "20px"
+          }}
+        >
+          <Grid item xs={4}>
+            <Card
+              component='form'
+              className={classes.formBody}
+              autoComplete='off'
+              variant='outlined'
+            >
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <InputTextFieldColumn
+                    useDefaultTitleStyle
+                    title={t("common_topic")}
                     onChange={(e: any) => setTopic(e.target.value)}
                     value={topic}
-                    placeholder='Nhập chủ đề'
+                    placeholder={t("common_enter_topic")}
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12} md={3}>
-                  <TextTitle>Mô tả</TextTitle>
-                </Grid>
-                <Grid item xs={12} md={9}>
+
+                <Grid item xs={12}>
+                  <TitleWithInfoTip
+                    title={t("common_description")}
+                    fontSize='12px'
+                    color='var(--gray-60)'
+                    gutterBottom
+                    fontWeight='600'
+                  />
                   <Textarea
-                    onChange={(e: any) => setDesciption(e.target.value)}
+                    sx={{
+                      borderRadius: "12px"
+                    }}
+                    onChange={(e: any) => {
+                      if (desciption.length <= 200) {
+                        if (e.target.value.length + desciption.length <= 200)
+                          setDesciption(e.target.value);
+                        else {
+                          setDesciption(e.target.value.slice(0, 200));
+                        }
+                      }
+                    }}
                     value={desciption}
-                    placeholder='Nhập mô tả'
+                    placeholder={t("common_enter_description")}
                     minRows={6}
-                    maxRows={6}
-                    size='lg'
+                    maxRows={10}
+                    endDecorator={
+                      <ParagraphSmall
+                        fontWeight={500}
+                      >{`${desciption.length} / 200`}</ParagraphSmall>
+                    }
                   />
                 </Grid>
-                <Grid item xs={12} md={3}>
-                  <TextTitle>Loại câu hỏi</TextTitle>
-                </Grid>
-                <Grid item xs={12} md={9}>
+
+                <Grid item xs={12}>
+                  <TitleWithInfoTip
+                    title={t("common_question_type")}
+                    fontSize='12px'
+                    color='var(--gray-60)'
+                    gutterBottom
+                    fontWeight='600'
+                  />
                   <Select
                     value={qtype}
                     onChange={(e: any) => setQtype(e.target.value)}
                     fullWidth={true}
                     size='small'
                     required
+                    sx={{
+                      borderRadius: "12px"
+                    }}
                   >
-                    <MenuItem value={EQType.Essay}>Tự luận</MenuItem>
-                    <MenuItem value={EQType.MultipleChoice}>Trắc nghiệm</MenuItem>
-                    <MenuItem value={EQType.ShortAnswer}>Trả lời ngắn</MenuItem>
-                    <MenuItem value={EQType.TrueFalse}>Đúng sai</MenuItem>
+                    <MenuItem value={EQType.Essay}>{t("common_question_type_essay")}</MenuItem>
+                    <MenuItem value={EQType.MultipleChoice}>
+                      {t("common_question_type_multi_choice")}
+                    </MenuItem>
+                    <MenuItem value={EQType.ShortAnswer}>
+                      {t("common_question_type_short")}
+                    </MenuItem>
+                    <MenuItem value={EQType.TrueFalse}>{t("common_question_type_yes_no")}</MenuItem>
                   </Select>
                 </Grid>
                 {qtype === EQType.MultipleChoice && (
                   <>
-                    <Grid item xs={12} md={3}>
-                      <TextTitle>Số lượng đáp án</TextTitle>
-                    </Grid>
-                    <Grid item xs={12} md={9}>
+                    <Grid item xs={12} md={6}>
+                      <TitleWithInfoTip
+                        title={t("num_of_answer")}
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
+                      />
                       <Select
+                        sx={{
+                          borderRadius: "12px"
+                        }}
                         value={qamountAnswer}
                         onChange={(e: any) => setQamountAnswer(e.target.value)}
                         fullWidth={true}
@@ -266,13 +295,45 @@ const AICreateQuestion = (props: Props) => {
                         <MenuItem value={EAmountAnswer.Five}>5</MenuItem>
                       </Select>
                     </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      md={6}
+                      display={"flex"}
+                      flexDirection={"column"}
+                      justifyContent={"center"}
+                    >
+                      <TitleWithInfoTip
+                        title={t("allow_multiple_correct_answer")}
+                        fontSize='12px'
+                        color='var(--gray-60)'
+                        gutterBottom
+                        fontWeight='600'
+                      />
+                      <Select
+                        sx={{
+                          borderRadius: "12px"
+                        }}
+                        value={allowMultipleCorrectAnswer ? "1" : "0"}
+                        onChange={(e: any) => {
+                          if (e.target.value === "1") setAllowMultipleCorrectAnswer(true);
+                          else setAllowMultipleCorrectAnswer(false);
+                        }}
+                        fullWidth={true}
+                        size='small'
+                        required
+                      >
+                        <MenuItem value={"1"}>{t("common_allow_multiple_correct_answer")}</MenuItem>
+                        <MenuItem value={"0"}>{t("common_only_one_correct_answer")}</MenuItem>
+                      </Select>
+                    </Grid>
                   </>
                 )}
-                <Grid item xs={12} md={3}>
-                  <TextTitle>Số lượng câu hỏi</TextTitle>
-                </Grid>
-                <Grid item xs={12} md={9}>
-                  <InputTextField
+
+                <Grid item xs={12}>
+                  <InputTextFieldColumn
+                    useDefaultTitleStyle
+                    title={t("num_of_question")}
                     type='number'
                     value={number_question}
                     onChange={(e: any) => {
@@ -284,95 +345,152 @@ const AICreateQuestion = (props: Props) => {
                     placeholder='Nhập số lượng câu hỏi'
                   />
                 </Grid>
-                <Grid item xs={12} md={3}>
-                  <TextTitle>Độ khó</TextTitle>
-                </Grid>
-                <Grid item xs={12} md={9}>
+
+                <Grid item xs={12}>
+                  <TitleWithInfoTip
+                    title={t("common_difficult_level")}
+                    fontSize='12px'
+                    color='var(--gray-60)'
+                    gutterBottom
+                    fontWeight='600'
+                  />
                   <Select
+                    sx={{
+                      borderRadius: "12px"
+                    }}
                     value={level}
                     onChange={(e: any) => setLevel(e.target.value)}
                     fullWidth={true}
                     size='small'
                     required
                   >
-                    <MenuItem value={EQuestionLevel.Easy}>Dễ</MenuItem>
-                    <MenuItem value={EQuestionLevel.Medium}>Trung bình</MenuItem>
-                    <MenuItem value={EQuestionLevel.Hard}>Khó</MenuItem>
+                    <MenuItem value={EQuestionLevel.Easy}>{t("common_easy")}</MenuItem>
+                    <MenuItem value={EQuestionLevel.Medium}>{t("common_medium")}</MenuItem>
+                    <MenuItem value={EQuestionLevel.Hard}>{t("common_hard")}</MenuItem>
                   </Select>
                 </Grid>
               </Grid>
-              <Button onClick={handleGenerate} btnType={BtnType.Primary}>
-                Tạo câu hỏi
-              </Button>
-            </Box>
+
+              <Grid item xs={12}>
+                <Button onClick={handleGenerate} loading={loading}>
+                  {t("question_management_create_question")}
+                </Button>
+              </Grid>
+            </Card>
           </Grid>
-          <Grid item xs={6}>
-            <Box className={classes.listQuestion}>
-              {questions &&
-                questions.map((value: IQuestion, index) => {
-                  return (
-                    <Box
-                      className={classes.questionCard}
-                      key={index}
-                      onClick={() => handleQuestionClick(value)}
-                    >
-                      <Heading6 fontWeight={"500"}>
-                        {index + 1}/{lengthQuestion}
-                      </Heading6>
-                      <Heading4 className={classes.question} fontWeight={"600"}>
-                        {value.question}
-                      </Heading4>
-                      <Box className={classes.answer}>
-                        <RadioGroup
-                          aria-labelledby='demo-radio-buttons-group-label'
-                          defaultValue='female'
-                          name='radio-buttons-group'
-                          value={value.correctAnswer}
+
+          <Grid item xs={8}>
+            <Card className={classes.listQuestion}>
+              <Grid container spacing={2}>
+                {questions &&
+                  questions.map((value: IQuestion, index) => {
+                    return (
+                      <Grid item xs={12}>
+                        <Badge
+                          sx={{ width: "100%" }}
+                          anchorOrigin={{
+                            vertical: "top",
+                            horizontal: "left"
+                          }}
+                          badgeContent={`${index + 1}`}
+                          color={"neutral"}
+                          variant='solid'
                         >
-                          {value.answers &&
-                            value.answers.map((answer, index) => {
-                              return (
-                                <Box className={classes.answerItem} key={index}>
-                                  {value.correctAnswer ? (
-                                    <>
-                                      <FormControlLabel
-                                        value={index + 1}
-                                        control={<></>}
-                                        label={String.fromCharCode(65 + index)}
-                                        labelPlacement='start'
-                                        className={classes.radio}
-                                      />
-                                      {value?.correctAnswer?.some(
-                                        (answer) => answer === index + 1
-                                      ) ? (
-                                        <ParagraphBody
-                                          className={classes.answerContent}
-                                          colorname='--green-500'
-                                        >
-                                          {answer.content}
-                                        </ParagraphBody>
-                                      ) : (
-                                        <ParagraphBody className={classes.answerContent}>
-                                          {answer.content}
-                                        </ParagraphBody>
-                                      )}
-                                    </>
-                                  ) : (
-                                    <Box data-color-mode='light' className={classes.answerContent}>
-                                      <MDEditor.Markdown
-                                        source={answer.content}
-                                        className={classes.markdown}
-                                      />
-                                    </Box>
-                                  )}
-                                </Box>
-                              );
-                            })}
-                        </RadioGroup>
-                      </Box>
-                    </Box>
-                  );
-                })}
+                          <Button
+                            className={classes.questionCard}
+                            key={index}
+                            onClick={() => handleQuestionClick(value)}
+                            variant='outlined'
+                            color='neutral'
+                            fullWidth
+                          >
+                            <Heading6 className={classes.question} fontWeight={"600"}>
+                              {value.question}
+                            </Heading6>
+                            <Box className={classes.answer}>
+                              <RadioGroup
+                                aria-labelledby='demo-radio-buttons-group-label'
+                                defaultValue='female'
+                                name='radio-buttons-group'
+                                value={value.correctAnswer}
+                              >
+                                {value.answers &&
+                                  value.answers.map((answer, index) => {
+                                    return (
+                                      <Box className={classes.answerItem} key={index}>
+                                        {value.correctAnswer ? (
+                                          <>
+                                            <FormControlLabel
+                                              value={index + 1}
+                                              control={<></>}
+                                              label={`(${String.fromCharCode(65 + index)})`}
+                                              labelPlacement='start'
+                                              className={classes.radio}
+                                            />
+                                            {value?.correctAnswer?.some(
+                                              (answer) => answer === index + 1
+                                            ) ? (
+                                              <ParagraphBody
+                                                className={classes.answerContent}
+                                                colorname='--green-500'
+                                              >
+                                                {answer.content}
+                                              </ParagraphBody>
+                                            ) : (
+                                              <ParagraphBody className={classes.answerContent}>
+                                                {answer.content}
+                                              </ParagraphBody>
+                                            )}
+                                          </>
+                                        ) : (
+                                          <Box
+                                            data-color-mode='light'
+                                            className={classes.answerContent}
+                                          >
+                                            <MDEditor.Markdown
+                                              source={answer.content}
+                                              className={classes.markdown}
+                                            />
+                                          </Box>
+                                        )}
+                                      </Box>
+                                    );
+                                  })}
+                              </RadioGroup>
+                            </Box>
+                          </Button>
+                        </Badge>
+                      </Grid>
+                    );
+                  })}
+              </Grid>
+              {!loading && questions.length === 0 && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "700px",
+                    gap: "10px",
+                    width: "100%"
+                  }}
+                >
+                  <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
+                    <Box
+                      component='img'
+                      src={images.course.emptyBox}
+                      sx={{
+                        width: "100px",
+                        height: "100px"
+                      }}
+                    />
+                    <Heading1>{t("common_no_question_data")}</Heading1>
+                  </Box>
+
+                  <ParagraphBody fontSize={"16px"}>{t("common_no_data_description")}</ParagraphBody>
+                </Box>
+              )}
               {loading === true && (
                 <Box
                   sx={{
@@ -384,10 +502,16 @@ const AICreateQuestion = (props: Props) => {
                     gap: "10px"
                   }}
                 >
-                  <CircularProgress />
+                  <Grid container spacing={2}>
+                    {Array.from({ length: number_question }).map((_, index) => (
+                      <Grid item xs={12} key={index}>
+                        <Skeleton variant='rounded' height={150} />
+                      </Grid>
+                    ))}
+                  </Grid>
                 </Box>
               )}
-            </Box>
+            </Card>
           </Grid>
           <SnackbarAlert
             open={openSnackbarAlert}

@@ -12,6 +12,7 @@ import { Checkbox } from "@mui/joy";
 import { setAnswered, setFlag } from "reduxes/TakeExam";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
+import ReactQuill from "react-quill";
 
 interface Props {
   page: number;
@@ -170,9 +171,15 @@ const MultipleChoiceExamQuestion = (props: Props) => {
                   size='sm'
                   overlay
                   label={
-                    <ParagraphBody textAlign={"center"} fontSize='.8rem' fontWeight='400'>
-                      {answer.label}
-                    </ParagraphBody>
+                    <ReactQuill
+                      defaultValue={answer.label}
+                      readOnly={true}
+                      theme='bubble'
+                      // textAlign={"center"}
+                      // fontSize='.8rem'
+                      // fontWeight='400'
+                      className='ql-editor'
+                    />
                   }
                 />
               </Sheet>

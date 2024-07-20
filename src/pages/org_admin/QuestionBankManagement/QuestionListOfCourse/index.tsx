@@ -348,7 +348,8 @@ const QuestionListOfCourse = () => {
         routes.org_admin.question_bank.create_question.ai.create.replace(":categoryId", categoryId),
         {
           state: {
-            isOrgAdmin: true
+            isOrgAdmin: true,
+            categoryName: categoryState.categoryDetails?.name
           }
         }
       );
