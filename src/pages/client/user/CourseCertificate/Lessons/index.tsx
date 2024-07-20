@@ -48,6 +48,7 @@ import { AppDispatch, RootState } from "store";
 import CodeQuestionLesson from "./components/CodeQuestionLesson";
 import YouTubeVideo from "./components/YoutubeVideo";
 import classes from "./styles.module.scss";
+import { ProgrammingLanguageEntity } from "models/coreService/entity/ProgrammingLanguageEntity";
 
 const drawerWidth = 300;
 
@@ -114,6 +115,9 @@ export default function Lessons() {
   }>({});
 
   const chapterState = useSelector((state: RootState) => state.chapter);
+  const [topicProgrammingLanguages, setTopicProgrammingLanguages] = useState<
+    ProgrammingLanguageEntity[]
+  >([]);
 
   const [open, setOpen] = React.useState(true);
 
@@ -172,6 +176,7 @@ export default function Lessons() {
           await CertificateCourseService.getCertificateCourseById(id);
         if (getCertificateCourseByIdResponse) {
           const certificateCourse = getCertificateCourseByIdResponse as CertificateCourseEntity;
+          setTopicProgrammingLanguages(certificateCourse.topic.programmingLanguages);
           // Check if user is registered to the course
           if (certificateCourse.isRegistered !== true) {
             navigate(
@@ -689,7 +694,10 @@ export default function Lessons() {
                   marginY: "10px"
                 }}
               />
-              <CodeQuestionLesson lesson={currentLesson} />
+              <CodeQuestionLesson
+                lesson={currentLesson}
+                topicProgrammingLanguages={topicProgrammingLanguages}
+              />
             </Box>
           ) : currentLesson.resourceType === ResourceTypeEnum.VIDEO ? (
             <Card

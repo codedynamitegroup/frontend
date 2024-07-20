@@ -52,7 +52,13 @@ import { CodeSubmissionService } from "services/codeAssessmentService/CodeSubmis
 import { ExecuteService } from "services/codeAssessmentService/ExecuteService";
 import classes from "./styles.module.scss";
 
-const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }) => {
+const CodeQuestionLesson = ({
+  lesson,
+  topicProgrammingLanguages
+}: {
+  lesson: ChapterResourceEntity | null;
+  topicProgrammingLanguages: ProgrammingLanguageEntity[];
+}) => {
   const { t } = useTranslation();
   const { courseId, lessonId } = useParams<{
     courseId: string;
@@ -77,6 +83,8 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
   languageList?.forEach((value, index) => {
     mapLanguages.set(value.id, { pLanguage: value, index });
   });
+  console.log("languageList", languageList);
+  console.log("topicProgrammingLanguages", topicProgrammingLanguages);
 
   const tabs: string[] = useMemo(() => {
     return [
@@ -187,7 +195,7 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
     const newSelectedLanguageId = event.target.value;
     const oldLanguage = mapLanguages.get(selectedLanguage.id);
     if (oldLanguage !== undefined && languageList !== undefined) {
-      console.log(selectedLanguage.sourceCode);
+      // console.log(selectedLanguage.sourceCode);
       let newLangList = languageList.map((value: any, index) => {
         if (index === oldLanguage.index)
           return { ...value, sourceCode: selectedLanguage.sourceCode };
@@ -351,11 +359,17 @@ const CodeQuestionLesson = ({ lesson }: { lesson: ChapterResourceEntity | null }
                     onChange={handleChangeLanguage}
                     sx={{ bgcolor: "white", width: "150px", height: "40px" }}
                   >
-                    {codeQuestion?.languages.map((value: ProgrammingLanguageEntity) => (
-                      <MenuItem key={value.id} value={value.id}>
-                        {value.name}
-                      </MenuItem>
-                    ))}
+                    {codeQuestion?.languages
+                      .filter((value) =>
+                        topicProgrammingLanguages
+                          .map((it: ProgrammingLanguageEntity) => it.programmingLanguageId)
+                          .includes(value.id)
+                      )
+                      .map((value: ProgrammingLanguageEntity) => (
+                        <MenuItem key={value.id} value={value.id}>
+                          {value.name}
+                        </MenuItem>
+                      ))}
                   </Select>
                 </FormControl>
               </Box>
