@@ -63,7 +63,8 @@ const CodeExamQuestion = (props: Props) => {
   const flagQuestionHandle = () => {
     if (isFlagged !== undefined) dispatch(setFlag({ id: questionId, flag: !isFlagged }));
   };
-  const callBackUrl = process.env.REACT_APP_GATEWAY_SERVICE_API_URL || "";
+  const gateWayServiceApiUrl = process.env.REACT_APP_GATEWAY_SERVICE_API_URL || "";
+  const callBackUrl = `${gateWayServiceApiUrl}/code-assessment/code-submission/test-case-token`;
 
   const [selectedLanguage, setSelectedLanguage] = useState<string | undefined>(undefined);
   const [selectedLanguageName, setSelectedLanguageName] = useState<string | undefined>(undefined);
