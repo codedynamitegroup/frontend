@@ -146,4 +146,29 @@ export class ExamSubmissionService {
       });
     }
   }
+
+  static async handleGetExamSubmissionCurrent(examId: string, submissionId: string) {
+    try {
+      const response = await api({
+        baseURL: courseServiceApiUrl,
+        isAuthorization: true
+      }).get(
+        `${API.COURSE.EXAM_SUBMISSION.GET_CURRENT_SUBMISSION.replace(":id", examId).replace(
+          ":submissionId",
+          submissionId
+        )}`
+      );
+
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch exam submission", error);
+      return Promise.reject({
+        code: error?.code || 503,
+        status: error?.status || "Service Unavailable",
+        message: error?.message || error.message
+      });
+    }
+  }
 }

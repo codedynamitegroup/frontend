@@ -204,7 +204,8 @@ export const API = {
       SUBMISSION_STUDENT: "/course/exam/:id/submission",
       SUBMISSION_DETAIL: "/course/exam/question/submit/:id",
       ONGOING_SUBMISSION_DETAIL: "/course/exam/latest-submission",
-      SET_GRADE_STATUS: "/course/exam/grading/submission/:id"
+      SET_GRADE_STATUS: "/course/exam/grading/submission/:id",
+      GET_CURRENT_SUBMISSION: "/course/exam/:id/student/submission/:submissionId",
     },
     EXAM_QUESTION: {
       DEFAULT: "/course/exam/:examId/question"

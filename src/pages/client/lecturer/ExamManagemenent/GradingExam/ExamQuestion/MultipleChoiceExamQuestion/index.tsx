@@ -129,6 +129,7 @@ const MultipleChoiceExamQuestion = (props: MultipleChoiceExamQuestionProps) => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm<FormData>({
     resolver: yupResolver(schema),
@@ -137,6 +138,13 @@ const MultipleChoiceExamQuestion = (props: MultipleChoiceExamQuestionProps) => {
       feedback: questionSubmitContent?.feedback || ""
     }
   });
+
+  useEffect(() => {
+    reset({
+      grade: questionSubmitContent?.grade || 0,
+      feedback: questionSubmitContent?.feedback || ""
+    });
+  }, [questionSubmitContent, reset]);
 
   return (
     <Grid container spacing={1}>
