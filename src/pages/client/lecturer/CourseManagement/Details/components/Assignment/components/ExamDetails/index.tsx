@@ -108,29 +108,6 @@ const LecturerCourseExamDetails = () => {
     }
   };
 
-  const calculateHighestGrade = () => {
-    let highestGrade = 0;
-
-    if (exam.gradeMethod === "QUIZ_GRADEHIGHEST") {
-      const tempMark = Math.max(...examSubmissions.map((submission) => submission.markTotal));
-      highestGrade = (tempMark / (exam.scores || 1)) * (exam.maxScores || 0);
-    } else if (exam.gradeMethod === "QUIZ_GRADEAVERAGE") {
-      highestGrade =
-        examSubmissions.reduce((acc, submission) => acc + submission.markTotal, 0) /
-        examSubmissions.length;
-    } else if (exam.gradeMethod === "QUIZ_ATTEMPTFIRST") {
-      highestGrade = examSubmissions[0].markTotal;
-    }
-    if (exam.gradeMethod === "QUIZ_ATTEMPTLAST") {
-      highestGrade = examSubmissions[examSubmissions.length - 1].markTotal;
-    }
-
-    setHighestScore(highestGrade);
-  };
-
-  useEffect(() => {
-    calculateHighestGrade();
-  }, [examSubmissions]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
