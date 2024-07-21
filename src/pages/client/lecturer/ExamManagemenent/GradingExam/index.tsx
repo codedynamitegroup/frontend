@@ -513,6 +513,8 @@ export default function GradingExam() {
     ExamSubmissionService.setGradeStatus(examSubmissionId)
       .then((res) => {
         console.log("Set grade status successfully", res);
+        // Get submission current
+        handleGetExamSubmissionCurrent();
       })
       .catch((error) => {
         console.error("Failed to set grade status", error);
