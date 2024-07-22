@@ -168,7 +168,7 @@ const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
   // console.log(codeQuestion);
   const [activeTab, setActiveTab] = useState("0");
   console.log(codeQuestionFormMethod.formState.errors);
-  console.log(programmingLanguage);
+  // console.log(programmingLanguage);
 
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const onSubmit = async (data: CodeQuestionFormData) => {
@@ -323,19 +323,29 @@ const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
       <FormProvider {...codeQuestionFormMethod}>
         <form onSubmit={codeQuestionFormMethod.handleSubmit(onSubmit)}>
           <Box>
+            {/* <Button
+              onClick={() => {
+                console.log(codeQuestionFormMethod.getValues("programmingLanguages"));
+                let availableLanguage = codeQuestionFormMethod.getValues("programmingLanguages");
+                let s = "";
+                availableLanguage.forEach((value) => {
+                  if (value.choosen)
+                    s = `${s}\n('${value.id}', '${codeQuestion?.id ?? ""}', 1, 204800, true, '', '${encodeBase64(value.bodyCode ?? "")}', ''),`;
+                });
+                navigator.clipboard.writeText(s.slice(0, -1) + ";");
+              }}
+            >
+              copy
+            </Button> */}
             <Box className={classes.body}>
               <CustomBreadCrumb
                 breadCrumbData={[
                   {
                     label: t("code_management_title"),
                     navLink: "/admin/code-questions"
-                  },
-                  {
-                    label: isEdit ? codeQuestion?.name ?? "" : t("create_code_question"),
-                    navLink: pathname
                   }
                 ]}
-                lastBreadCrumbLabel={t("create_question_code")}
+                lastBreadCrumbLabel={isEdit ? codeQuestion?.name ?? "" : t("create_code_question")}
               />
               <Heading1 fontWeight={"500"}>{codeQuestion?.name ?? "name"}</Heading1>
               <TabContext value={activeTab}>

@@ -1,4 +1,14 @@
-import { Box, FormControl, Grid, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  FormControl,
+  Grid,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Stack,
+  TextField
+} from "@mui/material";
 import { memo, useEffect, useRef, useState } from "react";
 import classes from "./styles.module.scss";
 import TextTitle from "components/text/TextTitle";
@@ -16,7 +26,10 @@ import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import { dispatch } from "d3";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { useDispatch } from "react-redux";
-import { encodeBase64 } from "utils/base64";
+import { decodeBase64, encodeBase64, removeNewLine } from "utils/base64";
+import { PlayArrow } from "@mui/icons-material";
+import { ExecuteService } from "services/codeAssessmentService/ExecuteService";
+import ParagraphExtraSmall from "components/text/ParagraphExtraSmall";
 
 type Props = {};
 
@@ -27,6 +40,12 @@ export interface ICodeConverterResponse {
 export interface ICodeConverterRequest {
   program_language: string;
 }
+type ResultValue = {
+  message: string | null;
+  stderr: string | null;
+  compile_output: string | null;
+  stdout: string | null;
+};
 type ProgrammingLanguageFormValue = {
   programmingLanguages: ProgrammingLanguageAdminEntity[];
 };
@@ -39,6 +58,7 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
     keyName: "plid"
   });
   const availableLanguage = programmingLanguageMethod.getValues("programmingLanguages");
+  console.log(availableLanguage);
   const selectedLanguageNames: ICodeConverterRequest[] = availableLanguage
     .filter((value) => value.choosen)
     .map((value) => ({ program_language: value.name }));
@@ -47,7 +67,15 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
 
   const [selectedCodeStubLanguage, setSelectedCodeStubLanguage] = useState<number>(-1);
   const [codeStub, setCodeStub] = useState("");
+  const [input, setInput] = useState("");
+  const [executeLoading, setExecuteLoading] = useState(false);
   const [selectedConvertedLanguage, setSelectedConvertedLanguage] = useState<number>(-1);
+  const [result, setResult] = useState<ResultValue>({
+    message: null,
+    stderr: null,
+    compile_output: null,
+    stdout: null
+  });
   useEffect(() => {
     if (firstSelect !== -1) {
       setSelectedCodeStubLanguage(firstSelect);
@@ -159,7 +187,6 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
             loading={isLoading}
             disabled={!existSelect}
             color='primary'
-            type='submit'
             translation-key='code_management_detail_template_create'
             onClick={handleGenerate}
           >
@@ -168,6 +195,7 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
         </Box>
       </Box>
       <Heading5
+        marginTop={2}
         fontStyle={"italic"}
         fontWeight={"400"}
         colorname='--gray-50'
@@ -225,9 +253,133 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
             )}
           </Box>
         </Box>
+        <Box marginY={2} className={classes.btnWrapper}>
+          <JoyButton
+            loading={executeLoading}
+            // disabled={!existSelect}
+            color='success'
+            translation-key='detail_problem_execute'
+            onClick={() => {
+              let obj: any = { ...availableLanguage[selectedCodeStubLanguage] };
+              setExecuteLoading(true);
+              ExecuteService.tryExecute(
+                obj.judge0Id,
+                input,
+                availableLanguage[selectedCodeStubLanguage].bodyCode ?? ""
+              )
+                .then((val: ResultValue) => {
+                  setResult(val);
+                })
+                .finally(() => setExecuteLoading(false));
+            }}
+          >
+            <PlayArrow />
+            {t("detail_problem_execute")}
+          </JoyButton>
+        </Box>
+        <Stack spacing={2}>
+          <TextField
+            fullWidth
+            multiline
+            minRows={3}
+            id='outlined-basic'
+            variant='outlined'
+            placeholder='Input'
+            size='small'
+            value={input}
+            onChange={(val) => {
+              setInput(val.target.value);
+            }}
+          />
+          {result.message && (
+            <Box className={classes.result} sx={styles.errorBox}>
+              <ParagraphBody fontWeight={1000} colorname={"--red-text"}>
+                Message
+              </ParagraphBody>
+              <TextField
+                multiline
+                InputProps={{
+                  readOnly: true,
+                  disableUnderline: true
+                }}
+                fullWidth
+                size='small'
+                className={classes.input}
+                value={decodeBase64(removeNewLine(result.message ?? ""))}
+                variant='standard'
+                inputProps={{ style: { color: "var(--red-text)" } }}
+              />
+            </Box>
+          )}
+          {result.stderr && (
+            <Box className={classes.result} sx={styles.errorBox}>
+              <ParagraphBody fontWeight={1000} colorname={"--red-text"}>
+                Stderr
+              </ParagraphBody>
+              <TextField
+                multiline
+                InputProps={{
+                  readOnly: true,
+                  disableUnderline: true
+                }}
+                fullWidth
+                size='small'
+                className={classes.input}
+                value={decodeBase64(removeNewLine(result.stderr ?? ""))}
+                variant='standard'
+                inputProps={{ style: { color: "var(--red-text)" } }}
+              />
+            </Box>
+          )}
+          {result.compile_output && (
+            <Box className={classes.result} sx={styles.errorBox}>
+              <ParagraphBody fontWeight={1000} colorname={"--red-text"}>
+                Complie output
+              </ParagraphBody>
+              <TextField
+                multiline
+                InputProps={{
+                  readOnly: true,
+                  disableUnderline: true
+                }}
+                fullWidth
+                size='small'
+                className={classes.input}
+                value={decodeBase64(removeNewLine(result.compile_output ?? ""))}
+                variant='standard'
+                inputProps={{ style: { color: "var(--red-text)" } }}
+              />
+            </Box>
+          )}
+          {result.stdout !== null && (
+            <Box className={classes.result}>
+              <ParagraphExtraSmall translation-key='detail_problem_actual_result'>
+                {t("detail_problem_actual_result")}
+                {": "}
+              </ParagraphExtraSmall>
+              <TextField
+                multiline
+                InputProps={{ readOnly: true }}
+                fullWidth
+                id='outlined-basic'
+                variant='outlined'
+                size='small'
+                className={classes.input}
+                value={decodeBase64(removeNewLine(result.stdout ?? ""))}
+              />
+            </Box>
+          )}
+        </Stack>
       </Box>
     </>
   );
 });
 
 export default CodeQuestionCodeStubs;
+const styles = {
+  errorBox: {
+    backgroundColor: "var(--red-background)",
+    borderRadius: 1,
+    paddingX: 1
+  }
+};
