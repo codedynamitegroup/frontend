@@ -54,7 +54,7 @@ import {
 import { UserEntity } from "models/coreService/entity/UserEntity";
 import { QuestionDifficultyEnum } from "models/coreService/enum/QuestionDifficultyEnum";
 import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
-import { ExamCreateRequest } from "models/courseService/entity/ExamEntity";
+import { ExamCreateRequest, ExamQuestion } from "models/courseService/entity/ExamEntity";
 import { QuestionBankCategoryEntity } from "models/courseService/entity/QuestionBankCategoryEntity";
 import { CourseDetailEntity } from "models/courseService/entity/detail/CourseDetailEntity";
 import moment from "moment";
@@ -70,7 +70,8 @@ import {
   clearExamCreate,
   clearQuestionCreate,
   deleteQuestionCreate,
-  setQuestionCreateFromBank
+  setQuestionCreateFromBank,
+  updatePageOfQuestionCreate
 } from "reduxes/coreService/questionCreate";
 import { setCategories } from "reduxes/courseService/questionBankCategory";
 import { routes } from "routes/routes";
@@ -163,6 +164,7 @@ interface FormData {
   timeClose: Date;
   timeLimit: number;
   timeLimitUnit: string;
+  gradeMethod: string;
   overdueHandling: string;
   maxAttempts: string;
   sectionId: string;
@@ -249,6 +251,37 @@ export default function ExamCreated() {
         flex: 2,
         minWidth: 150
         // renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
+      },
+      {
+        field: "page",
+        headerName: t("exam_management_create_question_page"),
+        minWidth: 50,
+        renderCell: (params) => (
+          <InputTextFieldColumn
+            key={params.row.id}
+            type='number'
+            titleRequired={true}
+            useDefaultTitleStyle
+            error={Boolean(errors.maxScore)}
+            errorMessage={errors.maxScore?.message}
+            value={params.value}
+            onChange={(e) => {
+              const value = e.target.value;
+              // console.log(value, "value");
+              // const newQuestionCreate: QuestionEntity[] = questionCreate.questionCreate.map(
+              //   (item) => {
+              //     if (item.id === params.row.id) {
+              //       return { ...item, page: Number(value) };
+              //     }
+              //     return item;
+              //   }
+              // );
+              dispatch(updatePageOfQuestionCreate({ id: params.row.id, page: Number(value) }));
+            }}
+            backgroundColor='white'
+            translation-key={["exam_management_create_question_page"]}
+          />
+        )
       },
       {
         field: "action",
@@ -366,9 +399,9 @@ export default function ExamCreated() {
     setLoading(true);
     const formSubmitData: FormData = { ...data };
 
-    const questionIds = questionCreate.questionCreate.map((item, index) => ({
+    const questionIds: ExamQuestion[] = questionCreate.questionCreate.map((item) => ({
       questionId: item.id,
-      page: index
+      page: item.page ?? 0
     }));
 
     const timeLimitUnit = formSubmitData.timeLimit;
@@ -405,7 +438,7 @@ export default function ExamCreated() {
       canRedoQuestions: true,
       maxAttempts: Number(formSubmitData.maxAttempts),
       shuffleQuestions: questionCreate.shuffleQuestions,
-      gradeMethod: "QUIZ_GRADEHIGHEST",
+      gradeMethod: formSubmitData.gradeMethod,
       questionIds: questionIds,
       sectionId: formSubmitData.sectionId,
       createdBy: user.userId
@@ -439,22 +472,26 @@ export default function ExamCreated() {
     };
     const response = await QuestionService.cloneQuestionByIdIn(questions);
     const questionCreate: QuestionEntity[] = response.questions.map(
-      (item: {
-        id: string;
-        organization: OrganizationEntity;
-        difficulty: QuestionDifficultyEnum;
-        name: string;
-        questionText: string;
-        generalFeedback: string;
-        defaultMark: number;
-        pass?: boolean;
-        createdBy: UserEntity;
-        updatedBy: UserEntity;
-        qtype: QuestionTypeEnum;
-        answers: AnswerOfQuestion[];
-        createdAt: Date;
-        updatedAt: Date;
-      }) => ({
+      (
+        item: QuestionEntity,
+        index: {
+          id: string;
+          organization: OrganizationEntity;
+          difficulty: QuestionDifficultyEnum;
+          name: string;
+          questionText: string;
+          generalFeedback: string;
+          defaultMark: number;
+          pass?: boolean;
+          createdBy: UserEntity;
+          updatedBy: UserEntity;
+          qtype: QuestionTypeEnum;
+          answers: AnswerOfQuestion[];
+          createdAt: Date;
+          updatedAt: Date;
+          page: number;
+        }
+      ) => ({
         id: item.id,
         organization: item.organization,
         difficulty: item.difficulty,
@@ -467,7 +504,8 @@ export default function ExamCreated() {
         qtype: item.qtype,
         answers: item.answers,
         createdAt: item.createdAt,
-        updatedAt: item.updatedAt
+        updatedAt: item.updatedAt,
+        page: index
       })
     );
     dispatch(setQuestionCreateFromBank(questionCreate));
@@ -605,6 +643,7 @@ export default function ExamCreated() {
       timeClose: yup.date().required(t("exam_time_close_required")),
       timeLimit: yup.number().required(t("exam_time_limit_required")),
       timeLimitUnit: yup.string().required(t("exam_time_limit_unit_required")),
+      gradeMethod: yup.string().required(t("exam_grade_method_required")),
       overdueHandling: yup.string().required(t("exam_overdue_handling_required")),
       maxAttempts: yup.string().required("exam_max_attempt_invalid"),
       sectionId: yup.string().required("exam_section_required")
@@ -633,6 +672,7 @@ export default function ExamCreated() {
       timeClose: new Date(),
       timeLimit: 0,
       timeLimitUnit: "minutes",
+      gradeMethod: "QUIZ_GRADEHIGHEST",
       overdueHandling: OVERDUE_HANDLING.AUTOSUBMIT,
       maxAttempts: "0",
       sectionId: ""
@@ -965,6 +1005,7 @@ export default function ExamCreated() {
                           )
                           .map((item, index) => ({
                             stt: index + 1,
+                            page: item.page,
                             qtypeText:
                               item.qtype === QuestionTypeEnum.SHORT_ANSWER
                                 ? "câu hỏi ngắn"
@@ -1182,6 +1223,50 @@ export default function ExamCreated() {
                       />
                     </Grid>
                   </Grid>
+                </Box>
+                <Box className={classes.drawerFieldContainer}>
+                  <TitleWithInfoTip
+                    title={t("exam_detail_grading_method")}
+                    fontSize='12px'
+                    color='var(--gray-60)'
+                    gutterBottom
+                    fontWeight='600'
+                    titleRequired
+                  />
+                  <Controller
+                    control={control}
+                    name='gradeMethod'
+                    render={({ field: { value, onChange } }) => (
+                      <BasicSelect
+                        labelId='select-assignment-grade-method-label'
+                        value={value}
+                        onHandleChange={(value) => onChange(value)}
+                        items={[
+                          {
+                            value: "QUIZ_GRADEHIGHEST",
+                            label: t("exam_detail_grading_method_high_score")
+                          },
+                          {
+                            value: "QUIZ_GRADEAVERAGE",
+                            label: t("exam_detail_grading_method_average_score")
+                          },
+                          {
+                            value: "QUIZ_ATTEMPTFIRST",
+                            label: t("exam_detail_grading_method_first_submit")
+                          },
+                          {
+                            value: "QUIZ_ATTEMPTLAST",
+                            label: t("exam_detail_grading_method_last_submit")
+                          }
+                        ]}
+                        backgroundColor='#FBFCFE'
+                        translation-key={[
+                          "exam_detail_grading_method_highest",
+                          "exam_detail_grading_method_average"
+                        ]}
+                      />
+                    )}
+                  />
                 </Box>
                 <Box className={classes.drawerFieldContainer}>
                   <TitleWithInfoTip

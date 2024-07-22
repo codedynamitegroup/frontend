@@ -690,6 +690,8 @@
   "exam_management_create_from_bank": "Thêm câu hỏi từ ngân hàng câu hỏi",
   "exam_management_create_from_bank_choose_topic": "Chọn danh mục",
 
+  "exam_management_create_question_page": "Trang",
+
   "email_required": "Email không được để trống",
   "email_invalid": "Email không hợp lệ",
   "phone_number_invalid": "Số điện thoại không hợp lệ",
