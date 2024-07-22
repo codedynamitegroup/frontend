@@ -19,6 +19,7 @@ export interface QuestionEntity {
   answers: AnswerOfQuestion[];
   createdAt: Date;
   updatedAt: Date;
+  page?: number;
 }
 
 interface GetOrganization {

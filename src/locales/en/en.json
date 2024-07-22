@@ -704,6 +704,8 @@
   "exam_management_create_from_bank": "Get question from question bank",
   "exam_management_create_from_bank_choose_topic": "Choose category",
 
+  "exam_management_create_question_page": "Page",
+
   "email_required": "Email is required",
   "email_invalid": "Email is invalid",
   "phone_number_invalid": "Phone number is invalid",
