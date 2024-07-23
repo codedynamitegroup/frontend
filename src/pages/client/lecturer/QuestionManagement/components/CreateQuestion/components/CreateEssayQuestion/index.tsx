@@ -226,6 +226,10 @@ const CreateEssayQuestion = (props: Props) => {
   const isLecturerCreateQuestionBank = location.state?.isLecturerCreateQuestionBank;
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
+  const { aiQuestionId } = useParams<{ aiQuestionId: string }>();
+  const aiQuestion = useSelector((state: RootState) =>
+    state.createQuestion.questions.find((question) => question.tempId === aiQuestionId)
+  );
   const user: User = useSelector(selectCurrentUser);
 
   const submitHandler = async (data: any) => {
@@ -332,7 +336,12 @@ const CreateEssayQuestion = (props: Props) => {
   useEffect(() => {
     setSelectedFileTypes(watchFileTypesList ? watchFileTypesList : []);
   }, [watchFileTypesList]);
-
+  useEffect(() => {
+    if (aiQuestion) {
+      setValue("questionDescription", aiQuestion.question || "");
+      setValue("generalDescription", aiQuestion.answers[0]?.content || "");
+    }
+  }, [aiQuestion]);
   const responseFormatOptions = [
     {
       value: "editor",

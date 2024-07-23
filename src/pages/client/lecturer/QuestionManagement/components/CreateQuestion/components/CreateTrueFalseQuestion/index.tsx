@@ -99,6 +99,7 @@ const CreateTrueFalseQuestion = (props: Props) => {
   }, [t]);
 
   const {
+    setValue,
     control,
     handleSubmit,
     formState: { errors },
@@ -127,7 +128,10 @@ const CreateTrueFalseQuestion = (props: Props) => {
   const isOrgAdminQuestionBank = location.state?.isOrgQuestionBank;
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
-
+  const { aiQuestionId } = useParams<{ aiQuestionId: string }>();
+  const aiQuestion = useSelector((state: RootState) =>
+    state.createQuestion.questions.find((question) => question.tempId === aiQuestionId)
+  );
   const user: User = useSelector(selectCurrentUser);
 
   const submitHandler = async (data: any) => {
@@ -233,6 +237,16 @@ const CreateTrueFalseQuestion = (props: Props) => {
     }
   }, [i18n.language]);
 
+  useEffect(() => {
+    if (aiQuestion) {
+      setValue("questionDescription", aiQuestion.question || "");
+
+      const correctAnswer = aiQuestion.answers.find(
+        (answer) => answer.id === aiQuestion.correctAnswer?.[0]
+      );
+      setValue("showNumCorrect", correctAnswer?.content === "True" ? "1" : "0");
+    }
+  }, [aiQuestion]);
   const showNumCorrectOptions = [
     { value: "1", label: t("common_true") },
     { value: "0", label: t("common_false") }

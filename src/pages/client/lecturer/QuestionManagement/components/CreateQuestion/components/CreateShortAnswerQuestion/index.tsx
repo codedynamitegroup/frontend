@@ -68,6 +68,10 @@ const CreateShortAnswerQuestion = (props: Props) => {
   const isOrgQuestionBank = location.state?.isOrgQuestionBank;
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
+  const { aiQuestionId } = useParams<{ aiQuestionId: string }>();
+  const aiQuestion = useSelector((state: RootState) =>
+    state.createQuestion.questions.find((question) => question.tempId === aiQuestionId)
+  );
   const [courseData, setCourseData] = useState<CourseDetailEntity>();
 
   const { t, i18n } = useTranslation();
@@ -133,6 +137,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
   }, [t]);
 
   const {
+    setValue,
     control,
     handleSubmit,
     trigger,
@@ -279,6 +284,20 @@ const CreateShortAnswerQuestion = (props: Props) => {
           label: t("course_lecturer_assignment_create_exam")
         }
       ];
+
+  useEffect(() => {
+    if (aiQuestion) {
+      setValue("questionDescription", aiQuestion.question || "");
+      setValue("generalDescription", aiQuestion.answers[0]?.content || "");
+
+      const answers = aiQuestion.answers.map((answer) => ({
+        answer: answer.content,
+        feedback: "",
+        fraction: 1
+      }));
+      setValue("answers", answers);
+    }
+  }, [aiQuestion]);
 
   return (
     <>
