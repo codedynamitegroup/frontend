@@ -5,8 +5,10 @@ import { SubmissionGradeEntity } from "./SubmissionGradeEntity";
 import { UserResponseEntity } from "./UserResponseEntity";
 export interface SubmissionAssignmentEntity {
   id: string;
+  userId: string;
   assignmentName: string;
-  user: UserResponseEntity;
+  fullName: string;
+  email: string;
   isGraded: boolean;
   submissionAssignmentFiles: AssignmentResourceEntity[];
   submissionGrade: SubmissionGradeEntity;

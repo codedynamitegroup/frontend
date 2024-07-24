@@ -168,7 +168,8 @@ export const API = {
       UPDATE_BY_ID: "/course/submission-assignment/:id",
       DELETE_BY_ID: "/course/submission-assignment/:id",
       COUNT_TO_GRADE: "/course/submission-assignment/countToGrade",
-      COUNT_ALL: "/course/submission-assignment/countAll"
+      COUNT_ALL: "/course/submission-assignment/countAll",
+      GET_ALL: "/course/submission-assignment/all"
     },
     SUBMISSION_ASSIGNMENT_FILE: {
       DEFAULT: "/course/submission-assignment-file",
