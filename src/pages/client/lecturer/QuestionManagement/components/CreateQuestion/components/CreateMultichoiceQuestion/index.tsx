@@ -42,6 +42,7 @@ import { Card } from "@mui/joy";
 import { RootState } from "store";
 import { MultichoiceQuestionService } from "services/coreService/QtypeMultichoiceQuestionService";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import AnswerPoint from "utils/AnswerPoint";
 
 interface Props {
   qtype: String;
@@ -66,6 +67,7 @@ interface FormData {
 }
 
 const CreateMultichoiceQuestion = (props: Props) => {
+  const { isAI } = props;
   const { t, i18n } = useTranslation();
   const [currentLang, setCurrentLang] = useState(() => {
     return i18next.language;
@@ -75,7 +77,10 @@ const CreateMultichoiceQuestion = (props: Props) => {
   const [submitCount, setSubmitCount] = useState(0);
   const [courseData, setCourseData] = useState<CourseDetailEntity>();
   const navigate = useNavigate();
-
+  const { aiQuestionId } = useParams<{ aiQuestionId: string }>();
+  const aiQuestion = useSelector((state: RootState) =>
+    state.createQuestion.questions.find((question) => question.tempId === aiQuestionId)
+  );
   const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
 
   const urlParams = useParams();
@@ -148,6 +153,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
   }, [t]);
 
   const {
+    setValue,
     control,
     handleSubmit,
     trigger,
@@ -186,6 +192,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
   const user: User = useSelector(selectCurrentUser);
+  const answerPoint = AnswerPoint.map((point) => point.percentNumber);
 
   const submitHandler = async (data: any) => {
     console.log(data);
@@ -300,6 +307,51 @@ const CreateMultichoiceQuestion = (props: Props) => {
     }
   }, [errors.answers]);
 
+  useEffect(() => {
+    if (aiQuestion) {
+      setValue("questionDescription", aiQuestion.question || "");
+
+      if (aiQuestion.correctAnswer?.length) {
+        if (aiQuestion.correctAnswer.length > 1) setValue("single", "2");
+
+        let pointOfEachAnswer = 1 / aiQuestion.correctAnswer.length;
+
+        if (aiQuestion.correctAnswer.length % 2 !== 0) {
+          for (let i = 1; i < answerPoint.length; i++) {
+            if (answerPoint[i] < pointOfEachAnswer) {
+              console.log(answerPoint[i]);
+
+              if (answerPoint[i] * aiQuestion.correctAnswer.length === 1)
+                pointOfEachAnswer = answerPoint[i];
+              else if (
+                i + 1 < answerPoint.length &&
+                answerPoint[i + 1] * aiQuestion.correctAnswer.length === 1
+              )
+                pointOfEachAnswer = answerPoint[i + 1];
+              else if (answerPoint[i - 1] * aiQuestion.correctAnswer.length === 1)
+                pointOfEachAnswer = answerPoint[i - 1];
+              else pointOfEachAnswer = answerPoint[i];
+
+              break;
+            }
+          }
+        }
+
+        console.log(pointOfEachAnswer);
+        const answers = aiQuestion.answers.map((answer) => {
+          return {
+            answer: answer.content,
+            fraction: aiQuestion.correctAnswer?.some((answerAI) => answerAI === answer.id)
+              ? pointOfEachAnswer
+              : 0,
+            feedback: ""
+          };
+        });
+        setValue("answers", answers);
+      }
+    }
+  }, [aiQuestion]);
+
   const numberingOptions = [
     { value: "abc", label: "a., b., c." },
     { value: "ABC", label: "A., B., C." },
@@ -325,35 +377,36 @@ const CreateMultichoiceQuestion = (props: Props) => {
     { value: "1", label: t("question_management_show_num_correct") },
     { value: "0", label: t("question_management_no_show_num_correct") }
   ];
-  const breadCrumbData = isQuestionBank
-    ? [
-        {
-          navLink: routes.lecturer.question_bank.path,
-          label: i18next.format(t("common_question_bank"), "firstUppercase")
-        },
-        {
-          navLink: `/lecturer/question-bank-management/${urlParams["categoryId"]}`,
-          label: categoryName
-        }
-      ]
-    : [
-        {
-          navLink: routes.lecturer.course.management,
-          label: t("common_course_management")
-        },
-        {
-          navLink: routes.lecturer.course.information.replace(":courseId", courseId),
-          label: courseData?.name
-        },
-        {
-          navLink: routes.lecturer.course.assignment.replace(":courseId", courseId),
-          label: t("common_type_assignment")
-        },
-        {
-          navLink: routes.lecturer.exam.create.replace(":courseId", courseId),
-          label: t("course_lecturer_assignment_create_exam")
-        }
-      ];
+  const breadCrumbData =
+    isQuestionBank || isAI
+      ? [
+          {
+            navLink: routes.lecturer.question_bank.path,
+            label: i18next.format(t("common_question_bank"), "firstUppercase")
+          },
+          {
+            navLink: `/lecturer/question-bank-management/${urlParams["categoryId"]}`,
+            label: categoryName ?? aiQuestion?.categoryName ?? ""
+          }
+        ]
+      : [
+          {
+            navLink: routes.lecturer.course.management,
+            label: t("common_course_management")
+          },
+          {
+            navLink: routes.lecturer.course.information.replace(":courseId", courseId),
+            label: courseData?.name
+          },
+          {
+            navLink: routes.lecturer.course.assignment.replace(":courseId", courseId),
+            label: t("common_type_assignment")
+          },
+          {
+            navLink: routes.lecturer.exam.create.replace(":courseId", courseId),
+            label: t("course_lecturer_assignment_create_exam")
+          }
+        ];
 
   return (
     <>

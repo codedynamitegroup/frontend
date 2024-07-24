@@ -220,7 +220,6 @@ export default function ExamCreated() {
         headerName: t("exam_management_create_question_name"),
         flex: 0.7,
         minWidth: 150
-        // renderCell: (params) => <Link href={`${params.row.id}`}>{params.value}</Link> nhớ đổi sang router link
       },
       {
         field: "questionText",
@@ -250,7 +249,6 @@ export default function ExamCreated() {
         headerName: t("exam_management_create_question_type"),
         flex: 2,
         minWidth: 150
-        // renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
       },
       {
         field: "page",
@@ -266,16 +264,10 @@ export default function ExamCreated() {
             errorMessage={errors.maxScore?.message}
             value={params.value}
             onChange={(e) => {
+              if (Number(e.target.value) < 0) {
+                return;
+              }
               const value = e.target.value;
-              // console.log(value, "value");
-              // const newQuestionCreate: QuestionEntity[] = questionCreate.questionCreate.map(
-              //   (item) => {
-              //     if (item.id === params.row.id) {
-              //       return { ...item, page: Number(value) };
-              //     }
-              //     return item;
-              //   }
-              // );
               dispatch(updatePageOfQuestionCreate({ id: params.row.id, page: Number(value) }));
             }}
             backgroundColor='white'

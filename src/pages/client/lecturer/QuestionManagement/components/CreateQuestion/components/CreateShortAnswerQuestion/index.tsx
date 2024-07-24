@@ -68,6 +68,10 @@ const CreateShortAnswerQuestion = (props: Props) => {
   const isOrgQuestionBank = location.state?.isOrgQuestionBank;
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
+  const { aiQuestionId } = useParams<{ aiQuestionId: string }>();
+  const aiQuestion = useSelector((state: RootState) =>
+    state.createQuestion.questions.find((question) => question.tempId === aiQuestionId)
+  );
   const [courseData, setCourseData] = useState<CourseDetailEntity>();
 
   const { t, i18n } = useTranslation();
@@ -133,6 +137,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
   }, [t]);
 
   const {
+    setValue,
     control,
     handleSubmit,
     trigger,
@@ -250,35 +255,50 @@ const CreateShortAnswerQuestion = (props: Props) => {
     }
   }, [i18n.language]);
 
-  const breadCrumbData = isQuestionBank
-    ? [
-        {
-          navLink: routes.lecturer.question_bank.path,
-          label: i18next.format(t("common_question_bank"), "firstUppercase")
-        },
-        {
-          navLink: `/lecturer/question-bank-management/${urlParams["categoryId"]}`,
-          label: categoryName
-        }
-      ]
-    : [
-        {
-          navLink: routes.lecturer.course.management,
-          label: t("common_course_management")
-        },
-        {
-          navLink: routes.lecturer.course.information.replace(":courseId", courseId),
-          label: courseData?.name
-        },
-        {
-          navLink: routes.lecturer.course.assignment.replace(":courseId", courseId),
-          label: t("common_type_assignment")
-        },
-        {
-          navLink: routes.lecturer.exam.create.replace(":courseId", courseId),
-          label: t("course_lecturer_assignment_create_exam")
-        }
-      ];
+  const breadCrumbData =
+    isQuestionBank || props.isAI
+      ? [
+          {
+            navLink: routes.lecturer.question_bank.path,
+            label: i18next.format(t("common_question_bank"), "firstUppercase")
+          },
+          {
+            navLink: `/lecturer/question-bank-management/${urlParams["categoryId"]}`,
+            label: categoryName ?? aiQuestion?.categoryName ?? ""
+          }
+        ]
+      : [
+          {
+            navLink: routes.lecturer.course.management,
+            label: t("common_course_management")
+          },
+          {
+            navLink: routes.lecturer.course.information.replace(":courseId", courseId),
+            label: courseData?.name
+          },
+          {
+            navLink: routes.lecturer.course.assignment.replace(":courseId", courseId),
+            label: t("common_type_assignment")
+          },
+          {
+            navLink: routes.lecturer.exam.create.replace(":courseId", courseId),
+            label: t("course_lecturer_assignment_create_exam")
+          }
+        ];
+
+  useEffect(() => {
+    if (aiQuestion) {
+      setValue("questionDescription", aiQuestion.question || "");
+      setValue("generalDescription", aiQuestion.answers[0]?.content || "");
+
+      const answers = aiQuestion.answers.map((answer) => ({
+        answer: answer.content,
+        feedback: "",
+        fraction: 1
+      }));
+      setValue("answers", answers);
+    }
+  }, [aiQuestion]);
 
   return (
     <>

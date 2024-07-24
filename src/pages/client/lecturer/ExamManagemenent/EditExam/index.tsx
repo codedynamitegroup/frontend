@@ -61,7 +61,8 @@ import {
   clearExamCreate,
   clearQuestionCreate,
   deleteQuestionCreate,
-  setQuestionCreateFromBank
+  setQuestionCreateFromBank,
+  updatePageOfQuestionCreate
 } from "reduxes/coreService/questionCreate";
 import { QuestionTypeEnum } from "models/coreService/enum/QuestionTypeEnum";
 import { setCategories } from "reduxes/courseService/questionBankCategory";
@@ -88,7 +89,6 @@ import "react-quill/dist/quill.bubble.css";
 import ReactQuill from "react-quill";
 import { SectionService } from "services/courseService/SectionService";
 import { SectionEntity } from "models/courseService/entity/SectionEntity";
-import { use } from "i18next";
 import { User } from "models/authService/entity/user";
 import { selectCurrentUser } from "reduxes/Auth";
 
@@ -165,6 +165,7 @@ interface FormData {
   timeClose: Date;
   timeLimit: number;
   timeLimitUnit: string;
+  gradeMethod: string;
   overdueHandling: string;
   maxAttempts: string;
   sectionId: string;
@@ -252,7 +253,28 @@ export default function ExamEdit() {
         headerName: t("exam_management_create_question_type"),
         flex: 2,
         minWidth: 150
-        // renderCell: (params) => <ParagraphBody>{params.value.label}</ParagraphBody>
+      },
+      {
+        field: "page",
+        headerName: t("exam_management_create_question_page"),
+        minWidth: 50,
+        renderCell: (params) => (
+          <InputTextFieldColumn
+            key={params.row.id}
+            type='number'
+            titleRequired={true}
+            useDefaultTitleStyle
+            error={Boolean(errors.maxScore)}
+            errorMessage={errors.maxScore?.message}
+            value={params.value}
+            onChange={(e) => {
+              const value = e.target.value;
+              dispatch(updatePageOfQuestionCreate({ id: params.row.id, page: Number(value) }));
+            }}
+            backgroundColor='white'
+            translation-key={["exam_management_create_question_page"]}
+          />
+        )
       },
       {
         field: "action",
@@ -392,7 +414,7 @@ export default function ExamEdit() {
     setLoading(true);
     const questionIds = questionCreate.questionCreate.map((item) => ({
       questionId: item.id,
-      page: 0
+      page: item.page ?? 0
     }));
 
     const formSubmitData: FormData = { ...data };
@@ -430,7 +452,7 @@ export default function ExamEdit() {
       canRedoQuestions: true,
       maxAttempts: Number(formSubmitData.maxAttempts),
       shuffleQuestions: questionCreate.shuffleQuestions,
-      gradeMethod: "QUIZ_GRADEHIGHEST",
+      gradeMethod: formSubmitData.gradeMethod,
       questionIds: questionIds,
       sectionId: formSubmitData.sectionId,
       createdBy: user.userId
@@ -612,6 +634,7 @@ export default function ExamEdit() {
       timeClose: yup.date().required(t("exam_time_close_required")),
       timeLimit: yup.number().required(t("exam_time_limit_required")),
       timeLimitUnit: yup.string().required(t("exam_time_limit_unit_required")),
+      gradeMethod: yup.string().required(t("exam_grade_method_required")),
       overdueHandling: yup.string().required(t("exam_overdue_handling_required")),
       maxAttempts: yup.string().required("exam_max_attempt_invalid"),
       sectionId: yup.string().required("exam_section_required")
@@ -633,6 +656,7 @@ export default function ExamEdit() {
       timeClose: new Date(),
       timeLimit: 0,
       timeLimitUnit: "minutes",
+      gradeMethod: "QUIZ_GRADEHIGHEST",
       overdueHandling: OVERDUE_HANDLING.AUTOSUBMIT,
       maxAttempts: "0",
       sectionId: ""
@@ -649,6 +673,7 @@ export default function ExamEdit() {
         timeClose: new Date(exam.timeClose),
         timeLimit: exam.timeLimitUnit,
         timeLimitUnit: exam.unit,
+        gradeMethod: exam.gradeMethod,
         overdueHandling: exam.overdueHanding,
         maxAttempts: exam.maxAttempts?.toString() ?? "0",
         sectionId: exam.sectionId ?? ""
@@ -1155,6 +1180,50 @@ export default function ExamEdit() {
                       />
                     </Grid>
                   </Grid>
+                </Box>
+                <Box className={classes.drawerFieldContainer}>
+                  <TitleWithInfoTip
+                    title={t("exam_detail_grading_method")}
+                    fontSize='12px'
+                    color='var(--gray-60)'
+                    gutterBottom
+                    fontWeight='600'
+                    titleRequired
+                  />
+                  <Controller
+                    control={control}
+                    name='gradeMethod'
+                    render={({ field: { value, onChange } }) => (
+                      <BasicSelect
+                        labelId='select-assignment-grade-method-label'
+                        value={value}
+                        onHandleChange={(value) => onChange(value)}
+                        items={[
+                          {
+                            value: "QUIZ_GRADEHIGHEST",
+                            label: t("exam_detail_grading_method_high_score")
+                          },
+                          {
+                            value: "QUIZ_GRADEAVERAGE",
+                            label: t("exam_detail_grading_method_average_score")
+                          },
+                          {
+                            value: "QUIZ_ATTEMPTFIRST",
+                            label: t("exam_detail_grading_method_first_submit")
+                          },
+                          {
+                            value: "QUIZ_ATTEMPTLAST",
+                            label: t("exam_detail_grading_method_last_submit")
+                          }
+                        ]}
+                        backgroundColor='#FBFCFE'
+                        translation-key={[
+                          "exam_detail_grading_method_highest",
+                          "exam_detail_grading_method_average"
+                        ]}
+                      />
+                    )}
+                  />
                 </Box>
                 <Box className={classes.drawerFieldContainer}>
                   <TitleWithInfoTip

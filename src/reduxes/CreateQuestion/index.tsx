@@ -5,6 +5,7 @@ import { IQuestion } from "services/AIService/CreateQuestionByAI";
 interface Question extends IQuestion {
   tempId: string;
   qType: EQType;
+  categoryName?: string;
 }
 
 export interface CreateQuestionInitState {
