@@ -255,35 +255,36 @@ const CreateShortAnswerQuestion = (props: Props) => {
     }
   }, [i18n.language]);
 
-  const breadCrumbData = isQuestionBank
-    ? [
-        {
-          navLink: routes.lecturer.question_bank.path,
-          label: i18next.format(t("common_question_bank"), "firstUppercase")
-        },
-        {
-          navLink: `/lecturer/question-bank-management/${urlParams["categoryId"]}`,
-          label: categoryName
-        }
-      ]
-    : [
-        {
-          navLink: routes.lecturer.course.management,
-          label: t("common_course_management")
-        },
-        {
-          navLink: routes.lecturer.course.information.replace(":courseId", courseId),
-          label: courseData?.name
-        },
-        {
-          navLink: routes.lecturer.course.assignment.replace(":courseId", courseId),
-          label: t("common_type_assignment")
-        },
-        {
-          navLink: routes.lecturer.exam.create.replace(":courseId", courseId),
-          label: t("course_lecturer_assignment_create_exam")
-        }
-      ];
+  const breadCrumbData =
+    isQuestionBank || props.isAI
+      ? [
+          {
+            navLink: routes.lecturer.question_bank.path,
+            label: i18next.format(t("common_question_bank"), "firstUppercase")
+          },
+          {
+            navLink: `/lecturer/question-bank-management/${urlParams["categoryId"]}`,
+            label: categoryName ?? aiQuestion?.categoryName ?? ""
+          }
+        ]
+      : [
+          {
+            navLink: routes.lecturer.course.management,
+            label: t("common_course_management")
+          },
+          {
+            navLink: routes.lecturer.course.information.replace(":courseId", courseId),
+            label: courseData?.name
+          },
+          {
+            navLink: routes.lecturer.course.assignment.replace(":courseId", courseId),
+            label: t("common_type_assignment")
+          },
+          {
+            navLink: routes.lecturer.exam.create.replace(":courseId", courseId),
+            label: t("course_lecturer_assignment_create_exam")
+          }
+        ];
 
   useEffect(() => {
     if (aiQuestion) {

@@ -379,13 +379,18 @@ const QuestionListOfCourse = () => {
   }, [categoryId, searchText, page, rowsPerPage, categoryState.tab]);
 
   const handleCreateQuestionAI = () => {
+    const tab = categoryState.tab === "1" ? true : false;
+
     if (categoryId)
       navigate(
         routes.lecturer.question_bank.create_question.ai.create.replace(":categoryId", categoryId),
         {
           state: {
-            isOrgAdmin: false,
-            categoryName: categoryState.categoryDetails?.name
+            isLecturerCreateQuestionBank: true,
+            isQuestionBank: true,
+            isOrgQuestionBank: true,
+            categoryName: categoryState.categoryDetails?.name,
+            isOrgAdmin: false
           }
         }
       );
