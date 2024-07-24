@@ -13,7 +13,7 @@ import { decodeBase64 } from "utils/base64";
 import { CodeQuestion } from "models/coreService/entity/QuestionEntity";
 import { convert } from "html-to-text";
 import MDEditor from "@uiw/react-md-editor";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { feedbackCodeByAI, ISourceCodeSubmission } from "services/AIService/FeedbackCodeByAI";
 import { ICodeQuestion } from "pages/client/user/DetailProblem/components/Submission/components/DetailSubmission";
 import JoyButton from "@mui/joy/Button";
@@ -193,6 +193,7 @@ const CodeExamQuestion = (props: Props) => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm<FormData>({
     resolver: yupResolver(schema),
@@ -201,6 +202,13 @@ const CodeExamQuestion = (props: Props) => {
       feedback: questionState?.feedback || ""
     }
   });
+
+  useEffect(() => {
+    reset({
+      grade: questionState?.grade || 0,
+      feedback: questionState?.feedback || ""
+    });
+  }, [questionState, reset]);
 
   return (
     <Grid container spacing={1}>

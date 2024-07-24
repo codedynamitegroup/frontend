@@ -30,3 +30,14 @@
     padding: 10px 20px;
   }
 }
+.runBtn {
+  background-color: var(--green-600);
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: var(--green-500);
+  }
+}

@@ -3,14 +3,13 @@ import Header from "components/Header";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import { memo, useState } from "react";
-import { useLocation, useMatches, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
 import Button from "@mui/joy/Button";
 import { routes } from "routes/routes";
 import { Card, Textarea, RadioGroup, Badge } from "@mui/joy";
 import Heading6 from "components/text/Heading6";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Heading4 from "components/text/Heading4";
 import SnackbarAlert from "components/common/SnackbarAlert";
 import CreateQuestionByAI, { IQuestion } from "services/AIService/CreateQuestionByAI";
 import MDEditor from "@uiw/react-md-editor";
@@ -25,8 +24,6 @@ import TitleWithInfoTip from "components/text/TitleWithInfo";
 import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import images from "config/images";
-import Heading5 from "components/text/Heading5";
-import ReactQuill from "react-quill";
 
 interface Props {
   insideCrumb?: boolean;
@@ -123,7 +120,8 @@ const AICreateQuestion = (props: Props) => {
     const tempQuestion = {
       ...questionData,
       tempId: newId,
-      qType: answeredQtype
+      qType: answeredQtype,
+      categoryName: categoryName || ""
     };
     dispatch(addQuestion(tempQuestion));
 

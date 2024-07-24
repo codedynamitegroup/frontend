@@ -378,6 +378,24 @@ const QuestionListOfCourse = () => {
     }
   }, [categoryId, searchText, page, rowsPerPage, categoryState.tab]);
 
+  const handleCreateQuestionAI = () => {
+    const tab = categoryState.tab === "1" ? true : false;
+
+    if (categoryId)
+      navigate(
+        routes.lecturer.question_bank.create_question.ai.create.replace(":categoryId", categoryId),
+        {
+          state: {
+            isLecturerCreateQuestionBank: true,
+            isQuestionBank: true,
+            isOrgQuestionBank: true,
+            categoryName: categoryState.categoryDetails?.name,
+            isOrgAdmin: false
+          }
+        }
+      );
+  };
+
   return (
     <div>
       <PickQuestionTypeToAddDialog
@@ -489,14 +507,15 @@ const QuestionListOfCourse = () => {
                   {t("common_add_question")}
                 </ParagraphBody>
               </Button>
-              {/* <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
+
+              <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
                 <ParagraphBody
                   paddingX={3}
                   translation-key='question_bank_category_question_list_create_by_AI'
                 >
                   {t("question_bank_category_question_list_create_by_AI")}
                 </ParagraphBody>
-              </Button> */}
+              </Button>
             </Stack>
 
             <CustomAutocomplete
@@ -597,17 +616,9 @@ const QuestionListOfCourse = () => {
                   {t("common_data_export")}
                 </ParagraphBody>
               </Button> */}
-              <Button btnType={BtnType.Primary} onClick={() => setIsAddNewQuestionDialogOpen(true)}>
+              {/* <Button btnType={BtnType.Primary} onClick={() => setIsAddNewQuestionDialogOpen(true)}>
                 <ParagraphBody paddingX={3} translation-key='common_add_question'>
                   {t("common_add_question")}
-                </ParagraphBody>
-              </Button>
-              {/* <Button btnType={BtnType.Outlined} onClick={handleCreateQuestionAI}>
-                <ParagraphBody
-                  paddingX={3}
-                  translation-key='question_bank_category_question_list_create_by_AI'
-                >
-                  {t("question_bank_category_question_list_create_by_AI")}
                 </ParagraphBody>
               </Button> */}
             </Stack>

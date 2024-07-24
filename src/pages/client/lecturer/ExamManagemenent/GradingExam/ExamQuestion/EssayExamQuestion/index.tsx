@@ -4,7 +4,7 @@ import Heading4 from "components/text/Heading4";
 import ParagraphBody from "components/text/ParagraphBody";
 import { Textarea } from "@mui/joy";
 import { EssayQuestion } from "models/coreService/entity/EssayQuestionEntity";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SnackbarAlert from "components/common/SnackbarAlert";
 import { AlertType } from "pages/client/lecturer/QuestionManagement/components/AICreateQuestion";
 import { GradeSubmission } from "models/courseService/entity/SubmissionGradeEntity";
@@ -91,6 +91,7 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm<FormData>({
     resolver: yupResolver(schema),
@@ -99,6 +100,13 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
       feedback: questionSubmitContent?.feedback || ""
     }
   });
+
+  useEffect(() => {
+    reset({
+      grade: questionSubmitContent?.grade || 0,
+      feedback: questionSubmitContent?.feedback || ""
+    });
+  }, [questionSubmitContent, reset]);
 
   return (
     <Grid container spacing={1}>

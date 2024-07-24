@@ -4,6 +4,35 @@ import { encodeBase64 } from "utils/base64";
 
 const judge0ApiUrl = process.env.REACT_APP_JUDE0_URL || "";
 export class ExecuteService {
+  static async tryExecute(language_id: number, stdin: string, source_code: string) {
+    try {
+      const response = await axios.post(
+        `${judge0ApiUrl}${API.JUDGE0.SUBMISSION}`,
+        {
+          language_id,
+          stdin: encodeBase64(stdin),
+          source_code: encodeBase64(source_code)
+        },
+        {
+          params: {
+            base64_encoded: true,
+            wait: true
+          }
+        }
+      );
+
+      if (response.status === 201) {
+        return response.data;
+      }
+    } catch (error: any) {
+      console.error("Failed to execute program", error);
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
   static async execute(
     language_id: number | undefined,
     stdin: string | undefined,

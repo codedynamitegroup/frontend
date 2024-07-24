@@ -120,6 +120,7 @@ const ShortAnswerExamQuestion = (props: ShortAnswerExamQuestionProps) => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm<FormData>({
     resolver: yupResolver(schema),
@@ -128,6 +129,14 @@ const ShortAnswerExamQuestion = (props: ShortAnswerExamQuestionProps) => {
       feedback: questionSubmitContent?.feedback || ""
     }
   });
+
+  useEffect(() => {
+    reset({
+      grade: questionSubmitContent?.grade || 0,
+      feedback: questionSubmitContent?.feedback || ""
+    });
+  }, [questionSubmitContent, reset]);
+
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} md={12}>

@@ -226,6 +226,10 @@ const CreateEssayQuestion = (props: Props) => {
   const isLecturerCreateQuestionBank = location.state?.isLecturerCreateQuestionBank;
   const categoryName = location.state?.categoryName;
   const categoryId = useParams()["categoryId"];
+  const { aiQuestionId } = useParams<{ aiQuestionId: string }>();
+  const aiQuestion = useSelector((state: RootState) =>
+    state.createQuestion.questions.find((question) => question.tempId === aiQuestionId)
+  );
   const user: User = useSelector(selectCurrentUser);
 
   const submitHandler = async (data: any) => {
@@ -332,7 +336,12 @@ const CreateEssayQuestion = (props: Props) => {
   useEffect(() => {
     setSelectedFileTypes(watchFileTypesList ? watchFileTypesList : []);
   }, [watchFileTypesList]);
-
+  useEffect(() => {
+    if (aiQuestion) {
+      setValue("questionDescription", aiQuestion.question || "");
+      setValue("generalDescription", aiQuestion.answers[0]?.content || "");
+    }
+  }, [aiQuestion]);
   const responseFormatOptions = [
     {
       value: "editor",
@@ -503,35 +512,36 @@ const CreateEssayQuestion = (props: Props) => {
     fetchData();
   }, [courseId]);
 
-  const breadCrumbData = isQuestionBank
-    ? [
-        {
-          navLink: routes.lecturer.question_bank.path,
-          label: i18next.format(t("common_question_bank"), "firstUppercase")
-        },
-        {
-          navLink: `/lecturer/question-bank-management/${urlParams["categoryId"]}`,
-          label: categoryName
-        }
-      ]
-    : [
-        {
-          navLink: routes.lecturer.course.management,
-          label: t("common_course_management")
-        },
-        {
-          navLink: routes.lecturer.course.information.replace(":courseId", courseId),
-          label: courseData?.name
-        },
-        {
-          navLink: routes.lecturer.course.assignment.replace(":courseId", courseId),
-          label: t("common_type_assignment")
-        },
-        {
-          navLink: routes.lecturer.exam.create.replace(":courseId", courseId),
-          label: t("course_lecturer_assignment_create_exam")
-        }
-      ];
+  const breadCrumbData =
+    isQuestionBank || props.isAI
+      ? [
+          {
+            navLink: routes.lecturer.question_bank.path,
+            label: i18next.format(t("common_question_bank"), "firstUppercase")
+          },
+          {
+            navLink: `/lecturer/question-bank-management/${urlParams["categoryId"]}`,
+            label: categoryName ?? aiQuestion?.categoryName ?? ""
+          }
+        ]
+      : [
+          {
+            navLink: routes.lecturer.course.management,
+            label: t("common_course_management")
+          },
+          {
+            navLink: routes.lecturer.course.information.replace(":courseId", courseId),
+            label: courseData?.name
+          },
+          {
+            navLink: routes.lecturer.course.assignment.replace(":courseId", courseId),
+            label: t("common_type_assignment")
+          },
+          {
+            navLink: routes.lecturer.exam.create.replace(":courseId", courseId),
+            label: t("course_lecturer_assignment_create_exam")
+          }
+        ];
   return (
     <>
       <Helmet>

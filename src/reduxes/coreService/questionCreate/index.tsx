@@ -1,3 +1,4 @@
+import { s } from "@fullcalendar/core/internal-common";
 import { createSlice } from "@reduxjs/toolkit";
 import { set } from "date-fns";
 import { QuestionEntity } from "models/coreService/entity/QuestionEntity";
@@ -63,7 +64,11 @@ const questionCreateSlice = createSlice({
       state.maxAttempt = action.payload;
     },
     setQuestionCreate: (state, action) => {
-      state.questionCreate.push(action.payload);
+      const question = action.payload;
+      if (!state.questionCreate.find((item) => item.id === question.id)) {
+        const newQuestion = { ...question, page: 0 };
+        state.questionCreate.push(newQuestion);
+      }
     },
     updateQuestionCreate: (
       state,
@@ -80,6 +85,7 @@ const questionCreateSlice = createSlice({
       state.questionCreate[index].name = action.payload.name;
       state.questionCreate[index].questionText = action.payload.description;
       state.questionCreate[index].defaultMark = action.payload.maxScore;
+      state.questionCreate[index].page = 0;
     },
     clearQuestionCreate: (state) => {
       state.questionCreate = [];
@@ -87,7 +93,8 @@ const questionCreateSlice = createSlice({
     setQuestionCreateFromBank(state, action: { payload: QuestionEntity[] }) {
       action.payload.forEach((question) => {
         if (!state.questionCreate.find((item) => item.id === question.id)) {
-          state.questionCreate.push(question);
+          const newQuestion = { ...question, page: 0 };
+          state.questionCreate.push(newQuestion);
         }
       });
     },
@@ -107,6 +114,10 @@ const questionCreateSlice = createSlice({
     },
     deleteQuestionCreate: (state, action: { payload: string }) => {
       state.questionCreate = state.questionCreate.filter((item) => item.id !== action.payload);
+    },
+    updatePageOfQuestionCreate: (state, action: { payload: { id: string; page: number } }) => {
+      const index = state.questionCreate.findIndex((item) => item.id === action.payload.id);
+      state.questionCreate[index].page = action.payload.page;
     }
   }
 });
@@ -127,7 +138,8 @@ export const {
   clearExamCreate,
   setSearchQuestion,
   deleteQuestionCreate,
-  updateQuestionCreate
+  updateQuestionCreate,
+  updatePageOfQuestionCreate
 } = questionCreateSlice.actions;
 
 export default questionCreateSlice.reducer;

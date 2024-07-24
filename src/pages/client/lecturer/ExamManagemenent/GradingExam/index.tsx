@@ -45,6 +45,7 @@ import CodeExamQuestion from "./ExamQuestion/CodeQuestion";
 import EditImageIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import Button from "@mui/joy/Button";
+import Button1 from "components/common/buttons/Button";
 import CustomNumberInput from "components/common/inputs/CustomNumberInput";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -85,6 +86,7 @@ import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import { useState } from "react";
 import { CodeQuestionEntity } from "models/codeAssessmentService/entity/CodeQuestionEntity";
 import { CodeQuestionService } from "services/codeAssessmentService/CodeQuestionService";
+import BasicSelect from "components/common/select/BasicSelect";
 interface SubmissionData {
   examSubmissionId: string;
   examId: string;
@@ -241,6 +243,7 @@ export default function GradingExam() {
       isOpenEditTitle: false
     }
   ]);
+  const [listSubmission, setListSubmission] = React.useState<any[]>([]);
   const handleToggleEditTitle = React.useCallback(
     (id: number) => {
       setQuestionList((prev) => {
@@ -435,16 +438,13 @@ export default function GradingExam() {
   const [searchParams] = useSearchParams();
   const examId = useParams<{ examId: string }>().examId;
   const courseId = useParams<{ courseId: string }>().courseId;
-  const [examData, setExamData] = React.useState<ExamEntity | undefined>(undefined);
   const [studentExamSubmission, setStudentExamSubmission] = React.useState<StudentExamSubmission[]>(
     []
   );
-  const [studentSubmissionCurrent, setStudentSubmissionCurrent] = React.useState<
-    StudentExamSubmission | undefined
-  >(undefined);
+  const [studentSubmissionCurrent, setStudentSubmissionCurrent] =
+    React.useState<StudentExamSubmission>();
   const questionPageIndex = parseInt(searchParams.get("page") || "0");
   const isShowAllQuesionsInOnePage = searchParams.get("showall");
-  const [inputIndexValue, setInputIndexValue] = React.useState(1);
   const [questions, setQuestions] = React.useState<any[]>([]);
   const [submissionData, setSubmissionData] = React.useState<SubmissionDetail>();
   const [timeOpen, setTimeOpen] = React.useState<Date>(new Date());
@@ -461,36 +461,11 @@ export default function GradingExam() {
     minutes: 0,
     seconds: 0
   });
-  const questionDetailMap = React.useMemo(() => {
-    return (
-      submissionData?.questionSubmissionResponses.reduce(
-        (acc: QuestionDetailMap, question: GetQuestionSubmissionEntity) => {
-          acc[question.questionId] = {
-            flag: question.flag,
-            answered: question.answerStatus,
-            id: question.questionId
-          };
-          return acc;
-        },
-        {}
-      ) || undefined
-    );
-  }, [submissionData]);
-
-  // Auto close drawer when screen width < 1080 and open drawer when screen width > 1080
-  React.useEffect(() => {
-    if (width < 1080) {
-      setOpen(false);
-    } else {
-      setOpen(true);
-    }
-  }, [width]);
 
   const handleGetExamQuestion = React.useCallback(async () => {
     if (examId === undefined) return;
     ExamService.getExamQuestionById(examId, null)
       .then((res) => {
-        console.log("Get exam questions");
         const questionIds = res.questions.map((question: GetQuestionExam) => ({
           questionId: question.id,
           qtype: question.qtype
@@ -538,6 +513,8 @@ export default function GradingExam() {
     ExamSubmissionService.setGradeStatus(examSubmissionId)
       .then((res) => {
         console.log("Set grade status successfully", res);
+        // Get submission current
+        handleGetExamSubmissionCurrent();
       })
       .catch((error) => {
         console.error("Failed to set grade status", error);
@@ -608,7 +585,6 @@ export default function GradingExam() {
           console.log("Get exam submission data");
           setSubmissionData(res);
 
-          // Calculate time taken
           const openTime = new Date(res.startTime);
           const closeTime = new Date(res.submitTime);
 
@@ -626,6 +602,17 @@ export default function GradingExam() {
             minutes: diffMins,
             seconds: diffSecs
           });
+
+          ExamSubmissionService.getAllAttemptByExamIdAndUserId(res.examId, res.userId)
+            .then((res) => {
+              setListSubmission(
+                res.map((submission: any, index: number) => ({ ...submission, id: index }))
+              );
+            })
+            .catch((error) => {
+              console.error(error);
+            })
+            .finally(() => {});
         })
         .catch((error) => {
           console.error(error);
@@ -634,37 +621,24 @@ export default function GradingExam() {
   }, [submissionId]);
 
   const handleGetStudentExamSubmission = React.useCallback(async () => {
-    if (examId === undefined) return;
-    ExamSubmissionService.getStudentExamSubmission(examId)
-      .then((res) => {
-        console.log("Get student exam submission");
-        setStudentExamSubmission(res.studentExamSubmissionResponses);
-        const currentStudent = res.studentExamSubmissionResponses.find(
-          (student: StudentExamSubmission) => student.examSubmissionId === submissionId
-        );
-        console.log(res.studentExamSubmissionResponses, "currentStudent");
-        setStudentSubmissionCurrent(currentStudent);
-        setTotalElements(res.totalItems);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {});
-  }, [examId]);
-
-  React.useEffect(() => {
-    const fetchData = async () => {
-      // Get exam questions
-      handleGetExamQuestion();
-
-      // Get exam submission data
-      handleGetExamSubmission();
-
-      // Get student exam submission
-      handleGetStudentExamSubmission();
-    };
-    fetchData();
-  }, [handleGetExamQuestion, handleGetExamSubmission, handleGetStudentExamSubmission]);
+    if (examId !== undefined) {
+      ExamSubmissionService.getStudentExamSubmission(examId)
+        .then((res) => {
+          console.log("Get student exam submission");
+          setStudentExamSubmission(res.studentExamSubmissionResponses);
+          // const currentStudent = res.studentExamSubmissionResponses.find(
+          //   (student: StudentExamSubmission) => student.examSubmissionId === submissionId
+          // );
+          // console.log(res.studentExamSubmissionResponses, "currentStudent");
+          // setStudentSubmissionCurrent(currentStudent);
+          setTotalElements(res.totalItems);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {});
+    }
+  }, [examId, submissionId]);
 
   const [drawerVariant, setDrawerVariant] = React.useState<
     "temporary" | "permanent" | "persistent"
@@ -719,6 +693,50 @@ export default function GradingExam() {
     handleGetStudentExamSubmission();
     setDialogOpen2(false);
   };
+
+  const handleGetExamSubmissionCurrent = React.useCallback(async () => {
+    if (submissionId !== undefined && examId !== undefined)
+      ExamSubmissionService.handleGetExamSubmissionCurrent(examId, submissionId)
+        .then((res) => {
+          console.log("Get exam submission current");
+          setStudentSubmissionCurrent(res);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {});
+  }, [submissionId, examId]);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      // Get submission current
+      handleGetExamSubmissionCurrent();
+
+      // Get exam questions
+      handleGetExamQuestion();
+
+      // Get exam submission data
+      handleGetExamSubmission();
+
+      // Get students exam submission
+      handleGetStudentExamSubmission();
+    };
+    fetchData();
+  }, [
+    handleGetExamQuestion,
+    handleGetExamSubmission,
+    handleGetStudentExamSubmission,
+    submissionId
+  ]);
+
+  // Auto close drawer when screen width < 1080 and open drawer when screen width > 1080
+  React.useEffect(() => {
+    if (width < 1080) {
+      setOpen(false);
+    } else {
+      setOpen(true);
+    }
+  }, [width]);
 
   return (
     <>
@@ -1208,6 +1226,25 @@ export default function GradingExam() {
                   </ParagraphBody>{" "}
                   <ArrowDropDownIcon />
                 </Stack>
+
+                <Stack direction={"row"} justifyContent={"space-between"} marginTop={"10px"}>
+                  <BasicSelect
+                    labelId={t("common_attempt")}
+                    value={submissionId ?? ""}
+                    onHandleChange={(value) => {
+                      navigate(
+                        routes.lecturer.exam.grading
+                          .replace(":submissionId", value)
+                          .replace(":examId", examId || "")
+                          .replace(":courseId", courseId || "")
+                      );
+                    }}
+                    items={listSubmission.map((submission) => ({
+                      label: `Lần ${submission.id + 1}`,
+                      value: submission.examSubmissionId
+                    }))}
+                  />
+                </Stack>
                 <Dialog
                   open={openChooseStudent}
                   onClose={() => setOpenChooseStudent(false)}
@@ -1296,9 +1333,9 @@ export default function GradingExam() {
                     />
                   </DialogContent>
                   <DialogActions>
-                    {/* <Button btnType={BtnType.Primary} onClick={() => setOpenChooseStudent(false)}>
+                    <Button1 btnType={BtnType.Primary} onClick={() => setOpenChooseStudent(false)}>
                       Đóng
-                    </Button> */}
+                    </Button1>
                   </DialogActions>
                 </Dialog>
               </Box>
@@ -1313,33 +1350,7 @@ export default function GradingExam() {
                   {t("exam_grade")}:{" "}
                   {studentSubmissionCurrent?.grade + " / " + studentSubmissionCurrent?.totalGrade}
                 </TextTitle>
-
-                {/* <TextTitle translation-key='course_lecturer_score_on_range'>
-                  {t("course_lecturer_score_on_range", { range: 100 })}
-                </TextTitle>
-                <InputTextField
-                  type='number'
-                  value={assignmentMaximumGrade}
-                  onChange={(e) => setAssignmentMaximumGrade(parseInt(e.target.value))}
-                  placeholder={t("exam_management_create_enter_score")}
-                  backgroundColor='#D9E2ED'
-                  translation-key='exam_management_create_enter_score'
-                /> */}
               </Box>
-              {/* <Box className={classes.drawerFieldContainer}>
-                <TextTitle translation-key='course_lecturer_grade_comment'>
-                  {t("course_lecturer_grade_comment")}
-                </TextTitle>
-                <Box className={classes.textEditor}>
-                  <TextEditor
-                    style={{
-                      marginTop: "10px"
-                    }}
-                    value={assignmentFeedback}
-                    onChange={setAssignmentFeedback}
-                  />
-                </Box>
-              </Box> */}
               <LoadButton
                 btnType={BtnType.Outlined}
                 fullWidth
