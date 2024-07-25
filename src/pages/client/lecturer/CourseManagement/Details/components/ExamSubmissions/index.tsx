@@ -1,10 +1,6 @@
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { Chip, Grid, IconButton } from "@mui/material";
+import { Grid } from "@mui/material";
 import Box from "@mui/material/Box";
-import { blue, green } from "@mui/material/colors";
 import {
   GridCallbackDetails,
   GridColDef,
@@ -12,7 +8,6 @@ import {
   GridRowParams,
   GridRowSelectionModel
 } from "@mui/x-data-grid";
-import axios from "axios";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import Button, { BtnType } from "components/common/buttons/Button";
 import Heading1 from "components/text/Heading1";
@@ -24,9 +19,6 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import qtype from "utils/constant/Qtype";
-import CreateReportConfirmDialog from "./components/CreateReportConfirmDialog";
-import ExamSubmissionFeatureBar from "./components/FeatureBar";
-import MultiSelectCodeQuestionsDialog from "./components/MultiSelectCodeQuestionsDialog";
 import SubmissionBarChart from "./components/SubmissionChart";
 import classes from "./styles.module.scss";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,6 +28,8 @@ import { setErrorMess } from "reduxes/AppStatus";
 import { PaginationList } from "models/general";
 import { GradeExamSubmission } from "models/courseService/entity/ExamEntity";
 import dayjs from "dayjs";
+import JoyButton from "@mui/joy/Button";
+import EditNoteRoundedIcon from "@mui/icons-material/EditNoteRounded";
 
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
@@ -68,31 +62,14 @@ const LecturerCourseExamSubmissions = () => {
   const examState = useSelector((state: RootState) => state.exam);
 
   const { t } = useTranslation();
-  const [currentLang, setCurrentLang] = useState(() => {
-    return i18next.language;
-  });
-  const [isMultiSelectCodeQuestionsDialogOpen, setIsMultiSelectCodeQuestionsDialogOpen] = useState({
-    value: false,
-    defaultTabIndex: 0
-  });
-  const [isCreateReportConfirmDialogOpen, setIsCreateReportConfirmDialogOpen] = useState({
-    value: false,
-    isExisted: false
-  });
+
   const navigate = useNavigate();
   const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
   const dataGridToolbar = { enableToolbar: true };
-  const rowSelectionHandler = (
-    selectedRowId: GridRowSelectionModel,
-    details: GridCallbackDetails<any>
-  ) => {
-    console.log(selectedRowId);
-  };
+
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
     console.log(model);
   };
-  const [isPlagiarismDetectionLoading, setIsPlagiarismDetectionLoading] = useState(false);
-  const [isCheckReportExistLoading, setIsCheckReportExistLoading] = useState(false);
 
   const examData = {
     id: 1,
@@ -150,7 +127,8 @@ const LecturerCourseExamSubmissions = () => {
     {
       field: "student_name",
       headerName: `${t("common_fullname")} ${i18next.format(t("common_student"), "lowercase")}`,
-      width: 200
+      width: 200,
+      flex: 1
     },
     { field: "student_email", headerName: "Email", width: 250 },
     {
@@ -171,12 +149,13 @@ const LecturerCourseExamSubmissions = () => {
             </Box>
           </Box>
         );
-      }
+      },
+      flex: 1
     },
     {
       field: "last_submission_time",
       headerName: t("course_lecturer_sub_last_submission_time"),
-      width: 150
+      flex: 1
     },
     // {
     //   field: "last_grade_time",
@@ -208,9 +187,8 @@ const LecturerCourseExamSubmissions = () => {
       renderCell: (params) => {
         if (params.row.submission_status_submitted === "SUBMITTED") {
           return (
-            <Box>
-              <Button
-                btnType={BtnType.Primary}
+            <Box display={"flex"} alignItems={"center"} justifyContent={"center"}>
+              <JoyButton
                 onClick={() => {
                   navigate(
                     routes.lecturer.exam.grading
@@ -219,137 +197,22 @@ const LecturerCourseExamSubmissions = () => {
                       .replace(":submissionId", params.row.submission_id)
                   );
                 }}
-                margin='0 0 10px 0'
+                startDecorator={<EditNoteRoundedIcon />}
                 translation-key='course_lecturer_assignment_grading'
+                variant='soft'
               >
                 {t("course_lecturer_assignment_grading")}
-              </Button>
+              </JoyButton>
             </Box>
           );
         }
         return null;
-      }
+      },
+      flex: 1
     }
   ];
 
-  const fetchPlagiarismDetectionForCodeQuestion = async (
-    reportName: string,
-    codeQuestionIds: string[]
-  ) => {
-    const codePlagiarismDetectionApiUrl =
-      process.env.REACT_APP_CODE_PLAGIARISM_DETECTION_API_URL || "";
-    setIsPlagiarismDetectionLoading(true);
-    setIsCheckReportExistLoading(true);
-    const codeSubmissionsData = {
-      report_name: reportName,
-      language: "Python",
-      user_id: "f47ac10b-58cc-4372-a567-0e02b2c3d482",
-      code_question_ids: codeQuestionIds
-    };
-
-    try {
-      const response = await axios.post(
-        `${codePlagiarismDetectionApiUrl}/reports`,
-        codeSubmissionsData
-      );
-      setIsPlagiarismDetectionLoading(false);
-      setIsCheckReportExistLoading(false);
-      return response.data;
-    } catch (error) {
-      setIsPlagiarismDetectionLoading(false);
-      setIsCheckReportExistLoading(false);
-      throw error;
-    }
-  };
-
-  const onHandlePlagiarismDetection = async (reportName: string, codeQuestionIds: string[]) => {
-    try {
-      const result = await fetchPlagiarismDetectionForCodeQuestion(reportName, codeQuestionIds);
-      if (result.status === "success") {
-        navigate(
-          `${routes.lecturer.exam.code_plagiarism_detection.replace("reportId", result.data.id)}`,
-          {
-            state: {
-              report: result.data
-            }
-          }
-        );
-      } else {
-        console.error(result.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchCheckCodeQuestionIdsReportExists = async (codeQuestionIds: string[]) => {
-    const codePlagiarismDetectionApiUrl =
-      process.env.REACT_APP_CODE_PLAGIARISM_DETECTION_API_URL || "";
-    setIsCheckReportExistLoading(true);
-    try {
-      const response = await axios.post(
-        `${codePlagiarismDetectionApiUrl}/reports/check-code-question-ids-exist`,
-        {
-          code_question_ids: codeQuestionIds
-        }
-      );
-      setIsCheckReportExistLoading(false);
-      return response.data;
-    } catch (error) {
-      setIsCheckReportExistLoading(false);
-      throw error;
-    }
-  };
-
-  const onHandleReportExists = async (reportName: string, codeQuestionIds: string[]) => {
-    try {
-      if (!codeQuestionIds.length) return;
-      const result = await fetchCheckCodeQuestionIdsReportExists(codeQuestionIds);
-      if (result.status === "success") {
-        if (result.data) {
-          handleOpenCreateReportConfirmDialog({
-            value: true,
-            isExisted: true
-          });
-        } else {
-          handleOpenCreateReportConfirmDialog({
-            value: true,
-            isExisted: false
-          });
-        }
-      } else {
-        console.error(result.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const rowClickHandler = (params: GridRowParams<any>) => {
-    console.log(params);
-  };
   const [tableHeadingPlus, setTableHeadingPlus] = useState<GridColDef[]>([]);
-
-  const handleCloseMultiSelectCodeQuestionsDialog = useCallback(() => {
-    setIsMultiSelectCodeQuestionsDialogOpen(
-      (prevState) =>
-        ({
-          ...prevState,
-          value: false
-        }) as any
-    );
-  }, []);
-
-  const handleOpenCreateReportConfirmDialog = useCallback(
-    (value: { value: boolean; isExisted: boolean }) => {
-      setIsCreateReportConfirmDialogOpen(value);
-    },
-    []
-  );
-
-  const handleCloseCreateReportConfirmDialog = useCallback(() => {
-    setIsCreateReportConfirmDialogOpen({ value: false, isExisted: false });
-  }, []);
 
   const dispatch = useDispatch<AppDispatch>();
   const examId = useParams<{ examId: string }>().examId;
@@ -474,8 +337,7 @@ const LecturerCourseExamSubmissions = () => {
   return (
     <>
       <Box className={classes.examBody}>
-        <Button
-          btnType={BtnType.Primary}
+        <JoyButton
           onClick={() => {
             navigate(
               routes.lecturer.exam.detail
@@ -483,17 +345,14 @@ const LecturerCourseExamSubmissions = () => {
                 .replace(":examId", examId ?? "")
             );
           }}
-          startIcon={
-            <ChevronLeftIcon
-              sx={{
-                color: "white"
-              }}
-            />
-          }
-          width='fit-content'
+          startDecorator={<ChevronLeftIcon fontSize='small' />}
+          color='neutral'
+          variant='soft'
+          size='md'
+          sx={{ width: "fit-content" }}
         >
           <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
-        </Button>
+        </JoyButton>
         <Heading1>{examState.examDetail.name}</Heading1>
         <ParagraphBody translation-key='course_lecturer_sub_num_of_student'>
           {t("course_lecturer_sub_num_of_student")}: {examState.examOverview.submitted}/
@@ -524,18 +383,27 @@ const LecturerCourseExamSubmissions = () => {
             <CustomDataGrid
               dataList={gradeExamSubmissionListTable}
               tableHeader={[...tableHeading, ...tableHeadingPlus]}
-              onSelectData={rowSelectionHandler}
               visibleColumn={visibleColumnList}
               dataGridToolBar={dataGridToolbar}
               page={page}
               pageSize={pageSize}
               totalElement={totalElement}
               onPaginationModelChange={pageChangeHandler}
-              showVerticalCellBorder={true}
               getRowHeight={() => "auto"}
-              onClickRow={rowClickHandler}
-              // slots={{toolbar:}}
-              // columnGroupingModel={columnGroupingModelPlus}
+              showVerticalCellBorder={false}
+              sx={{
+                "&.MuiDataGrid-withBorderColor": {
+                  border: "1px solid white"
+                },
+                "& .MuiDataGrid-columnHeaders": {
+                  backgroundColor: "white",
+                  borderBottom: "2px solid var(--gray-50)"
+                },
+                "& .MuiDataGrid-toolbarContainer": {
+                  backgroundColor: "#f5f9fb"
+                }
+              }}
+              personalSx={true}
             />
           </Grid>
         </Grid>
