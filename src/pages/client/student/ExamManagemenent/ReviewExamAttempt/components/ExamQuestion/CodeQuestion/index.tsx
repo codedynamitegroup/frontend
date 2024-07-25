@@ -60,7 +60,7 @@ const CodeExamQuestion = (props: Props) => {
 
   const sourceCodeSubmission: ISourceCodeSubmission = {
     source_code: decodeBase64(content?.code || ""),
-    language: "Java"
+    language: content?.languageName || ""
   };
 
   const codeQuestionProblemStatement: ICodeQuestion = {
