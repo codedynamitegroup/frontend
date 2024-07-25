@@ -118,6 +118,7 @@ const LecturerCourseAssignmentSubmissions = () => {
     }
   };
 
+  console.log(submissionAssignmentState.submissionAssignments);
   function countStudentsAndSubmissions(
     submissionAssignments: SubmissionAssignmentEntity[]
   ): SubmissionSummary {
@@ -185,11 +186,12 @@ const LecturerCourseAssignmentSubmissions = () => {
   }, [assignmentId]);
 
   const submissionList = submissionAssignmentState?.submissionAssignments.map(
-    (submissionAssignment) => {
+    (submissionAssignment, index) => {
       return {
-        id: submissionAssignment.id,
-        student_name: submissionAssignment.user.fullName,
-        student_email: submissionAssignment.user.email,
+        id: index,
+        submissionAssignmentId: submissionAssignment.id,
+        student_name: submissionAssignment.fullName,
+        student_email: submissionAssignment.email,
         status: {
           submission_status_submitted: submissionAssignment?.submitTime
             ? SubmissionStatusSubmitted.SUBMITTED
@@ -322,26 +324,28 @@ const LecturerCourseAssignmentSubmissions = () => {
       width: 200,
       renderCell: (params) => {
         return (
-          <Box>
-            <Link
-              to={routes.lecturer.assignment.grading
-                .replace(":submissionId", params.row.id)
-                .replace(":courseId", courseId ?? "")
-                .replace(":assignmentId", assignmentId ?? "")}
-            >
-              <Button btnType={BtnType.Primary}>Chấm điểm</Button>
-            </Link>
-            <Box
-              sx={{
-                padding: "5px",
-                fontSize: "17px",
-                display:
-                  params.value.grade_status === SubmissionStatusGraded.GRADED ? "block" : "none"
-              }}
-            >
-              {params.value.current_grade} / {params.value.max_grade}
+          params.row.submissionAssignmentId && (
+            <Box>
+              <Link
+                to={routes.lecturer.assignment.grading
+                  .replace(":submissionId", params.row.submissionAssignmentId)
+                  .replace(":courseId", courseId ?? "")
+                  .replace(":assignmentId", assignmentId ?? "")}
+              >
+                <Button btnType={BtnType.Primary}>Chấm điểm</Button>
+              </Link>
+              <Box
+                sx={{
+                  padding: "5px",
+                  fontSize: "17px",
+                  display:
+                    params.value.grade_status === SubmissionStatusGraded.GRADED ? "block" : "none"
+                }}
+              >
+                {params.value.current_grade} / {params.value.max_grade}
+              </Box>
             </Box>
-          </Box>
+          )
         );
       }
     },
@@ -428,7 +432,7 @@ const LecturerCourseAssignmentSubmissions = () => {
       >
         <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
       </Button>
-      <Heading1>{submissionAssignmentState.submissionAssignments[0]?.assignmentName}</Heading1>
+      <Heading1>{assignmentState.assignmentDetails?.title}</Heading1>
       <ParagraphBody translation-key='course_lecturer_sub_num_of_student'>
         {t("course_lecturer_sub_num_of_student")}: {submissionsCount}/{totalStudents}
       </ParagraphBody>

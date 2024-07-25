@@ -27,10 +27,13 @@ export class SynchronizeMoodleService {
     });
   }
 
-  static async synchronizeMoodle(id: string) {
+  static async synchronizeMoodle(id: string, userId: string) {
     try {
-      const response = await this.apiClient.post(
-        `${API.COURSE.SYNCHRONIZE_MOODLE.SYNCHRONIZE_MOODLE}`.replace(":id", id)
+      const response = await this.apiClient.get(
+        `${API.COURSE.SYNCHRONIZE_MOODLE.SYNCHRONIZE_MOODLE}`.replace(":id", id),
+        {
+          params: { userId }
+        }
       );
       return this.handleResponse(response);
     } catch (error: any) {

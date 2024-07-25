@@ -87,7 +87,7 @@ export class SubmissionAssignmentService {
     }
   ) {
     try {
-      const response = await this.apiClient.get(`${API.COURSE.SUBMISSION_ASSIGNMENT.DEFAULT}`, {
+      const response = await this.apiClient.get(`${API.COURSE.SUBMISSION_ASSIGNMENT.GET_ALL}`, {
         params: { assignmentId, isGraded, search, pageNo, pageSize }
       });
       return this.handleResponse(response);
