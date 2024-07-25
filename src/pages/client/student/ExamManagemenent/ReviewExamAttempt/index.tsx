@@ -566,6 +566,10 @@ export default function StudentReviewExamAttempt() {
                             questionCode={codeQuestion.find(
                               (codeQuestion) => codeQuestion.id === question.data.id
                             )}
+                            questionSubmitContent={submissionData?.questionSubmissionResponses.find(
+                              (submittedQuestion) =>
+                                submittedQuestion.questionId === question.data.question.id
+                            )}
                             questionState={submissionData?.questionSubmissionResponses.find(
                               (submittedQuestion) =>
                                 submittedQuestion.questionId === question.data.question.id
@@ -632,6 +636,10 @@ export default function StudentReviewExamAttempt() {
                   page={questionPageIndex}
                   questionCode={codeQuestion.find(
                     (codeQuestion) => codeQuestion.id === questions[questionPageIndex].data.id
+                  )}
+                  questionSubmitContent={submissionData?.questionSubmissionResponses.find(
+                    (submittedQuestion) =>
+                      submittedQuestion.questionId === questions[questionPageIndex].data.question.id
                   )}
                   questionState={submissionData?.questionSubmissionResponses.find(
                     (submittedQuestion) =>
