@@ -11,12 +11,6 @@ import Heading5 from "components/text/Heading5";
 import ReactQuill from "react-quill";
 import { decodeBase64 } from "utils/base64";
 import { CodeQuestion } from "models/coreService/entity/QuestionEntity";
-import { convert } from "html-to-text";
-import { useState } from "react";
-import { feedbackCodeByAI, ISourceCodeSubmission } from "services/AIService/FeedbackCodeByAI";
-import { ICodeQuestion } from "pages/client/user/DetailProblem/components/Submission/components/DetailSubmission";
-import JoyButton from "@mui/joy/Button";
-import MDEditor from "@uiw/react-md-editor";
 
 interface Props {
   page: number;
@@ -30,94 +24,6 @@ const CodeExamQuestion = (props: Props) => {
   const { page, questionCode, questionState, isGraded, coreQuestionCode } = props;
   const { t } = useTranslation();
   const content = JSON.parse(questionState?.content || "{}");
-
-  const plainDescription = `
-  ProblemStatement:
-	""
-	${convert(questionCode?.problemStatement ?? "")}
-	""
-
-  InputFormat:
-	""
-	${convert(questionCode?.inputFormat ?? "")}
-	""
-
-  OutputFormat: 
-	""
-	${convert(questionCode?.outputFormat ?? "")}
-	""
-
-  Constraints:
-	""
-	${convert(questionCode?.constraints ?? "")}
-	""
-  `;
-
-  const [feedbackContent, setFeedbackContent] = useState<string>(``);
-  const [chunckLoading, setChunkLoading] = useState(false);
-  const [suggestedCode, setSuggestedCode] = useState<string>("");
-  const [explainedCode, setExplainedCode] = useState<string>("");
-
-  const sourceCodeSubmission: ISourceCodeSubmission = {
-    source_code: decodeBase64(content?.code || ""),
-    language: "Java"
-  };
-
-  const codeQuestionProblemStatement: ICodeQuestion = {
-    title: questionCode?.name || "",
-    description: plainDescription
-  };
-
-  const handleFeedbackCodeByAI = async () => {
-    setFeedbackContent(``); // Clear previous content
-    setSuggestedCode(``);
-    setExplainedCode(``);
-
-    setChunkLoading(true);
-
-    try {
-      let isFeedback = false;
-      let isSuggestedCode = false;
-      let isExplainedCode = false;
-
-      for await (const chunk of feedbackCodeByAI(
-        sourceCodeSubmission,
-        codeQuestionProblemStatement
-      )) {
-        if (chunk === "feedback_prompt") {
-          isFeedback = true;
-          isExplainedCode = false;
-          isSuggestedCode = false;
-
-          continue;
-        } else if (chunk === "suggested_code_prompt") {
-          isFeedback = false;
-          isSuggestedCode = true;
-          isExplainedCode = false;
-
-          continue;
-        } else if (chunk === "explained_code_prompt") {
-          isSuggestedCode = false;
-          isFeedback = false;
-          isExplainedCode = true;
-
-          continue;
-        }
-
-        if (isFeedback) {
-          setFeedbackContent((prev) => prev + chunk);
-        } else if (isSuggestedCode) {
-          setSuggestedCode((prev) => prev + chunk);
-        } else if (isExplainedCode) {
-          setExplainedCode((prev) => prev + chunk);
-        }
-      }
-    } catch (error) {
-      console.error("Error generating text:", error);
-    } finally {
-      setChunkLoading(false);
-    }
-  };
 
   return (
     <Grid container spacing={1}>
@@ -197,9 +103,6 @@ const CodeExamQuestion = (props: Props) => {
           >
             {t("common_answer")}
           </ParagraphBody>
-          <JoyButton loading={chunckLoading} color='primary' onClick={handleFeedbackCodeByAI}>
-            {t("detail_submission_AI_evaluation")}
-          </JoyButton>
         </Stack>
 
         <Box
@@ -237,40 +140,6 @@ const CodeExamQuestion = (props: Props) => {
             />
           </Box>
         </Box>
-        {/* Feedback */}
-        {(feedbackContent || suggestedCode || explainedCode) && (
-          <>
-            <Heading5 translation-key='common_feedback_by_ai'>
-              {t("common_feedback_by_ai")}
-            </Heading5>
-            <Box className={classes.submissionText}>
-              {feedbackContent && (
-                <Box data-color-mode='light'>
-                  <MDEditor.Markdown
-                    source={feedbackContent.replaceAll("```", "")}
-                    className={classes.markdown}
-                  />
-                </Box>
-              )}
-              {suggestedCode && (
-                <Box data-color-mode='light'>
-                  <MDEditor.Markdown source={"\n" + suggestedCode} />
-                </Box>
-              )}
-              {explainedCode && (
-                <>
-                  <Box data-color-mode='light'>
-                    <MDEditor.Markdown
-                      source={explainedCode.replaceAll("```", "")}
-                      className={classes.markdown}
-                    />
-                  </Box>
-                </>
-              )}
-              {chunckLoading && <CircularProgress />}
-            </Box>
-          </>
-        )}
       </Grid>
     </Grid>
   );
