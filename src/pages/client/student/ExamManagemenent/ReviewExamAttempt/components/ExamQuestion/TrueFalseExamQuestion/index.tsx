@@ -11,6 +11,7 @@ import SentimentSatisfiedAltRoundedIcon from "@mui/icons-material/SentimentSatis
 import SentimentDissatisfiedRoundedIcon from "@mui/icons-material/SentimentDissatisfiedRounded";
 import Heading6 from "components/text/Heading6";
 import ParagraphSmall from "components/text/ParagraphSmall";
+import ReactQuill from "react-quill";
 
 interface PreviewMultipleChoiceProps {
   questionIndex: number;
@@ -157,7 +158,11 @@ const TrueFalseExamQuestion = (props: PreviewMultipleChoiceProps) => {
             <Grid item xs={12}>
               <Heading6>{t("common_teacher_feedback")}</Heading6>
               <Card variant='soft'>
-                <ParagraphSmall>{questionSubmitContent?.feedback}</ParagraphSmall>
+                <ReactQuill
+                  value={questionSubmitContent?.feedback || ""}
+                  readOnly={true}
+                  theme={"bubble"}
+                />
               </Card>
             </Grid>
           )}

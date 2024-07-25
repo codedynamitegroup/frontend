@@ -17,17 +17,23 @@ import { useState } from "react";
 import { feedbackCodeByAI, ISourceCodeSubmission } from "services/AIService/FeedbackCodeByAI";
 import { ICodeQuestion } from "pages/client/user/DetailProblem/components/Submission/components/DetailSubmission";
 import JoyButton from "@mui/joy/Button";
+import Card from "@mui/joy/Card";
+import ParagraphSmall from "components/text/ParagraphSmall";
+import Heading6 from "components/text/Heading6";
+import { GetQuestionSubmissionEntity } from "models/courseService/entity/QuestionSubmissionEntity";
 
 interface Props {
   page: number;
   questionCode?: CodeQuestionEntity;
   coreQuestionCode: CodeQuestion;
+  questionSubmitContent?: GetQuestionSubmissionEntity;
   questionState?: any;
   isGraded?: boolean;
 }
 
 const CodeExamQuestion = (props: Props) => {
-  const { page, questionCode, questionState, isGraded, coreQuestionCode } = props;
+  const { page, questionCode, questionState, isGraded, coreQuestionCode, questionSubmitContent } =
+    props;
   const plainDescription = `
   ProblemStatement:
 	""
@@ -237,12 +243,52 @@ const CodeExamQuestion = (props: Props) => {
             />
           </Box>
         </Box>
+        {isGraded && (
+          <>
+            <Grid item xs={12}>
+              <Card variant='soft' color={"warning"}>
+                {coreQuestionCode?.question?.generalFeedback && (
+                  <ParagraphSmall>{coreQuestionCode?.question?.generalFeedback}</ParagraphSmall>
+                )}
+              </Card>
+            </Grid>
+            {questionSubmitContent?.feedback && (
+              <Grid item xs={12}>
+                <Heading6
+                  sx={{
+                    marginTop: "20px"
+                  }}
+                >
+                  {t("common_teacher_feedback")}
+                </Heading6>
+                <Card
+                  variant='soft'
+                  sx={{
+                    padding: 0
+                  }}
+                >
+                  <ReactQuill
+                    value={questionSubmitContent?.feedback || ""}
+                    readOnly={true}
+                    theme={"bubble"}
+                  />
+                </Card>
+              </Grid>
+            )}
+          </>
+        )}
+
         {/* Feedback */}
         {(feedbackContent || suggestedCode || explainedCode) && (
           <>
-            <Heading5 translation-key='common_feedback_by_ai'>
+            <Heading6
+              translation-key='common_feedback_by_ai'
+              sx={{
+                marginTop: "20px"
+              }}
+            >
               {t("common_feedback_by_ai")}
-            </Heading5>
+            </Heading6>
             <Box className={classes.submissionText}>
               {feedbackContent && (
                 <Box data-color-mode='light'>
