@@ -442,7 +442,7 @@ export default function ReportGradeEssayAIDetail() {
                     navLink: routes.lecturer.assignment.detail
                       .replace(":assignmentId", assignmentId ?? "")
                       .replace(":courseId", courseId ?? ""),
-                    label: submissionAssignmentState.submissionAssignments[0]?.assignmentName
+                    label: studentSubmissionCurrent?.assignmentName ?? ""
                   }
                 ]}
                 lastBreadCrumbLabel='Đánh giá'
@@ -485,7 +485,7 @@ export default function ReportGradeEssayAIDetail() {
                   sx={{ backgroundColor: "rgb(217, 226, 237)", ":hover": { cursor: "pointer" } }}
                   onClick={() => setOpenChooseStudent(true)}
                 >
-                  <ParagraphBody>{studentSubmissionCurrent?.user.fullName}</ParagraphBody>{" "}
+                  <ParagraphBody>{studentSubmissionCurrent?.fullName}</ParagraphBody>{" "}
                   <ArrowDropDownIcon />
                 </Stack>
                 <Dialog
@@ -526,8 +526,8 @@ export default function ReportGradeEssayAIDetail() {
                         (item, index) => ({
                           ...item,
                           id: item.id,
-                          email: item.user.email,
-                          name: item.user.fullName,
+                          email: item.email,
+                          name: item.fullName,
                           status: item?.submitTime ? "SUBMITTED" : "NOT_SUBMITTED",
                           statusGrade: item?.submissionGrade ? "GRADED" : "NOT_GRADED"
                         })

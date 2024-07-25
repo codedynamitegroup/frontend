@@ -257,6 +257,7 @@ export default function AssignmentGrading() {
       const response = await SubmissionAssignmentService.getSubmissionAssignmentById(
         submissionId?.toString()
       );
+      console.log(response);
       setStudentSubmissionCurrent(response);
       const grade = response.submissionGrade?.grade ?? -1;
       setAssignmentMaximumGrade(grade === -1 ? "" : grade.toString());
@@ -269,8 +270,12 @@ export default function AssignmentGrading() {
     const currentIndex = submissionAssignmentState.submissionAssignments.findIndex(
       (submission) => submission.id === submissionId
     );
-    const nextIndex = (currentIndex + 1) % submissionAssignmentState.submissionAssignments.length;
-    const nextStudentId = submissionAssignmentState.submissionAssignments[nextIndex].id;
+    const filteredSubmissions = submissionAssignmentState.submissionAssignments.filter(
+      (item) => item.id !== null
+    );
+
+    const nextIndex = (currentIndex + 1) % filteredSubmissions.length;
+    const nextStudentId = filteredSubmissions[nextIndex].id;
     setAssignmentSubmissionStudent(nextStudentId);
   };
 
@@ -412,7 +417,7 @@ export default function AssignmentGrading() {
                     navLink: routes.lecturer.assignment.detail
                       .replace(":assignmentId", assignmentId ?? "")
                       .replace(":courseId", courseId ?? ""),
-                    label: submissionAssignmentState.submissionAssignments[0]?.assignmentName
+                    label: studentSubmissionCurrent?.assignmentName ?? ""
                   }
                 ]}
                 lastBreadCrumbLabel='Đánh giá'
@@ -455,7 +460,7 @@ export default function AssignmentGrading() {
                   sx={{ backgroundColor: "rgb(217, 226, 237)", ":hover": { cursor: "pointer" } }}
                   onClick={() => setOpenChooseStudent(true)}
                 >
-                  <ParagraphBody>{studentSubmissionCurrent?.user.fullName}</ParagraphBody>{" "}
+                  <ParagraphBody>{studentSubmissionCurrent?.fullName}</ParagraphBody>{" "}
                   <ArrowDropDownIcon />
                 </Stack>
                 <Dialog
@@ -492,16 +497,16 @@ export default function AssignmentGrading() {
                       </Box>
                     </Paper>
                     <CustomDataGrid
-                      dataList={submissionAssignmentState.submissionAssignments.map(
-                        (item, index) => ({
+                      dataList={submissionAssignmentState.submissionAssignments
+                        .filter((item) => item.id !== null)
+                        .map((item, index) => ({
                           ...item,
                           id: item.id,
-                          email: item.user.email,
-                          name: item.user.fullName,
+                          email: item.email,
+                          name: item.fullName,
                           status: item?.submitTime ? "SUBMITTED" : "NOT_SUBMITTED",
                           statusGrade: item?.submissionGrade ? "GRADED" : "NOT_GRADED"
-                        })
-                      )}
+                        }))}
                       personalSx={true}
                       sx={{
                         "& .MuiDataGrid-cell:nth-last-child(n+2)": {

@@ -5,6 +5,11 @@ import { styled } from "@mui/material/styles";
 import classes from "./styles.module.scss";
 import { SynchronizeMoodleService } from "services/courseService/SynchronizeMoodleService";
 import useAuth from "hooks/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { setInfoMess } from "reduxes/AppStatus";
+import { SocketData } from "reduxes/Socket";
+import { NotificationService } from "services/courseService/NotificationService";
+import { RootState } from "store";
 
 enum Statuses {
   PENDING = "PENDING",
@@ -70,13 +75,14 @@ const SynchronizeMoodle: React.FC = () => {
   const [courseStatus, setCourseStatus] = useState<Statuses>(Statuses.PENDING);
   const [otherResourcesStatus, setOtherResourcesStatus] = useState<Statuses>(Statuses.PENDING);
   const [isSynchronizing, setIsSynchronizing] = useState(false);
+  const { loggedUser, isLoggedIn } = useAuth();
+  const socketState = useSelector((state: RootState) => state.socket);
+  const dispatch = useDispatch();
+
   const fetchStatusFromDB = async (id: string) => {
     try {
-      const response = await SynchronizeMoodleService.synchronizeMoodle(id);
+      const response = await SynchronizeMoodleService.synchronizeMoodle(id, loggedUser.userId);
       if (response.status === 200) {
-        setUserStatus(Statuses.SUCCESS);
-        setCourseStatus(Statuses.SUCCESS);
-        setOtherResourcesStatus(Statuses.SUCCESS);
         setIsSynchronizing(false);
       }
     } catch (error) {
@@ -85,24 +91,47 @@ const SynchronizeMoodle: React.FC = () => {
       setOtherResourcesStatus(Statuses.FAIL);
       setIsSynchronizing(false);
     }
-    setTimeout(() => setUserStatus(Statuses.PROCESSING), 1000);
-    setTimeout(() => {
-      setUserStatus(Statuses.SUCCESS);
-      setCourseStatus(Statuses.PROCESSING);
-    }, 3000);
-    setTimeout(() => {
-      setCourseStatus(Statuses.SUCCESS);
-      setOtherResourcesStatus(Statuses.PROCESSING);
-    }, 5000);
-    setTimeout(() => setOtherResourcesStatus(Statuses.SUCCESS), 7000);
-    setTimeout(() => setIsSynchronizing(false), 7000);
   };
-  const { loggedUser } = useAuth();
 
   const handleSynchronize = () => {
     setIsSynchronizing(true);
     fetchStatusFromDB(loggedUser.organization.organizationId);
   };
+  useEffect(() => {
+    if (
+      userStatus === Statuses.SUCCESS &&
+      courseStatus === Statuses.SUCCESS &&
+      otherResourcesStatus === Statuses.SUCCESS
+    ) {
+      setIsSynchronizing(false);
+    }
+  }, [isSynchronizing, userStatus, courseStatus, otherResourcesStatus]);
+
+  useEffect(() => {
+    if (isLoggedIn && socketState && socketState.socket) {
+      socketState.socket.on("course_step_sync_completed", (data: SocketData) => {
+        console.log("CC");
+        console.log("course_step_sync_completed", data);
+        if (data.message.userTo.userId === loggedUser.userId) {
+          if (data.message.subject === "USER_SYNC_COMPLETED") {
+            setUserStatus(Statuses.SUCCESS);
+            setCourseStatus(Statuses.PROCESSING);
+          } else if (data.message.subject === "COURSE_SYNC_COMPLETED") {
+            setCourseStatus(Statuses.SUCCESS);
+            setOtherResourcesStatus(Statuses.PROCESSING);
+          }
+          if (data.message.subject === "RESOURCE_SYNC_COMPLETED") {
+            setOtherResourcesStatus(Statuses.SUCCESS);
+          }
+        }
+      });
+    }
+    return () => {
+      if (socketState && socketState.socket) {
+        socketState.socket.off("course_step_sync_completed");
+      }
+    };
+  }, [isLoggedIn, loggedUser.userId, socketState]);
 
   return (
     <Grid className={classes.root} container direction='column'>
@@ -127,7 +156,7 @@ const SynchronizeMoodle: React.FC = () => {
         </Box>
         <StatusBox status={otherResourcesStatus}>{otherResourcesStatus}</StatusBox>
       </Box>
-      <Box display='flex' justifyContent='center' alignItems='center' mt={2}>
+      <Box display='flex' justifyContent='center' alignItems='center'>
         <LoadingButton
           variant='contained'
           color='primary'
