@@ -845,7 +845,7 @@ const LecturerCourseExamSubmissions = () => {
               pageSize={pageSize}
               totalElement={totalElement}
               onPaginationModelChange={pageChangeHandler}
-              showVerticalCellBorder={true}
+              showVerticalCellBorder={false}
               getRowHeight={() => "auto"}
               onClickRow={rowClickHandler}
               // slots={{toolbar:}}
