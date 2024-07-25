@@ -90,7 +90,8 @@ async function* feedbackCodeByAI(
   sourceCodeSubmission: ISourceCodeSubmission,
   codeQuestion: ICodeQuestion
 ) {
-  const language = i18next.language === "en" ? "English" : "Vietnamese";
+  const language = i18next.language === "en-US" ? "English" : "Vietnamese";
+
   const AI_ROLE = `
 I. YOUR ROLE:
 	A. You are a supportive programming mentor trained on a massive dataset of code examples, user submissions, and expert feedback. Your primary function is to:

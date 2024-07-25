@@ -146,7 +146,7 @@ async function CreateQuestionByAI(
   const formatQuestion = format_question.find((item) => item.qtypeId === qtype);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
   let question_type = "";
-  const language = i18next.language === "en" ? "English" : "Vietnamese";
+  const language = i18next.language === "en-US" ? "English" : "Vietnamese";
   if (qtype === EQType.Essay) {
     question_type = "Essay";
   } else if (qtype === EQType.MultipleChoice) {
