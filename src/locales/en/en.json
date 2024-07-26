@@ -593,7 +593,7 @@
   "course_lecturer_assignment_edit_exam": "Edit exam",
   "course_lecturer_assignment_reuse_resource": "Reuse resource",
   "course_lecturer_assignment_see_submit": "View submission list",
-  "course_lecturer_assignment_grading": "Grading summary",
+  "course_lecturer_assignment_grading": "Grade",
   "course_lecturer_ai_assignment_grading": "Grading by AI",
   "course_lecturer_ai_assignment_grading_report": "AI grading report",
   "course_lecturer_assignment_preview_submit": "Preview submission",
@@ -1267,6 +1267,7 @@
   "common_no_question_data": "No question has been generated yet",
   "common_no_data_description": "Start generating high-quality questions for your course by adding your inputs",
   "create_question_ai": "Create question with AI",
+  "exam_submisison_total_student_score": "Total student grade",
 
   "update_grade": "Update grade",
   "correct_answer": "Correct answer",
@@ -1278,6 +1279,8 @@
   "exam_grade_success": "Exam grade successfully",
   "exam_grade_failed": "Exam grade failed",
   "exam_notify": "Notify",
+
+  "common_number_of_test_case_passed": "Number of test case passed",
 
   "business_email": "Business email",
   "business_phone": "Business phone",
