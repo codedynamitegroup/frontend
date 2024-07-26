@@ -1267,6 +1267,7 @@
   "common_no_question_data": "No question has been generated yet",
   "common_no_data_description": "Start generating high-quality questions for your course by adding your inputs",
   "create_question_ai": "Create question with AI",
+  "exam_submisison_total_student_score": "Total student grade",
 
   "update_grade": "Update grade",
   "correct_answer": "Correct answer",

@@ -1,15 +1,8 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { Grid } from "@mui/material";
 import Box from "@mui/material/Box";
-import {
-  GridCallbackDetails,
-  GridColDef,
-  GridPaginationModel,
-  GridRowParams,
-  GridRowSelectionModel
-} from "@mui/x-data-grid";
+import { GridCallbackDetails, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
 import CustomDataGrid from "components/common/CustomDataGrid";
-import Button, { BtnType } from "components/common/buttons/Button";
 import Heading1 from "components/text/Heading1";
 import ParagraphBody from "components/text/ParagraphBody";
 import TextTitle from "components/text/TextTitle";
@@ -18,7 +11,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
-import qtype from "utils/constant/Qtype";
 import SubmissionBarChart from "./components/SubmissionChart";
 import classes from "./styles.module.scss";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,6 +22,7 @@ import { GradeExamSubmission } from "models/courseService/entity/ExamEntity";
 import dayjs from "dayjs";
 import JoyButton from "@mui/joy/Button";
 import EditNoteRoundedIcon from "@mui/icons-material/EditNoteRounded";
+import { PieChart } from "@mui/x-charts";
 
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
@@ -71,58 +64,6 @@ const LecturerCourseExamSubmissions = () => {
     console.log(model);
   };
 
-  const examData = {
-    id: 1,
-    org_id: "f47ac10b-58cc-4372-a567-0e02b2c3d477",
-    max_grade: 30,
-    questions: [
-      {
-        id: "f47ac10b-58cc-4372-a567-0e02b2c3d495",
-        title: "Cài đặt thuật toán sắp xếp chọn",
-        checkCheating: false,
-        max_grade: 10,
-        type: qtype.source_code,
-        number: 1
-      },
-      {
-        id: "f47ac10b-58cc-4372-a567-0e02b2c3d496",
-        title: "Thuật toán là gì",
-        max_grade: 10,
-        type: qtype.essay,
-        number: 2
-      },
-      {
-        id: "f47ac10b-58cc-4372-a567-0e02b2c3d497",
-        title: "HTML stands for Hyper Text Markup Language",
-        max_grade: 10,
-        type: qtype.multiple_choice,
-        number: 3
-      },
-      {
-        id: "f47ac10b-58cc-4372-a567-0e02b2c3d49",
-        title: "Tính tổng các số lẻ từ 1 đến n",
-        checkCheating: false,
-        max_grade: 10,
-        type: qtype.source_code,
-        number: 4
-      },
-      {
-        id: "f47ac10b-58cc-4372-a567-002b2c3d495",
-        title: "Tính tổng bình phương các số từ 1 đến n",
-        checkCheating: true,
-        max_grade: 10,
-        type: qtype.source_code,
-        number: 5
-      }
-    ]
-  };
-
-  const filterExamQuestionData = examData.questions.map((value) => ({
-    question: value.title,
-    questionId: value.id
-  }));
-  filterExamQuestionData.unshift({ question: "Câu hỏi 11 đến 20", questionId: "-1" });
-
   const tableHeading: GridColDef[] = [
     {
       field: "student_name",
@@ -145,7 +86,9 @@ const LecturerCourseExamSubmissions = () => {
                 fontSize: "17px"
               }}
             >
-              {params.value === "SUBMITTED" ? "Đã nộp" : "Chưa nộp"}
+              {params.value === "SUBMITTED"
+                ? t("exam_review_status_submitted")
+                : t("exam_review_status_not_submitted")}
             </Box>
           </Box>
         );
@@ -358,20 +301,57 @@ const LecturerCourseExamSubmissions = () => {
           {t("course_lecturer_sub_num_of_student")}: {examState.examOverview.submitted}/
           {examState.examOverview.numberOfStudents}
         </ParagraphBody>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center"
-          }}
-        >
-          <SubmissionBarChart
-            dataset={submissionDataset}
-            xAxis={[{ scaleType: "band", dataKey: "range" }]}
-            width={1000}
-            height={500}
-          />
-        </Box>
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={6}>
+            <SubmissionBarChart
+              customStyle
+              dataset={submissionDataset}
+              xAxis={[{ scaleType: "band", dataKey: "range" }]}
+              width={1000}
+              height={500}
+            />
+          </Grid>
+          <Grid item xs={12} md={6} alignItems={"center"} display={"flex"}>
+            <PieChart
+              colors={["#3498db", "#e74c3c"]}
+              series={[
+                {
+                  data: [
+                    {
+                      id: 0,
+                      value:
+                        examState.examOverview.numberOfStudents -
+                          examState.examOverview.submitted || 0,
+                      label: t("exam_review_status_not_submitted")
+                    },
+                    {
+                      id: 1,
+                      value: examState.examOverview.submitted || 0,
+                      label: t("exam_review_status_submitted")
+                    }
+                  ],
+                  innerRadius: 10,
+                  cornerRadius: 10
+                }
+              ]}
+              height={300}
+              // sx={{
+              //   maxWidth: "100%"
+              // }}
+              // margin={{
+              //   left: 0,
+              //   right: 0,
+              //   top: 0,
+              //   bottom: 0
+              // }}
+              // slotProps={{
+              //   legend: {
+              //     hidden: true
+              //   }
+              // }}
+            />
+          </Grid>
+        </Grid>
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <Heading1 translation-key='course_lecturer_submission_list'>

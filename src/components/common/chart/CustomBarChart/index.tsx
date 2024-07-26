@@ -20,6 +20,7 @@ interface SubmissionChartProps extends Omit<BarChartProps, "xAxis" | "yAxis"> {
   gridVertical?: boolean | undefined;
   gridHorizontal?: boolean | undefined;
   padding?: string | undefined;
+  customStyle?: boolean | undefined;
 }
 
 export default function CustomBarChart({
@@ -33,6 +34,7 @@ export default function CustomBarChart({
   gridVertical,
   borderRadius,
   padding,
+  customStyle,
   ...props
 }: SubmissionChartProps) {
   return (
@@ -48,12 +50,46 @@ export default function CustomBarChart({
         horizontal: gridHorizontal
       }}
       borderRadius={borderRadius}
-      sx={{
-        [`.${axisClasses.left} .${axisClasses.label}`]: {
-          transform: "translate(-25px, 0)"
-        },
-        padding: padding || "25px"
-      }}
+      sx={
+        customStyle
+          ? {
+              "& .MuiChartsAxis-bottom .MuiChartsAxis-line": {
+                stroke: "var(--gray-40)",
+                strokeWidth: 0.4
+              },
+              "& .MuiChartsAxis-left .MuiChartsAxis-line": {
+                stroke: "white",
+                strokeWidth: 0.4
+              },
+              "& .MuiChartsAxis-left .MuiChartsAxis-tickLabel": {
+                strokeWidth: "0.4",
+                fill: "var(--gray-40)",
+                fontSize: 12,
+                fontFamily: "Roboto"
+              },
+              "& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel": {
+                strokeWidth: "0.4",
+                fill: "var(--gray-40)",
+                fontSize: 12,
+                fontFamily: "Roboto"
+              },
+              "& .MuiChartsAxis-bottom .MuiChartsAxis-tick": {
+                strokeWidth: "1",
+                stroke: "var(--gray-40)",
+                fontSize: 12,
+                fontFamily: "Roboto"
+              },
+              [`.${axisClasses.left} .${axisClasses.label}`]: {
+                transform: "translate(-10px, 0)"
+              }
+            }
+          : {
+              [`.${axisClasses.left} .${axisClasses.label}`]: {
+                transform: "translate(-25px, 0)"
+              },
+              padding: padding || "25px"
+            }
+      }
     />
   );
 }
