@@ -75,7 +75,7 @@ I. SYSTEM_INSTRUCTIONS:
 					},
 					{
 						"program_language": "py",
-						"code_stub": "#!/bin/python3\\n\\nimport math\\nimport os\\nimport random\\nimport re\\nimport sys\\n\\n#\\n# Complete the 'simpleArraySum' function below.\\n#\\n# The function is expected to return an INTEGER.\\n# The function accepts INTEGER_ARRAY ar as parameter.\\n#\\n\\ndef simpleArraySum(ar):\\n    # Write your code here\\n\\nif __name__ == '__main__':\\n\\n    ar_count = int(input().strip())\\n\\n    ar = list(map(int, input().rstrip().split()))\\n\\n    result = simpleArraySum(ar)\\n\\n    print(str(result))"
+						"code_stub": "def sumOfTwoIntegers(a, b):\n    #your code goes here\n\nif __name__ == '__main__':\n    a = int(input())\n    b = int(input())\n    print(sumOfTwoIntegers(a, b))"
 					},
 					{
 						"program_language": "c++",
