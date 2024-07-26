@@ -1,14 +1,17 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { Box, Grid, Typography } from "@mui/material";
 import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
 import images from "config/images";
 import classes from "./styles.module.scss";
 import { useFormContext, Controller } from "react-hook-form";
+import { routes } from "routes/routes";
+import { Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 
 const DataInput = () => {
   const { t } = useTranslation();
   const { control } = useFormContext();
+  const navigate = useNavigate();
 
   return (
     <Grid container className={classes.dataInputContainer} spacing={3}>
@@ -59,6 +62,13 @@ const DataInput = () => {
             </Box>
           )}
         />
+        <Typography variant='body2' className={classes.guideText}>
+          Để đọc hướng dẫn vui lòng
+          <a href={`#${routes.org_admin.guide.root}`} target='_blank' rel='noopener noreferrer'>
+            {t(" nhấn vào đây ")}
+          </a>
+          để đọc
+        </Typography>
       </Grid>
       <Grid item xs={6}>
         <Box className={classes.image}>

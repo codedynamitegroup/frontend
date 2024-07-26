@@ -194,6 +194,10 @@ const AICreateQuestion = lazy(
   () => import("pages/client/lecturer/QuestionManagement/components/AICreateQuestion")
 );
 
+const GuideSettingMoodle = lazy(
+  () => import("pages/org_admin/SynchronizeManagement/components/GuideSettingMoodle")
+);
+
 const router = createHashRouter(
   createRoutesFromElements(
     <Route path='/'>
@@ -545,6 +549,8 @@ const router = createHashRouter(
               element={<AICreateQuestion isOrg />}
               handle={{ crumbName: "default" }}
             />
+
+            <Route path={routes.org_admin.guide.root} element={<GuideSettingMoodle />} />
           </Route>
         </Route>
       </Route>

@@ -21,6 +21,7 @@ import { RootState } from "store";
 import { useSelector } from "react-redux";
 import { lazy } from "react";
 import UserProfile from "./UserProfile";
+import GuideSettingMoodle from "pages/org_admin/SynchronizeManagement/components/GuideSettingMoodle";
 const CourseCertificateDetail = lazy(() => import("./CourseCertificate/Detail"));
 const ForgotPassword = lazy(() => import("./ForgotPassword"));
 const ResetPassword = lazy(() => import("./ForgotPassword/components/ResetPassword"));

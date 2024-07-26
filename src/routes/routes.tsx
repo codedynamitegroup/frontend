@@ -399,6 +399,9 @@ export const routes = {
       root: "/org-admin/synchronize",
       detail: "/org-admin/synchronize/:synchronizeId"
     },
+    guide: {
+      root: "/org-admin/guide"
+    },
     course_type: {
       root: "/org-admin/course-type",
       detail: "/org-admin/course-type/:courseTypeId",
