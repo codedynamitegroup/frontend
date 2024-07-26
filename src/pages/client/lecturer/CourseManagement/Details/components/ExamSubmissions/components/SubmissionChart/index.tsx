@@ -1,10 +1,12 @@
 import CustomBarChart from "components/common/chart/CustomBarChart";
+import { useTranslation } from "react-i18next";
 
 interface SubmissionBarChartProps {
   dataset: any;
   xAxis: any;
   width: number;
   height: number;
+  customStyle?: boolean;
 }
 
 export default function SubmissionBarChart({
@@ -12,17 +14,26 @@ export default function SubmissionBarChart({
   xAxis,
   width,
   height,
+  customStyle = false,
   ...props
 }: SubmissionBarChartProps) {
+  const { t } = useTranslation();
   const valueFormatter = (value: number | null) =>
-    value === null ? "No data" : `${value} sinh viên`;
+    value === null ? "No data" : `${value} ${t("common_student").toLowerCase()}`;
 
-  const series = [{ dataKey: "student", label: "Sinh viên", valueFormatter }];
+  const series = [{ dataKey: "student", label: t("common_student"), valueFormatter }];
 
-  const yAxis = [{ label: "Tổng số sinh viên đạt khoảng điểm" }];
+  const yAxis = [
+    {
+      label: t("exam_submisison_total_student_score"),
+      disableTicks: true // hide ticks
+    }
+  ];
 
   return (
     <CustomBarChart
+      gridHorizontal
+      customStyle={customStyle}
       dataset={dataset}
       xAxis={xAxis}
       yAxis={yAxis}

@@ -140,6 +140,7 @@ const CodeExamQuestion = (props: Props) => {
             answered: true,
             content: JSON.stringify({
               languageId: content.languageId,
+              languageName: content.languageName,
               codeQuestionId: questionCode?.id,
               code: content.code,
               callBackUrl: callBackUrl
@@ -158,6 +159,7 @@ const CodeExamQuestion = (props: Props) => {
             answered: true,
             content: JSON.stringify({
               languageId: questionCode?.languages[0]?.id,
+              languageName: questionCode?.languages[0]?.name,
               codeQuestionId: questionCode?.id,
               code: encodeBase64(
                 `${questionCode?.languages[0]?.headCode}\n\n${questionCode?.languages[0]?.bodyCode}\n\n${questionCode?.languages[0]?.tailCode}`

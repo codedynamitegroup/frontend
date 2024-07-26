@@ -12,6 +12,7 @@ import Heading6 from "components/text/Heading6";
 import { CourseFileService } from "services/courseService/CourseFileService";
 import { useDispatch } from "react-redux";
 import { setErrorMess } from "reduxes/AppStatus";
+import ReactQuill from "react-quill";
 
 interface EssayExamQuestionProps {
   questionEssayQuestion: EssayQuestion;
@@ -157,9 +158,19 @@ const EssayExamQuestion = (props: EssayExamQuestionProps) => {
           </Grid>
           {questionSubmitContent?.feedback && (
             <Grid item xs={12}>
-              <Heading6>{t("common_teacher_feedback")}</Heading6>
+              <Heading6
+                sx={{
+                  marginTop: "20px"
+                }}
+              >
+                {t("common_teacher_feedback")}
+              </Heading6>
               <Card variant='soft'>
-                <ParagraphSmall>{questionSubmitContent?.feedback}</ParagraphSmall>
+                <ReactQuill
+                  value={questionSubmitContent?.feedback || ""}
+                  readOnly={true}
+                  theme={"bubble"}
+                />
               </Card>
             </Grid>
           )}

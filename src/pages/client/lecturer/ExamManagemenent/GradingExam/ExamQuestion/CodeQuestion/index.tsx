@@ -46,96 +46,11 @@ interface FormData {
 
 const CodeExamQuestion = (props: Props) => {
   const { page, questionCode, questionState, isGraded, coreQuestionCode } = props;
-  const plainDescription = `
-  ProblemStatement:
-	""
-	${convert(questionCode?.problemStatement ?? "")}
-	""
-
-  InputFormat:
-	""
-	${convert(questionCode?.inputFormat ?? "")}
-	""
-
-  OutputFormat: 
-	""
-	${convert(questionCode?.outputFormat ?? "")}
-	""
-
-  Constraints:
-	""
-	${convert(questionCode?.constraints ?? "")}
-	""
-  `;
 
   const { t } = useTranslation();
   const content = JSON.parse(questionState?.content || "{}");
-
-  const [feedbackContent, setFeedbackContent] = useState<string>(``);
-  const [chunckLoading, setChunkLoading] = useState(false);
-  const [suggestedCode, setSuggestedCode] = useState<string>("");
-  const [explainedCode, setExplainedCode] = useState<string>("");
-
-  const sourceCodeSubmission: ISourceCodeSubmission = {
-    source_code: decodeBase64(content?.code || ""),
-    language: "Java"
-  };
-
-  const codeQuestionProblemStatement: ICodeQuestion = {
-    title: questionCode?.name || "",
-    description: plainDescription
-  };
-
-  const handleFeedbackCodeByAI = async () => {
-    setFeedbackContent(``); // Clear previous content
-    setSuggestedCode(``);
-    setExplainedCode(``);
-
-    setChunkLoading(true);
-
-    try {
-      let isFeedback = false;
-      let isSuggestedCode = false;
-      let isExplainedCode = false;
-
-      for await (const chunk of feedbackCodeByAI(
-        sourceCodeSubmission,
-        codeQuestionProblemStatement
-      )) {
-        if (chunk === "feedback_prompt") {
-          isFeedback = true;
-          isExplainedCode = false;
-          isSuggestedCode = false;
-
-          continue;
-        } else if (chunk === "suggested_code_prompt") {
-          isFeedback = false;
-          isSuggestedCode = true;
-          isExplainedCode = false;
-
-          continue;
-        } else if (chunk === "explained_code_prompt") {
-          isSuggestedCode = false;
-          isFeedback = false;
-          isExplainedCode = true;
-
-          continue;
-        }
-
-        if (isFeedback) {
-          setFeedbackContent((prev) => prev + chunk);
-        } else if (isSuggestedCode) {
-          setSuggestedCode((prev) => prev + chunk);
-        } else if (isExplainedCode) {
-          setExplainedCode((prev) => prev + chunk);
-        }
-      }
-    } catch (error) {
-      console.error("Error generating text:", error);
-    } finally {
-      setChunkLoading(false);
-    }
-  };
+  const rightAnswer = JSON.parse(questionState?.rightAnswer || "{}");
+  console.log("rightNumber", questionState?.rightAnswer);
 
   const navigate = useNavigate();
   const courseId = useParams<{ courseId: string }>().courseId;
@@ -288,9 +203,6 @@ const CodeExamQuestion = (props: Props) => {
           >
             {t("common_answer")}
           </ParagraphBody>
-          <JoyButton loading={chunckLoading} color='primary' onClick={handleFeedbackCodeByAI}>
-            {t("detail_submission_AI_evaluation")}
-          </JoyButton>
         </Stack>
 
         <Box
@@ -328,41 +240,16 @@ const CodeExamQuestion = (props: Props) => {
             />
           </Box>
         </Box>
-        {/* Feedback */}
-        {(feedbackContent || suggestedCode || explainedCode) && (
-          <>
-            <Heading5 translation-key='common_feedback_by_ai'>
-              {t("common_feedback_by_ai")}
-            </Heading5>
-            <Box className={classes.submissionText}>
-              {feedbackContent && (
-                <Box data-color-mode='light'>
-                  <MDEditor.Markdown
-                    source={feedbackContent.replaceAll("```", "")}
-                    className={classes.markdown}
-                  />
-                </Box>
-              )}
-              {suggestedCode && (
-                <Box data-color-mode='light'>
-                  <MDEditor.Markdown source={"\n" + suggestedCode} />
-                </Box>
-              )}
-              {explainedCode && (
-                <>
-                  <Box data-color-mode='light'>
-                    <MDEditor.Markdown
-                      source={explainedCode.replaceAll("```", "")}
-                      className={classes.markdown}
-                    />
-                  </Box>
-                </>
-              )}
-              {chunckLoading && <CircularProgress />}
-            </Box>
-          </>
-        )}
       </Grid>
+
+      <Grid item xs={12} md={12}>
+        <Heading5>
+          {t("common_number_of_test_case_passed")}:{" "}
+          {rightAnswer?.numOfTestCase - rightAnswer?.numOfTestCaseFailed} /{" "}
+          {rightAnswer?.numOfTestCase}
+        </Heading5>
+      </Grid>
+
       <Grid item xs={12} md={12} marginTop={2}>
         <form onSubmit={handleSubmit(submitHandler)}>
           <Box>
