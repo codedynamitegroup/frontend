@@ -1280,6 +1280,8 @@
   "exam_grade_failed": "Exam grade failed",
   "exam_notify": "Notify",
 
+  "common_number_of_test_case_passed": "Number of test case passed",
+
   "business_email": "Business email",
   "business_phone": "Business phone",
   "business_address": "Business address",
