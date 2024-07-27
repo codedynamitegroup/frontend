@@ -1192,6 +1192,8 @@
   "exam_grade_fail": "Chấm điểm bài kiểm tra thất bại",
   "exam_notify": "Thông báo",
 
+  "common_number_of_test_case_passed": "Số lượng test case đã pass",
+
   "business_email": "Email doanh nghiệp",
   "business_phone": "Số điện thoại doanh nghiệp",
   "business_address": "Địa chỉ doanh nghiệp",
