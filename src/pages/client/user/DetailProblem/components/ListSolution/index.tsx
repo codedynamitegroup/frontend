@@ -54,7 +54,7 @@ export default function ProblemDetailSolution({
   const [newestSearch, setNewestSearch] = useState<boolean>(true);
   const [tagLoading, setTagLoading] = useState<boolean>(false);
   const [itemLoading, setItemLoading] = useState<boolean>(false);
-  const pageSize = 2;
+  const pageSize = 5;
   const [pageNum, setPageNum] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(1);
   const [solutionItem, setSolutionItem] = useState<SharedSolutionEntity[]>([]);
