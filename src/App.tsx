@@ -38,28 +38,23 @@ const ReportGradeEssayAIDetail = lazy(
 );
 
 const EditEssayQuestion = lazy(
-  () =>
-    import(
-      "pages/client/lecturer/ExamManagemenent/EditExam/components/EditQuestion/EditEssayQuestion"
-    )
+  () => import("pages/client/lecturer/QuestionManagement/components/EditQuestion/EditEssayQuestion")
 );
 const EditMultichoiceQuestion = lazy(
   () =>
     import(
-      "pages/client/lecturer/ExamManagemenent/EditExam/components/EditQuestion/EditMultichoiceQuestion"
+      "pages/client/lecturer/QuestionManagement/components/EditQuestion/EditMultichoiceQuestion"
     )
 );
 const EditShortAnswerQuestion = lazy(
   () =>
     import(
-      "pages/client/lecturer/ExamManagemenent/EditExam/components/EditQuestion/EditShortAnswerQuestion"
+      "pages/client/lecturer/QuestionManagement/components/EditQuestion/EditShortAnswerQuestion"
     )
 );
 const EditTrueFalseQuestion = lazy(
   () =>
-    import(
-      "pages/client/lecturer/ExamManagemenent/EditExam/components/EditQuestion/EditTrueFalseQuestion"
-    )
+    import("pages/client/lecturer/QuestionManagement/components/EditQuestion/EditTrueFalseQuestion")
 );
 
 const AssignmentCreated = lazy(

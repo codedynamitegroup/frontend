@@ -21,12 +21,12 @@ import { isValidDecimal } from "utils/coreService/convertDecimalPoint";
 import InputTextFieldColumn from "components/common/inputs/InputTextFieldColumn";
 import Footer from "components/Footer";
 
-import TitleWithInfoTip from "../../../../../../../../components/text/TitleWithInfo";
+import TitleWithInfoTip from "../../../../../../../components/text/TitleWithInfo";
 import JoyRadioGroup from "components/common/radio/JoyRadioGroup";
 import JoyButton from "@mui/joy/Button";
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
-import { setQuestionCreate } from "reduxes/coreService/questionCreate";
+import { setQuestionCreate, updateQuestionCreate } from "reduxes/coreService/questionCreate";
 
 import CustomBreadCrumb from "components/common/Breadcrumb";
 import { CourseService } from "services/courseService/CourseService";
@@ -149,9 +149,11 @@ const EditTrueFalseQuestion = (props: Props) => {
   const isLecturerEditQuestion = location.state?.isLecturerEditQuestion;
   const isOrgAdminQuestionBank = location.state?.isOrgAdminQuestionBank;
   const categoryName = location.state?.categoryName;
+  const isCreateExam = location.state?.isCreateExam;
   const categoryId = useParams()["categoryId"];
 
   const submitHandler = async (data: any) => {
+    if (!questionId) return;
     setSubmitLoading(true);
 
     const formSubmittedData: FormData = { ...data };
@@ -183,7 +185,8 @@ const EditTrueFalseQuestion = (props: Props) => {
     MultichoiceQuestionService.updateMultichoiceQuestion(newQuestion)
       .then((res) => {
         console.log(res);
-        // if (!isQuestionBank) getQuestionByQuestionId(res.questionId);
+        if (!isQuestionBank) getQuestionByQuestionId(questionId);
+
         dispatch(
           setSuccessMess(
             t("question_management_edit_question_success", {
@@ -198,6 +201,12 @@ const EditTrueFalseQuestion = (props: Props) => {
             isLecturerEditQuestion
               ? routes.lecturer.question_bank.detail.replace(":categoryId", categoryId || "")
               : routes.org_admin.question_bank.detail.replace(":categoryId", categoryId || "")
+          );
+        } else if (isCreateExam) {
+          navigate(
+            routes.lecturer.exam.create
+              .replace(":courseId", courseId || "")
+              .replace(":examId", examId || "")
           );
         } else {
           navigate(
@@ -219,13 +228,6 @@ const EditTrueFalseQuestion = (props: Props) => {
       })
       .finally(() => {
         setSubmitLoading(false);
-
-        if (isLecturerEditQuestion)
-          navigate(
-            routes.lecturer.exam.edit
-              .replace(":courseId", courseId || "")
-              .replace(":examId", examId || "")
-          );
       });
   };
 
@@ -233,9 +235,16 @@ const EditTrueFalseQuestion = (props: Props) => {
   const getQuestionByQuestionId = async (questionId: string) => {
     try {
       const response = await QuestionService.getQuestionsByQuestionId(questionId);
-      dispatch(setQuestionCreate(response));
+      dispatch(
+        updateQuestionCreate({
+          id: response.id,
+          name: response.name,
+          description: response.questionText,
+          maxScore: response.defaultMark
+        })
+      );
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
   const getCourseData = async (courseId: string) => {
@@ -309,28 +318,45 @@ const EditTrueFalseQuestion = (props: Props) => {
           label: categoryName
         }
       ]
-    : [
-        {
-          navLink: routes.lecturer.course.management,
-          label: t("common_course_management")
-        },
-        {
-          navLink: routes.lecturer.course.information.replace(":courseId", courseId || ""),
-          label: courseData?.name
-        },
-        {
-          navLink: routes.lecturer.course.assignment.replace(":courseId", courseId || ""),
-          label: t("common_type_assignment")
-        },
-        {
-          navLink: props.isNewQuestion
-            ? routes.lecturer.exam.create.replace(":courseId", courseId || "")
-            : routes.lecturer.exam.edit
-                .replace(":courseId", courseId || "")
-                .replace(":examId", examId || ""),
-          label: `${props.isNewQuestion ? t("common_create") : t("common_edit")} ${t("course_detail_exam").toLowerCase()}`
-        }
-      ];
+    : isCreateExam === true
+      ? [
+          {
+            navLink: routes.lecturer.course.management,
+            label: t("common_course_management")
+          },
+          {
+            navLink: routes.lecturer.course.information.replace(":courseId", courseId || ""),
+            label: courseData?.name
+          },
+          {
+            navLink: routes.lecturer.course.assignment.replace(":courseId", courseId || ""),
+            label: t("common_type_assignment")
+          },
+          {
+            navLink: routes.lecturer.exam.create.replace(":courseId", courseId || ""),
+            label: `${t("common_create")} ${t("course_detail_exam").toLowerCase()}`
+          }
+        ]
+      : [
+          {
+            navLink: routes.lecturer.course.management,
+            label: t("common_course_management")
+          },
+          {
+            navLink: routes.lecturer.course.information.replace(":courseId", courseId || ""),
+            label: courseData?.name
+          },
+          {
+            navLink: routes.lecturer.course.assignment.replace(":courseId", courseId || ""),
+            label: t("common_type_assignment")
+          },
+          {
+            navLink: routes.lecturer.exam.edit
+              .replace(":courseId", courseId || "")
+              .replace(":examId", examId || ""),
+            label: `${t("common_edit")} ${t("course_detail_exam").toLowerCase()}`
+          }
+        ];
 
   return (
     <>
@@ -394,13 +420,13 @@ const EditTrueFalseQuestion = (props: Props) => {
                         )
                       );
                     }
+                  } else if (isCreateExam) {
+                    navigate(routes.lecturer.exam.create.replace(":courseId", courseId || ""));
                   } else {
                     navigate(
-                      props.isNewQuestion
-                        ? routes.lecturer.exam.create.replace(":courseId", courseId || "")
-                        : routes.lecturer.exam.edit
-                            .replace(":courseId", courseId || "")
-                            .replace(":examId", examId || "")
+                      routes.lecturer.exam.edit
+                        .replace(":courseId", courseId || "")
+                        .replace(":examId", examId || "")
                     );
                   }
                 }}
