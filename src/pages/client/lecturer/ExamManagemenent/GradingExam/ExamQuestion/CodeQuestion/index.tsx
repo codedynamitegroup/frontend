@@ -49,6 +49,8 @@ const CodeExamQuestion = (props: Props) => {
 
   const { t } = useTranslation();
   const content = JSON.parse(questionState?.content || "{}");
+  const rightAnswer = JSON.parse(questionState?.rightAnswer || "{}");
+  console.log("rightNumber", questionState?.rightAnswer);
 
   const navigate = useNavigate();
   const courseId = useParams<{ courseId: string }>().courseId;
@@ -239,6 +241,15 @@ const CodeExamQuestion = (props: Props) => {
           </Box>
         </Box>
       </Grid>
+
+      <Grid item xs={12} md={12}>
+        <Heading5>
+          {t("common_number_of_test_case_passed")}:{" "}
+          {rightAnswer?.numOfTestCase - rightAnswer?.numOfTestCaseFailed} /{" "}
+          {rightAnswer?.numOfTestCase}
+        </Heading5>
+      </Grid>
+
       <Grid item xs={12} md={12} marginTop={2}>
         <form onSubmit={handleSubmit(submitHandler)}>
           <Box>

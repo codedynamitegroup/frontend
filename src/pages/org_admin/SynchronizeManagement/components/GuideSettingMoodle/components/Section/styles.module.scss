@@ -1,0 +1,66 @@
+.root {
+  text-align: center;
+  padding-top: 64px;
+  background: linear-gradient(
+    to bottom,
+    #ffffff,
+    #f5f5f5
+  ); /* Smooth gradient from white to light grey */
+  min-height: 100vh; /* Ensure it covers the full height */
+}
+
+.image {
+  width: 800px;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid #dcdcde;
+}
+.mySwiper {
+  width: 100%;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 32px;
+}
+
+.section {
+  background: linear-gradient(
+    to bottom,
+    #f5f5f5,
+    #ffffff
+  ); /* Smooth gradient from light grey to white */
+  padding: 16px 0; /* Space between sections */
+  margin-bottom: 20px;
+}
+
+.sectionTitle {
+  color: #002db3; /* Blue color for the title */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 10px 0;
+}
+
+.sectionNumber {
+  background-color: #002db3; /* Blue background for the number */
+  color: #fff;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.4rem;
+}
+
+.swiper-pagination {
+  margin-top: 20px !important;
+}

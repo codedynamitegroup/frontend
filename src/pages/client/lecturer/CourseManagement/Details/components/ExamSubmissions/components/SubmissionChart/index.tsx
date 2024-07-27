@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 interface SubmissionBarChartProps {
   dataset: any;
   xAxis: any;
-  width: number;
+  width?: number;
   height: number;
   customStyle?: boolean;
 }

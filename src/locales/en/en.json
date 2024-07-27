@@ -18,7 +18,7 @@
   "common_more_than": "more than",
   "common_filter_by": "Filter by",
   "common_and": "And",
-  "common_filter_topic": "Topic",
+  "common_filter_topic": "Section",
   "common_all": "All",
   "common_registered": "Registered",
   "common_not_registered": "Not registered",
@@ -1279,6 +1279,8 @@
   "exam_grade_success": "Exam grade successfully",
   "exam_grade_failed": "Exam grade failed",
   "exam_notify": "Notify",
+
+  "common_number_of_test_case_passed": "Number of test case passed",
 
   "business_email": "Business email",
   "business_phone": "Business phone",

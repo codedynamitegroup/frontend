@@ -302,16 +302,15 @@ const LecturerCourseExamSubmissions = () => {
           {examState.examOverview.numberOfStudents}
         </ParagraphBody>
         <Grid container spacing={1}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={12} lg={6}>
             <SubmissionBarChart
               customStyle
               dataset={submissionDataset}
               xAxis={[{ scaleType: "band", dataKey: "range" }]}
-              width={1000}
               height={500}
             />
           </Grid>
-          <Grid item xs={12} md={6} alignItems={"center"} display={"flex"}>
+          <Grid item xs={12} md={12} lg={6} alignItems={"center"} display={"flex"}>
             <PieChart
               colors={["#3498db", "#e74c3c"]}
               series={[
