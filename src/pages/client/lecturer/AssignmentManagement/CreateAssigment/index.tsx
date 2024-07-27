@@ -64,6 +64,7 @@ interface FormData {
 
 interface IFormDataType {
   name: string;
+  sectionId: string;
   intro?: string;
   activity?: string;
   maxScore: number;
@@ -89,6 +90,7 @@ export default function AssignmentCreated() {
   const [submissionTimeCollapseOpen, setSubmissionTimeCollapseOpen] = useState(false);
   const [submissionTypeCollapseOpen, setSubmissionTypeCollapseOpen] = useState(false);
   const [shake, setShake] = useState(false);
+  const [section, setSection] = useState();
 
   const dispatch = useDispatch();
 
@@ -100,7 +102,7 @@ export default function AssignmentCreated() {
   const { courseId, assignmentId } = useParams<{ courseId: string; assignmentId: string }>();
   const courseState = useSelector((state: RootState) => state.course);
   const assignmentState = useSelector((state: RootState) => state.assignment);
-  console.log(allowSubmissionAfterEndTime);
+  const sectionState = useSelector((state: RootState) => state.section);
 
   const handleGetCourseDetail = async (courseId: string) => {
     try {
@@ -117,11 +119,8 @@ export default function AssignmentCreated() {
   useEffect(() => {
     if (courseId && assignmentState?.courseId === null) {
       handleGetCourseDetail(courseId);
-      console.log("HEHEHE");
     }
   }, [courseId, assignmentState]);
-
-  console.log(courseState.courseDetail);
 
   const handleTextSubmissionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextSubmission(event.target.checked);
@@ -152,6 +151,7 @@ export default function AssignmentCreated() {
   const schema = useMemo(() => {
     return yup.object().shape({
       name: yup.string().required("assignment_name_required"),
+      sectionId: yup.string().required("section is required"),
       intro: yup.string(),
       activity: yup.string(),
       maxScore: yup.number().required("assignment_management_max_score_required"),
@@ -174,6 +174,7 @@ export default function AssignmentCreated() {
     resolver: yupResolver(schema),
     defaultValues: {
       name: "",
+      sectionId: "", // Set an empty string initially
       intro: "",
       activity: "",
       maxScore: 100,
@@ -184,6 +185,13 @@ export default function AssignmentCreated() {
       maxFileSize: "40000"
     }
   });
+
+  useEffect(() => {
+    if (sectionState.sections.length > 0) {
+      const firstSectionId = sectionState.sections[0].sectionId;
+      setValue("sectionId", firstSectionId); // Set the first section as default
+    }
+  }, [sectionState.sections, setValue]);
 
   const createIntroAttachment = useCallback(
     async (introAttachment: CreateIntroAttachmentCommand) => {
@@ -259,6 +267,7 @@ export default function AssignmentCreated() {
   }, []);
 
   const submitHandler = async (data: any) => {
+    console.log(data);
     if (!textSubmission && !fileSubmission) {
       setShake(true);
       setTimeout(() => setShake(false), 2000); // Reset shake a
@@ -268,6 +277,7 @@ export default function AssignmentCreated() {
     const formSubmittedData: IFormDataType = { ...data };
     const {
       name,
+      sectionId,
       intro,
       activity,
       maxScore,
@@ -334,6 +344,7 @@ export default function AssignmentCreated() {
         assignmentResponse = await updateAssignment(
           {
             title: name,
+            sectionId,
             intro,
             activity,
             wordLimit,
@@ -352,6 +363,7 @@ export default function AssignmentCreated() {
       } else {
         assignmentResponse = await createAssignment({
           courseId: courseId ?? "",
+          sectionId,
           title: name,
           intro,
           activity,
@@ -395,7 +407,6 @@ export default function AssignmentCreated() {
 
   useEffect(() => {
     if (assignment) {
-      console.log(assignment);
       setValue("name", assignment.title);
       setValue("intro", assignment.intro);
       setValue("activity", assignment.activity);
@@ -457,6 +468,11 @@ export default function AssignmentCreated() {
 
   const header2Ref = useRef<HTMLDivElement>(null);
   const { height: header2Height } = useBoxDimensions({ ref: header2Ref });
+
+  const sections = sectionState.sections.map((section) => ({
+    value: section.sectionId,
+    label: section.name
+  }));
 
   const maxNumberOfUploadedFilesOptionsData = Array.from({ length: 20 }, (_, index) => ({
     value: (index + 1).toString(),
@@ -557,6 +573,31 @@ export default function AssignmentCreated() {
                   marginLeft={3}
                   marginBottom={2}
                 >
+                  <Grid container>
+                    <Grid item xs={3} alignContent={"center"}>
+                      <ParagraphSmall translation-key='common_topic'>
+                        {t("common_topic")}
+                      </ParagraphSmall>
+                    </Grid>
+                    <Grid item xs={9}>
+                      <Controller
+                        control={control}
+                        name='sectionId'
+                        defaultValue={sections.at(0)?.value}
+                        render={({ field: { onChange, value } }) => (
+                          <BasicSelect
+                            labelId='sectionId'
+                            width='50px'
+                            borderRadius='12px'
+                            title='Section'
+                            onHandleChange={onChange}
+                            value={value}
+                            items={sections}
+                          />
+                        )}
+                      />
+                    </Grid>
+                  </Grid>
                   <Controller
                     defaultValue=''
                     control={control}

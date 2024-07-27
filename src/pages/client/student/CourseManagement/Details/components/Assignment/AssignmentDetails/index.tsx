@@ -69,7 +69,6 @@ const StudentCourseAssignmentDetails = () => {
       console.log(error);
     }
   };
-  console.log("assignmentState", submissionAssignmentState.submissionAssignmentDetails);
 
   useEffect(() => {
     const fetchAssignmentDetails = async () => {
@@ -89,29 +88,25 @@ const StudentCourseAssignmentDetails = () => {
     minutes: number;
     seconds: number;
   } {
-    // Tạo đối tượng Date cho giờ hiện tại
+    // Tính toán sự khác biệt giữa hai ngày, đảm bảo kết quả luôn là số dương
+    const diffInMs = Math.abs(date1.getTime() - date2.getTime());
 
-    // Tính toán khoảng thời gian giữa giờ đã cho và giờ hiện tại (mili giây)
-    const diffInMs = date1.getTime() - date2.getTime();
+    const msInADay = 24 * 60 * 60 * 1000;
+    const msInAnHour = 60 * 60 * 1000;
+    const msInAMinute = 60 * 1000;
+    const msInASecond = 1000;
 
-    // Kiểm tra nếu giờ đã cho là trước giờ hiện tại
-
-    // Tính số ngày, số giờ, số phút và số giây từ khoảng thời gian này
-    const msInADay = 24 * 60 * 60 * 1000; // Mili giây trong một ngày
-    const msInAnHour = 60 * 60 * 1000; // Mili giây trong một giờ
-    const msInAMinute = 60 * 1000; // Mili giây trong một phút
-    const msInASecond = 1000; // Mili giây trong một giây
-
+    // Tính toán số ngày, giờ, phút và giây từ sự khác biệt tính bằng milliseconds
     const days = Math.floor(diffInMs / msInADay);
     const hours = Math.floor((diffInMs % msInADay) / msInAnHour);
     const minutes = Math.floor((diffInMs % msInAnHour) / msInAMinute);
     const seconds = Math.floor((diffInMs % msInAMinute) / msInASecond);
 
     return {
-      days: Math.abs(days),
-      hours: Math.abs(hours),
-      minutes: Math.abs(minutes),
-      seconds: Math.abs(seconds)
+      days: days,
+      hours: hours,
+      minutes: minutes,
+      seconds: seconds
     };
   }
 
@@ -120,7 +115,26 @@ const StudentCourseAssignmentDetails = () => {
   const submitTimeDate = new Date(
     submissionAssignmentState.submissionAssignmentDetails?.submitTime ?? new Date()
   );
-  const submitTime = calculateTimeDifference(timeCloseDate, submitTimeDate);
+  const submitTime = calculateTimeDifference(submitTimeDate, timeCloseDate);
+  console.log(timeRemaining);
+
+  const checkTimeSubmission = (): number => {
+    let timeClose = new Date(assignmentState.assignmentDetails?.timeClose ?? new Date());
+
+    let submitTime = submissionAssignmentState.submissionAssignmentDetails?.submitTime
+      ? new Date(submissionAssignmentState.submissionAssignmentDetails.submitTime)
+      : null;
+
+    if (!submitTime) {
+      return new Date() > timeClose ? 0 : 3;
+    }
+
+    if (submitTime <= timeClose) {
+      return 1;
+    }
+    return 2;
+  };
+
   const formatTime = (time: { days: number; hours: number; minutes: number; seconds: number }) => {
     if (time.days > 0) {
       return time.days + " " + t("days") + " " + time.hours + " " + t("hours");
@@ -129,21 +143,6 @@ const StudentCourseAssignmentDetails = () => {
     } else {
       return time.minutes + " " + t("minutes") + " " + time.seconds + " " + t("seconds");
     }
-  };
-
-  const checkTimeSubmission = (): number => {
-    let timeClose = new Date(assignmentState.assignmentDetails?.timeClose ?? new Date());
-    if (!submissionAssignmentState.submissionAssignmentDetails?.submitTime) {
-      if (new Date() > timeClose) return 0;
-      return 3;
-    }
-    let submitTime = new Date(
-      submissionAssignmentState.submissionAssignmentDetails?.submitTime ?? new Date()
-    );
-    if (submitTime < timeClose) {
-      return 1;
-    }
-    return 2;
   };
 
   let columns: Column[] = [
@@ -168,9 +167,10 @@ const StudentCourseAssignmentDetails = () => {
           ? t("assignment_submitted") + formatTime(submitTime) + t("early")
           : checkTimeSubmission() === 2
             ? t("assignment_submitted_late") + formatTime(submitTime) + t("late")
-            : new Date(assignmentState.assignmentDetails?.timeClose ?? new Date()) < new Date()
+            : checkTimeSubmission() === 0
               ? t("assignment_overdue") + formatTime(timeRemaining)
               : formatTime(timeRemaining),
+
       status: checkTimeSubmission()
     },
     {
@@ -182,7 +182,6 @@ const StudentCourseAssignmentDetails = () => {
         : "-"
     }
   ];
-  console.log(submissionAssignmentState.submissionAssignmentDetails);
 
   if (
     submissionAssignmentState.submissionAssignmentDetails?.submissionAssignmentFiles &&
@@ -214,23 +213,23 @@ const StudentCourseAssignmentDetails = () => {
       )
     });
   }
+
   function addAttributesAndStylesToImages(html: string, className: string, css: string): string {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
 
-    // Thêm thuộc tính và class vào các thẻ <img>
     const images = doc.getElementsByTagName("img");
     for (let img of images) {
       img.classList.add(className);
     }
 
-    // Tạo thẻ <style> và thêm CSS
     const style = doc.createElement("style");
     style.textContent = css;
     doc.head.appendChild(style);
 
     return doc.documentElement.outerHTML;
   }
+
   const css = `
 .custom-class {
     max-width: 100%;
@@ -238,6 +237,7 @@ const StudentCourseAssignmentDetails = () => {
     height: auto;
 }
 `;
+
   if (submissionAssignmentState.submissionAssignmentDetails?.content) {
     columns.push({
       header: t("course_student_assignment_online_text_submission"),
@@ -292,7 +292,6 @@ const StudentCourseAssignmentDetails = () => {
     }
   ];
 
-  console.log(submissionAssignmentState.submissionAssignmentDetails?.submitTime);
   return (
     <Box className={classes.assignmentBody}>
       <Button
@@ -309,7 +308,7 @@ const StudentCourseAssignmentDetails = () => {
         }
         width='fit-content'
       >
-        <ParagraphBody translation-key='common_backk'>{t("common_back")}</ParagraphBody>
+        <ParagraphBody translation-key='common_back'>{t("common_back")}</ParagraphBody>
       </Button>
       <Box className={classes.assignmentTitle}>
         <img

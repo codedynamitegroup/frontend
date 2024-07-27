@@ -115,38 +115,53 @@ const LecturerCourseAssignmentDetails = () => {
     minutes: number;
     seconds: number;
   } {
-    // Tạo đối tượng Date cho giờ hiện tại
+    // Tính toán sự khác biệt giữa hai ngày, đảm bảo kết quả luôn là số dương
+    const diffInMs = Math.abs(date1.getTime() - date2.getTime());
 
-    // Tính toán khoảng thời gian giữa giờ đã cho và giờ hiện tại (mili giây)
-    const diffInMs = date1.getTime() - date2.getTime();
+    const msInADay = 24 * 60 * 60 * 1000;
+    const msInAnHour = 60 * 60 * 1000;
+    const msInAMinute = 60 * 1000;
+    const msInASecond = 1000;
 
-    // Kiểm tra nếu giờ đã cho là trước giờ hiện tại
-
-    // Tính số ngày, số giờ, số phút và số giây từ khoảng thời gian này
-    const msInADay = 24 * 60 * 60 * 1000; // Mili giây trong một ngày
-    const msInAnHour = 60 * 60 * 1000; // Mili giây trong một giờ
-    const msInAMinute = 60 * 1000; // Mili giây trong một phút
-    const msInASecond = 1000; // Mili giây trong một giây
-
+    // Tính toán số ngày, giờ, phút và giây từ sự khác biệt tính bằng milliseconds
     const days = Math.floor(diffInMs / msInADay);
     const hours = Math.floor((diffInMs % msInADay) / msInAnHour);
     const minutes = Math.floor((diffInMs % msInAnHour) / msInAMinute);
     const seconds = Math.floor((diffInMs % msInAMinute) / msInASecond);
 
     return {
-      days: Math.abs(days),
-      hours: Math.abs(hours),
-      minutes: Math.abs(minutes),
-      seconds: Math.abs(seconds)
+      days: days,
+      hours: hours,
+      minutes: minutes,
+      seconds: seconds
     };
   }
 
   const timeCloseDate = new Date(assignmentState.assignmentDetails?.timeClose ?? new Date());
+  const timeRemaining = calculateTimeDifference(timeCloseDate, new Date());
   const submitTimeDate = new Date(
     submissionAssignmentState.submissionAssignmentDetails?.submitTime ?? new Date()
   );
-  const submitTime = calculateTimeDifference(timeCloseDate, submitTimeDate);
-  const timeRemaining = calculateTimeDifference(new Date(), timeCloseDate);
+  const submitTime = calculateTimeDifference(submitTimeDate, timeCloseDate);
+  console.log(timeRemaining);
+
+  const checkTimeSubmission = (): number => {
+    let timeClose = new Date(assignmentState.assignmentDetails?.timeClose ?? new Date());
+
+    let submitTime = submissionAssignmentState.submissionAssignmentDetails?.submitTime
+      ? new Date(submissionAssignmentState.submissionAssignmentDetails.submitTime)
+      : null;
+
+    if (!submitTime) {
+      return new Date() > timeClose ? 0 : 3;
+    }
+
+    if (submitTime <= timeClose) {
+      return 1;
+    }
+    return 2;
+  };
+
   const formatTime = (time: { days: number; hours: number; minutes: number; seconds: number }) => {
     if (time.days > 0) {
       return time.days + " " + t("days") + " " + time.hours + " " + t("hours");
@@ -155,17 +170,6 @@ const LecturerCourseAssignmentDetails = () => {
     } else {
       return time.minutes + " " + t("minutes") + " " + time.seconds + " " + t("seconds");
     }
-  };
-
-  const checkTimeSubmission = (): number => {
-    let submitTime = new Date(
-      submissionAssignmentState.submissionAssignmentDetails?.submitTime ?? new Date()
-    );
-    let timeClose = new Date(assignmentState.assignmentDetails?.timeClose ?? new Date());
-    if (submitTime < timeClose) {
-      return 1;
-    }
-    return 2;
   };
 
   return (
@@ -355,7 +359,7 @@ const LecturerCourseAssignmentDetails = () => {
           },
           {
             header: t("common_time_left"),
-            data: checkTimeSubmission() === 1 ? formatTime(submitTime) : "Assignment is due"
+            data: checkTimeSubmission() === 1 ? formatTime(timeRemaining) : "Assignment is due"
           }
         ]}
         translation-key={[
@@ -366,17 +370,6 @@ const LecturerCourseAssignmentDetails = () => {
           "common_over"
         ]}
       />
-      {/* <Button
-        btnType={BtnType.Primary}
-        onClick={() => {
-          navigate(routes.lecturer.assignment.preview_submit);
-        }}
-        width='fit-content'
-      >
-        <ParagraphBody translation-key='course_lecturer_assignment_preview_submit'>
-          {t("course_lecturer_assignment_preview_submit")}
-        </ParagraphBody>
-      </Button> */}
     </Box>
   );
 };
