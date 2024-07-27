@@ -90,7 +90,7 @@
   "common_question_type_multi_choice": "Multiple choice",
   "common_question_type_short": "Short answer",
   "common_question_type_code": "Coding",
-  "common_question_type_yes_no": "True / False",
+  "common_question_type_yes_no": "True or False",
   "common_add": "Add",
   "common_remove": "Remove",
   "common_question": "Question",

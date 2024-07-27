@@ -18,13 +18,13 @@ interface Step {
 
 const stepsData: Step[] = [
   {
-    title: "Đăng nhập vào moodle",
+    title: "Log in to moodle",
     contents: [
       {
         description:
-          "Đầu tiên, bạn cần đăng nhập vào hệ thống Moodle của mình. Sử dụng tài khoản quản trị viên để có quyền truy cập đầy đủ vào các cài đặt hệ thống",
+          "First, you need to log in to your Moodle system. Use an administrator account to have full access to system settings.",
         imageSrc: images.org_admin.guide.step1,
-        imageAlt: "Đăng nhập vào Moodle"
+        imageAlt: "Log in to moodle"
       }
     ]
   },
@@ -32,19 +32,17 @@ const stepsData: Step[] = [
     title: "Enable Web Services",
     contents: [
       {
-        description:
-          "Vào Site administration (Quản trị trang), sau đó chọn Advanced features (Tính năng nâng cao).",
+        description: "Go to Site administration, then select Advanced features.",
         imageSrc: images.org_admin.guide.step2.step2_1,
         imageAlt: "Advanced features"
       },
       {
-        description:
-          "Kích hoạt Enable web services (Bật dịch vụ web) bằng cách đánh dấu vào ô kiểm tương ứng.",
+        description: "Enable web services by checking the corresponding checkbox.",
         imageSrc: images.org_admin.guide.step2.step2_2,
         imageAlt: "Enable web services"
       },
       {
-        description: "Nhấn Save changes (Lưu thay đổi).",
+        description: "Click Save changes.",
         imageSrc: images.org_admin.guide.step2.step2_3,
         imageAlt: "Save changes"
       }
@@ -55,19 +53,18 @@ const stepsData: Step[] = [
     contents: [
       {
         description:
-          "Trong phần Site administration, chọn Server hoặc Plugins (tùy theo version của moodle)",
+          "In the Site administration section, select Server or Plugins (depending on the version of moodle)",
         imageSrc: images.org_admin.guide.step3.step3_1,
         imageAlt: "Plugins"
       },
       {
-        description:
-          "Ở phần Web services (Dịch vụ web), chọn Manage protocols (Quản lý các giao thức).",
+        description: "In the Web services section, select Manage protocols.",
         imageSrc: images.org_admin.guide.step3.step3_2,
         imageAlt: "Web services"
       },
       {
         description:
-          "Kích hoạt các giao thức cần thiết (ví dụ: REST, SOAP, XML-RPC) bằng cách đánh dấu vào ô kiểm tương ứng.",
+          "Enable the required protocols (e.g. REST, SOAP, XML-RPC) by checking the corresponding checkboxes.",
         imageSrc: images.org_admin.guide.step3.step3_3,
         imageAlt: "Enable protocols"
       }
@@ -78,28 +75,28 @@ const stepsData: Step[] = [
     contents: [
       {
         description:
-          "Trong phần Site administration, chọn Server hoặc Plugins (tùy theo version của moodle)",
+          "In the Site administration section, select Server or Plugins (depending on the version of moodle)",
         imageSrc: images.org_admin.guide.step3.step3_1,
         imageAlt: "Plugins"
       },
       {
-        description: "Ở Web services, chọn External services (Dịch vụ bên ngoài).",
+        description: "Under Web services, select External services.",
         imageSrc: images.org_admin.guide.step4.step4_1,
         imageAlt: "Web services"
       },
       {
-        description: "Nhấn vào Add (Thêm).",
+        description: "Click Add.",
         imageSrc: images.org_admin.guide.step4.step4_2,
         imageAlt: "Add"
       },
       {
         description:
-          "Điền thông tin cần thiết cho dịch vụ web mới: Tên, Mô tả, Đánh dấu vào ô Enabled (Bật).",
+          "Fill in the required information for the new web service: Name, Description, Check the Enabled box.",
         imageSrc: images.org_admin.guide.step4.step4_3,
         imageAlt: "Web service details"
       },
       {
-        description: "Nhấn vào nút Add functions",
+        description: "Click the Add functions button",
         imageSrc: images.org_admin.guide.step4.step4_4,
         imageAlt: "Select protocols"
       },
@@ -107,7 +104,9 @@ const stepsData: Step[] = [
         description: (
           <>
             <Box display='flex' justifyContent='space-between' alignItems='center' mb={2}>
-              <Typography variant='h6'>Chọn các hàm cần thiết cho dịch vụ web mới:</Typography>
+              <Typography variant='h6'>
+                Select the functions required for the new web service:
+              </Typography>
             </Box>
             <pre className={classes.functionList}>
               core_course_get_courses
@@ -139,7 +138,7 @@ const stepsData: Step[] = [
               core_user_get_users
             </pre>
             <br />
-            sau đó nhấn Save changes (Lưu thay đổi).
+            Then click Save changes.
           </>
         ),
         imageSrc: images.org_admin.guide.step4.step4_5,
@@ -152,23 +151,23 @@ const stepsData: Step[] = [
     contents: [
       {
         description:
-          "Trong phần Site administration, chọn Server hoặc Plugins (tùy theo version của moodle)",
+          "In the Site administration section, select Server or Plugins (depending on the version of moodle)",
         imageSrc: images.org_admin.guide.step3.step3_1,
         imageAlt: "Plugins"
       },
       {
-        description: "Ở Web services, chọn Manage tokens (Quản lý token).",
+        description: "Under Web services, select Manage tokens.",
         imageSrc: images.org_admin.guide.step5.step5_1,
         imageAlt: "Web services"
       },
       {
-        description: "Nhấn vào Add (Thêm).",
+        description: "Click Add.",
         imageSrc: images.org_admin.guide.step5.step5_2,
         imageAlt: "Add"
       },
       {
         description:
-          "Điền thông tin cần thiết để tạo token: Người dùng, Dịch vụ. Cuối cùng nhấn Save changes (Lưu thay đổi).",
+          "Fill in the information required to create a token: User, Service. Finally click Save changes.",
         imageSrc: images.org_admin.guide.step5.step5_3,
         imageAlt: "Token details"
       }
@@ -187,8 +186,8 @@ const GuideSettingMoodle: React.FC = () => {
             className={classes.logoImg}
           />
         </Box>
-        <Typography className={classes.title}>Đồng bộ dữ liệu</Typography>
-        <Typography className={classes.subtitle}>Hướng dẫn thiết lập moodle</Typography>
+        <Typography className={classes.title}>Data synchronization</Typography>
+        <Typography className={classes.subtitle}>Moodle setup guide</Typography>
       </Container>
 
       {stepsData.map((step, index) => (
