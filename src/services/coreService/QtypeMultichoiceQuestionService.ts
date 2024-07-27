@@ -54,7 +54,7 @@ export class MultichoiceQuestionService {
         baseURL: coreServiceApiUrl,
         isAuthorization: true
       }).put(`${API.CORE.QUESTION.MULTIPLE_CHOICE_QUESTION.UPDATE}`, mutlichoiceQuestionData);
-      if (response.status === 201) {
+      if (response.status === 200) {
         return response.data;
       }
     } catch (error: any) {
