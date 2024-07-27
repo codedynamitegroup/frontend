@@ -645,6 +645,7 @@
   "common_word_count": "từ",
   "common_max_upload_file": "Số lượng tệp tối đa",
   "common_max_submission_file_size": "Kích thước tệp tối đa",
+  "common_topic": "Tiêu đề",
 
   "assignment_management_max_score": "Điểm tối đa",
   "assignment_management_create_assignment": "Tạo bài tập",

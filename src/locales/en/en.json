@@ -18,7 +18,7 @@
   "common_more_than": "more than",
   "common_filter_by": "Filter by",
   "common_and": "And",
-  "common_filter_topic": "Topic",
+  "common_filter_topic": "Section",
   "common_all": "All",
   "common_registered": "Registered",
   "common_not_registered": "Not registered",
@@ -659,6 +659,7 @@
   "common_word_limit": "Word limit",
   "common_max_upload_file": "Maximum number of uploaded files",
   "common_max_submission_file_size": "Maximum submission size",
+  "common_topic": "Topic",
 
   "assignment_management_max_score": "Max score",
   "assignment_management_create_assignment": "Create assignment",

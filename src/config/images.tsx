@@ -71,9 +71,37 @@ import organizationIc from "assets/img/admin/organization.svg";
 import contactUsIc from "assets/img/contact_us.jpg";
 
 import organizationImageBg from "assets/img/org_admin/org.png";
+import synchronizeMoodle from "assets/img/org_admin/synchronize.png";
 import emptyBox from "assets/img/icon/course/courseDetail/empty_box.png";
 
 import announcementIc from "assets/img/classroom/announcement.svg";
+
+import step1 from "assets/img/org_admin/guide/step1/step1.png";
+import step2_1 from "assets/img/org_admin/guide/step2/step2-1.png";
+import step2_2 from "assets/img/org_admin/guide/step2/step2-2.png";
+import step2_3 from "assets/img/org_admin/guide/step2/step2-3.png";
+import step3_1 from "assets/img/org_admin/guide/step3/step3-1.png";
+import step3_2 from "assets/img/org_admin/guide/step3/step3-2.png";
+import step3_3 from "assets/img/org_admin/guide/step3/step3-3.png";
+import step4_1 from "assets/img/org_admin/guide/step4/step4-1.png";
+import step4_2 from "assets/img/org_admin/guide/step4/step4-2.png";
+import step4_3 from "assets/img/org_admin/guide/step4/step4-3.png";
+import step4_4 from "assets/img/org_admin/guide/step4/step4-4.png";
+import step4_5 from "assets/img/org_admin/guide/step4/step4-5.png";
+import step5_1 from "assets/img/org_admin/guide/step5/step5-1.png";
+import step5_2 from "assets/img/org_admin/guide/step5/step5-2.png";
+import step5_3 from "assets/img/org_admin/guide/step5/step5-3.png";
+
+import step1_1 from "assets/img/org_admin/guide/webhook/step1-1.png";
+import step1_2 from "assets/img/org_admin/guide/webhook/step1-2.png";
+import step1_3 from "assets/img/org_admin/guide/webhook/step1-3.png";
+import step1_4 from "assets/img/org_admin/guide/webhook/step1-4.png";
+import step1_5 from "assets/img/org_admin/guide/webhook/step1-5.png";
+import step1_6 from "assets/img/org_admin/guide/webhook/step1-6.png";
+import step1_7 from "assets/img/org_admin/guide/webhook/step1-7.png";
+import step1_8 from "assets/img/org_admin/guide/webhook/step1-8.png";
+
+import clap from "assets/img/org_admin/votay.png";
 
 const images = {
   course: {
@@ -131,9 +159,49 @@ const images = {
     organizationIc
   },
   org_admin: {
-    organizationImageBg
+    organizationImageBg,
+    synchronizeMoodle,
+    clap,
+    guide: {
+      step1,
+      step2: {
+        step2_1,
+        step2_2,
+        step2_3
+      },
+      step3: {
+        step3_1,
+        step3_2,
+        step3_3
+      },
+      step4: {
+        step4_1,
+        step4_2,
+        step4_3,
+        step4_4,
+        step4_5
+      },
+      step5: {
+        step5_1,
+        step5_2,
+        step5_3
+      },
+      webhook: {
+        step1: {
+          step1_1,
+          step1_2,
+          step1_3,
+          step1_4,
+          step1_5,
+          step1_6,
+          step1_7,
+          step1_8
+        }
+      }
+    }
   }
 };
+
 const notificaionIcon = {
   deadlineIcon,
   contestIcon,
@@ -142,5 +210,6 @@ const notificaionIcon = {
   syncIcon,
   announcementIcon
 };
+
 export { notificaionIcon };
 export default images;

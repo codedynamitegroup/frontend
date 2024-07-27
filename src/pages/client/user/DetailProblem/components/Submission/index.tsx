@@ -265,7 +265,6 @@ const ProblemDetailSubmission = memo(
     useEffect(() => {
       const isGrading = checkGrading();
       if (isGrading) {
-        // console.log("polling");
         const intervalId = window.setInterval(function () {
           if (codeQuestion !== null && codeQuestion.id !== undefined) {
             if (cerCourseInfo !== undefined) {
@@ -280,7 +279,7 @@ const ProblemDetailSubmission = memo(
                   setCodeSubmissions(data.codeSubmissions);
                 })
                 .catch((err) => console.log(err))
-                .finally(() => setCodeSubmissionLoading(false));
+                .finally(() => window.clearInterval(intervalId));
             } else if (contestInfo !== undefined) {
               CodeSubmissionService.getCodeSubmissionList(
                 contestInfo.problemId,
@@ -291,24 +290,27 @@ const ProblemDetailSubmission = memo(
               )
                 .then((data: CodeSubmissionPaginationList) => {
                   setCodeSubmissions(data.codeSubmissions);
+                  window.clearInterval(intervalId);
                 })
                 .catch((err) => console.log(err))
-                .finally(() => setCodeSubmissionLoading(false));
+                .finally(() => window.clearInterval(intervalId));
             } else {
               CodeSubmissionService.getCodeSubmissionList(codeQuestion.id, pageNum, pageSize)
                 .then((data: CodeSubmissionPaginationList) => {
                   setCodeSubmissions(data.codeSubmissions);
-                  window.clearInterval(intervalId);
+                  // window.clearInterval(intervalId);
                 })
-                .catch((err) => console.log(err));
+                .catch((err) => console.log(err))
+                .finally(() => window.clearInterval(intervalId));
             }
           }
         }, 3000); // Poll every 3 seconds
 
-        return () => window.clearInterval(intervalId);
+        return () => {
+          if (contestInfo === undefined) window.clearInterval(intervalId);
+        };
       } // Cleanup interval on unmount
       else {
-        // console.log("not polling");
         if (
           cerCourseInfo &&
           cerCourseInfo.lesson?.isCompleted !== true &&

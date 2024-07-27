@@ -6,7 +6,8 @@ import {
   IconButton,
   DialogTitle,
   Dialog,
-  TextField
+  TextField,
+  Grid
 } from "@mui/material";
 
 import Textarea from "@mui/joy/Textarea";
@@ -532,53 +533,62 @@ const QuestionBankManagement = () => {
             <CloseIcon />
           </IconButton>
           <DialogContent className={classes["dialog-content"]}>
-            <Controller
-              name='name'
-              control={controlCreate}
-              render={({ field }) => (
-                <InputTextFieldColumn
-                  type='text'
-                  title={t("question_bank_create_category_name")}
-                  useDefaultTitleStyle
-                  titleRequired={true}
-                  {...field}
-                  fullWidth
-                  margin='dense'
-                  error={!!errorsCreate.name}
-                  errorMessage={errorsCreate.name?.message}
-                  value={field.value}
-                  onChange={field.onChange}
+            <Grid container spacing={3}>
+              <Grid item>
+                <Controller
+                  name='name'
+                  control={controlCreate}
+                  render={({ field }) => (
+                    <InputTextFieldColumn
+                      type='text'
+                      title={t("question_bank_create_category_name")}
+                      useDefaultTitleStyle
+                      titleRequired={true}
+                      {...field}
+                      fullWidth
+                      margin='dense'
+                      error={!!errorsCreate.name}
+                      errorMessage={errorsCreate.name?.message}
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
                 />
-              )}
-            />
-            <TitleWithInfoTip
-              title={t("question_bank_create_category_info")}
-              titleRequired
-              fontSize='12px'
-              color='var(--gray-60)'
-              gutterBottom
-              fontWeight='600'
-            />
-            <Controller
-              name='description'
-              control={controlCreate}
-              render={({ field }) => (
-                <TextEditor
-                  type='text'
+              </Grid>
+              <Grid item>
+                <TitleWithInfoTip
                   title={t("question_bank_create_category_info")}
-                  roundedBorder={true}
-                  required={true}
-                  placeholder={t("question_bank_create_category_info")}
-                  tooltipDescription={t("question_default_score_description")}
-                  {...field}
-                  error={!!errorsCreate.description}
-                  errorMessage={errorsCreate.description?.message}
-                  value={field.value}
-                  onChange={field.onChange}
+                  titleRequired
+                  fontSize='12px'
+                  color='var(--gray-60)'
+                  gutterBottom
+                  fontWeight='600'
                 />
-              )}
-            />
+
+                <Controller
+                  name='description'
+                  control={controlCreate}
+                  render={({ field }) => (
+                    <TextEditor
+                      maxLines={6}
+                      type='text'
+                      title={t("question_bank_create_category_info")}
+                      roundedBorder={true}
+                      required={true}
+                      placeholder={t("question_bank_create_category_info")}
+                      tooltipDescription={t("question_default_score_description")}
+                      {...field}
+                      error={!!errorsCreate.description}
+                      errorMessage={errorsCreate.description?.message}
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+              </Grid>
+            </Grid>
           </DialogContent>
+
           <DialogActions className={classes["dialog-actions"]}>
             <Button btnType={BtnType.Secondary} onClick={handleCloseCreateDialog}>
               {t("common_cancel")}
@@ -611,52 +621,59 @@ const QuestionBankManagement = () => {
             <CloseIcon />
           </IconButton>
           <DialogContent className={classes["dialog-content"]}>
-            <Controller
-              name='name'
-              control={controlEdit}
-              render={({ field }) => (
-                <InputTextFieldColumn
-                  type='text'
-                  title={t("question_bank_create_category_name")}
-                  useDefaultTitleStyle
-                  titleRequired={true}
-                  {...field}
-                  fullWidth
-                  margin='dense'
-                  error={!!errorsEdit.name}
-                  errorMessage={errorsEdit.name?.message}
-                  value={field.value}
-                  onChange={field.onChange}
+            <Grid container spacing={3}>
+              <Grid item>
+                <Controller
+                  name='name'
+                  control={controlEdit}
+                  render={({ field }) => (
+                    <InputTextFieldColumn
+                      type='text'
+                      title={t("question_bank_create_category_name")}
+                      useDefaultTitleStyle
+                      titleRequired={true}
+                      {...field}
+                      fullWidth
+                      margin='dense'
+                      error={!!errorsEdit.name}
+                      errorMessage={errorsEdit.name?.message}
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
                 />
-              )}
-            />
-            <TitleWithInfoTip
-              title={t("question_bank_create_category_info")}
-              titleRequired
-              fontSize='12px'
-              color='var(--gray-60)'
-              gutterBottom
-              fontWeight='600'
-            />
-            <Controller
-              name='description'
-              control={controlEdit}
-              render={({ field }) => (
-                <TextEditor
-                  type='text'
+              </Grid>
+              <Grid item>
+                <TitleWithInfoTip
                   title={t("question_bank_create_category_info")}
-                  roundedBorder={true}
-                  required={true}
-                  placeholder={t("question_bank_create_category_info")}
-                  tooltipDescription={t("question_default_score_description")}
-                  {...field}
-                  error={!!errorsEdit.description}
-                  errorMessage={errorsEdit.description?.message}
-                  value={field.value}
-                  onChange={field.onChange}
+                  titleRequired
+                  fontSize='12px'
+                  color='var(--gray-60)'
+                  gutterBottom
+                  fontWeight='600'
                 />
-              )}
-            />
+                <Controller
+                  name='description'
+                  control={controlEdit}
+                  render={({ field }) => (
+                    <TextEditor
+                      maxLines={6}
+                      type='text'
+                      title={t("question_bank_create_category_info")}
+                      roundedBorder={true}
+                      required={true}
+                      placeholder={t("question_bank_create_category_info")}
+                      tooltipDescription={t("question_default_score_description")}
+                      {...field}
+                      error={!!errorsEdit.description}
+                      errorMessage={errorsEdit.description?.message}
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+              </Grid>
+            </Grid>
           </DialogContent>
           <DialogActions className={classes["dialog-actions"]}>
             <Button btnType={BtnType.Secondary} onClick={handleCloseEditDialog}>

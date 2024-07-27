@@ -1,5 +1,6 @@
 export interface CreateAssignmentCommand {
   courseId: string;
+  sectionId: string;
   title: string;
   intro?: string;
   activity?: string;

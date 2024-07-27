@@ -13,6 +13,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { UpdateOrganizationCommand } from "models/courseService/entity/update/UpdateOrganizationCommand";
 import { OrganizationService } from "services/courseService/OrganizationService";
 import useAuth from "hooks/useAuth";
+import GuideWebhook from "./components/GuideWebhook";
 
 const schema = yup.object().shape({
   url: yup.string().url("Invalid URL format").required("URL is required"),
@@ -40,7 +41,7 @@ const SynchronizeManagement = () => {
       case 1:
         return <SynchronizeMoodle />;
       case 2:
-        return <div>Webhook</div>;
+        return <GuideWebhook />;
       default:
         return <DataInput />;
     }
@@ -66,15 +67,11 @@ const SynchronizeManagement = () => {
   return (
     <FormProvider {...methods}>
       <Box component='form' onSubmit={methods.handleSubmit(onSubmit)}>
-        <Grid
-          container
-          spacing={2}
-          sx={{
-            padding: "20px"
-          }}
-        >
+        <Grid container>
           <Grid item xs={12}>
-            <Heading1 translate-key='data_synchronization'>{t("data_synchronization")}</Heading1>
+            <Heading1 marginLeft={4} translate-key='data_synchronization'>
+              {t("data_synchronization")}
+            </Heading1>
           </Grid>
           <Grid item xs={12}>
             <StepperComponent steps={steps} getContentPage={getContentPage} />

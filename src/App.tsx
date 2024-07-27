@@ -38,28 +38,23 @@ const ReportGradeEssayAIDetail = lazy(
 );
 
 const EditEssayQuestion = lazy(
-  () =>
-    import(
-      "pages/client/lecturer/ExamManagemenent/EditExam/components/EditQuestion/EditEssayQuestion"
-    )
+  () => import("pages/client/lecturer/QuestionManagement/components/EditQuestion/EditEssayQuestion")
 );
 const EditMultichoiceQuestion = lazy(
   () =>
     import(
-      "pages/client/lecturer/ExamManagemenent/EditExam/components/EditQuestion/EditMultichoiceQuestion"
+      "pages/client/lecturer/QuestionManagement/components/EditQuestion/EditMultichoiceQuestion"
     )
 );
 const EditShortAnswerQuestion = lazy(
   () =>
     import(
-      "pages/client/lecturer/ExamManagemenent/EditExam/components/EditQuestion/EditShortAnswerQuestion"
+      "pages/client/lecturer/QuestionManagement/components/EditQuestion/EditShortAnswerQuestion"
     )
 );
 const EditTrueFalseQuestion = lazy(
   () =>
-    import(
-      "pages/client/lecturer/ExamManagemenent/EditExam/components/EditQuestion/EditTrueFalseQuestion"
-    )
+    import("pages/client/lecturer/QuestionManagement/components/EditQuestion/EditTrueFalseQuestion")
 );
 
 const AssignmentCreated = lazy(
@@ -192,6 +187,10 @@ const SystemAdminHomepage = lazy(() => import("pages/admin"));
 const DetailProblem = lazy(() => import("pages/client/user/DetailProblem"));
 const AICreateQuestion = lazy(
   () => import("pages/client/lecturer/QuestionManagement/components/AICreateQuestion")
+);
+
+const GuideSettingMoodle = lazy(
+  () => import("pages/org_admin/SynchronizeManagement/components/GuideSettingMoodle")
 );
 
 const router = createHashRouter(
@@ -545,6 +544,8 @@ const router = createHashRouter(
               element={<AICreateQuestion isOrg />}
               handle={{ crumbName: "default" }}
             />
+
+            <Route path={routes.org_admin.guide.root} element={<GuideSettingMoodle />} />
           </Route>
         </Route>
       </Route>
