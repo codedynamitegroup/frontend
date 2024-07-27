@@ -525,7 +525,7 @@ export default function ReportGradeEssayAIDetail() {
                       dataList={submissionAssignmentState.submissionAssignments.map(
                         (item, index) => ({
                           ...item,
-                          id: item.id,
+                          id: item.id ? item.id : index,
                           email: item.email,
                           name: item.fullName,
                           status: item?.submitTime ? "SUBMITTED" : "NOT_SUBMITTED",
