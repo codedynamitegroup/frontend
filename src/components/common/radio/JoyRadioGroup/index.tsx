@@ -1,6 +1,8 @@
-import { Radio, RadioGroup, Sheet } from "@mui/joy";
+import { FormControl, FormLabel, Radio, RadioGroup, Sheet } from "@mui/joy";
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
+import ReactQuill from "react-quill";
+import "./index.scss";
 
 interface JoyRadioGroupProps {
   values: { value: boolean; label: string }[] | { value: string; label: string }[] | undefined;
@@ -47,31 +49,90 @@ const JoyRadioGroup = (props: JoyRadioGroupProps) => {
   }, [value]);
 
   return (
-    <RadioGroup orientation={orientation} size={size} variant={variant} value={selectedValue}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-          "& > div": { p: 1, borderRadius: "12px", display: "flex" }
-        }}
-      >
-        {values?.map((value: any, index) =>
-          overlay ? (
-            <Sheet
-              variant={showCorrectAnswer && selectedValue === value.value ? "soft" : "outlined"}
-              key={index}
-              color={
-                !showCorrectAnswer || selectedValue !== value.value
-                  ? "primary"
-                  : selectedValue === value.value && correctAnswer?.includes(String(value.value))
-                    ? "success"
-                    : "danger"
-              }
-            >
+    <FormControl>
+      <RadioGroup orientation={orientation} size={size} variant={variant} value={selectedValue}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            "& > div": { p: 1, borderRadius: "12px", display: "flex" }
+          }}
+        >
+          {values?.map((value: any, index) =>
+            overlay ? (
+              <Sheet
+                variant={showCorrectAnswer && selectedValue === value.value ? "soft" : "outlined"}
+                key={index}
+                color={
+                  !showCorrectAnswer || selectedValue !== value.value
+                    ? "primary"
+                    : selectedValue === value.value && correctAnswer?.includes(String(value.value))
+                      ? "success"
+                      : "danger"
+                }
+                className={`sheet-radio-group`}
+              >
+                <Radio
+                  disabled={disabled}
+                  overlay
+                  checkedIcon={
+                    numbering && (
+                      <Box
+                        sx={{
+                          width: "inherit",
+                          height: "inherit",
+                          backgroundColor: "#e2ecf5"
+                        }}
+                        borderRadius={"1000px"}
+                        border={"2px solid #0b6bcb"}
+                        display={"flex"}
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                        padding={"5px"}
+                        fontWeight={"500"}
+                      >
+                        <Box>{numbering !== "n123" ? getLabel(index, numbering) : index + 1}</Box>
+                      </Box>
+                    )
+                  }
+                  uncheckedIcon={
+                    numbering && (
+                      <span>{numbering !== "n123" ? getLabel(index, numbering) : index + 1}</span>
+                    )
+                  }
+                  value={value.value}
+                  onChange={(event: any) => onChange(event.target.value)}
+                  color={color}
+                  sx={{
+                    height: "fit-content",
+                    "& .MuiRadio-label": {
+                      fontFamily: fontFamily || "Montserrat",
+                      fontSize: fontSize || "14px",
+                      fontWeight: fontWeight || "400"
+                    }
+                  }} // Add your custom styles here
+                />
+                <FormLabel
+                  sx={{
+                    marginLeft: "10px",
+                    marginBottom: "0",
+                    display: "flex",
+                    alignItems: "center"
+                  }}
+                >
+                  <ReactQuill
+                    readOnly={true}
+                    theme='bubble'
+                    defaultValue={value.label}
+                    className={`text-editor-question-answer`}
+                  />
+                </FormLabel>
+              </Sheet>
+            ) : (
               <Radio
                 disabled={disabled}
-                overlay
+                checked={value.value === selectedValue ? true : false}
                 checkedIcon={
                   numbering && (
                     <Box
@@ -97,6 +158,7 @@ const JoyRadioGroup = (props: JoyRadioGroupProps) => {
                     <span>{numbering !== "n123" ? getLabel(index, numbering) : index + 1}</span>
                   )
                 }
+                key={index}
                 value={value.value}
                 label={value.label}
                 onChange={(event: any) => onChange(event.target.value)}
@@ -109,53 +171,11 @@ const JoyRadioGroup = (props: JoyRadioGroupProps) => {
                   }
                 }} // Add your custom styles here
               />
-            </Sheet>
-          ) : (
-            <Radio
-              disabled={disabled}
-              checked={value.value === selectedValue ? true : false}
-              checkedIcon={
-                numbering && (
-                  <Box
-                    sx={{
-                      width: "inherit",
-                      height: "inherit",
-                      backgroundColor: "#e2ecf5"
-                    }}
-                    borderRadius={"1000px"}
-                    border={"2px solid #0b6bcb"}
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    padding={"5px"}
-                    fontWeight={"500"}
-                  >
-                    <Box>{numbering !== "n123" ? getLabel(index, numbering) : index + 1}</Box>
-                  </Box>
-                )
-              }
-              uncheckedIcon={
-                numbering && (
-                  <span>{numbering !== "n123" ? getLabel(index, numbering) : index + 1}</span>
-                )
-              }
-              key={index}
-              value={value.value}
-              label={value.label}
-              onChange={(event: any) => onChange(event.target.value)}
-              color={color}
-              sx={{
-                "& .MuiRadio-label": {
-                  fontFamily: fontFamily || "Montserrat",
-                  fontSize: fontSize || "14px",
-                  fontWeight: fontWeight || "400"
-                }
-              }} // Add your custom styles here
-            />
-          )
-        )}
-      </Box>
-    </RadioGroup>
+            )
+          )}
+        </Box>
+      </RadioGroup>
+    </FormControl>
   );
 };
 
