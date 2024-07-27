@@ -101,6 +101,8 @@ import step1_6 from "assets/img/org_admin/guide/webhook/step1-6.png";
 import step1_7 from "assets/img/org_admin/guide/webhook/step1-7.png";
 import step1_8 from "assets/img/org_admin/guide/webhook/step1-8.png";
 
+import clap from "assets/img/org_admin/votay.png";
+
 const images = {
   course: {
     courseAssignment,
@@ -159,6 +161,7 @@ const images = {
   org_admin: {
     organizationImageBg,
     synchronizeMoodle,
+    clap,
     guide: {
       step1,
       step2: {

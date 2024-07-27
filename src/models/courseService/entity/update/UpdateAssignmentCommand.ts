@@ -1,5 +1,6 @@
 export interface UpdateAssignmentCommand {
   title: string;
+  sectionId: string;
   intro?: string;
   activity?: string;
   wordLimit?: string;

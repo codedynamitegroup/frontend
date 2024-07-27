@@ -9,6 +9,7 @@ import classes from "./styles.module.scss";
 import { useFormContext } from "react-hook-form";
 import { RootState } from "store";
 import { useSelector } from "react-redux";
+import images from "config/images";
 
 interface Props {
   steps: string[];
@@ -74,36 +75,33 @@ const StepperComponent: React.FC<Props> = ({ steps, getContentPage }) => {
         </Stepper>
         <Box className={classes.stepWrapper}>
           {allStepsCompleted() ? (
-            <React.Fragment>
-              <Typography sx={{ mt: 2, mb: 1 }}>
-                All steps completed - you&apos;re finished
-              </Typography>
-              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                <Box sx={{ flex: "1 1 auto" }} />
-                <Button onClick={handleReset}>Reset</Button>
-              </Box>
-            </React.Fragment>
+            <Box className={classes.successMessage}>
+              <Typography>Bạn đã đồng bộ thành công</Typography>
+              <img src={images.org_admin.clap} alt='clap' className={classes.successImage} />
+            </Box>
           ) : (
             <Box>{getContentPage(activeStep)}</Box>
           )}
         </Box>
       </Box>
-      <Box
-        sx={{
-          width: sidebarStatus.isOpen ? `calc(100% - ${sidebarStatus.sidebarWidth}px)` : "100%"
-        }}
-        className={classes.fixedBottom}
-      >
-        <Button color='inherit' disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
-          Trở về
-        </Button>
-        <Box />
-        {activeStep !== steps.length && (
-          <Button type='submit' variant='contained' onClick={handleComplete}>
-            {completedSteps() === totalSteps() - 1 ? "Hoàn thành" : "Tiếp tục"}
+      {completedSteps() != totalSteps() && (
+        <Box
+          sx={{
+            width: sidebarStatus.isOpen ? `calc(100% - ${sidebarStatus.sidebarWidth}px)` : "100%"
+          }}
+          className={classes.fixedBottom}
+        >
+          <Button color='inherit' disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
+            Trở về
           </Button>
-        )}
-      </Box>
+          <Box />
+          {activeStep !== steps.length && (
+            <Button type='submit' variant='contained' onClick={handleComplete}>
+              {completedSteps() === totalSteps() - 1 ? "Hoàn thành" : "Tiếp tục"}
+            </Button>
+          )}
+        </Box>
+      )}
     </Grid>
   );
 };
