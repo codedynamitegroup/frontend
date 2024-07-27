@@ -228,14 +228,26 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
           navigate(
             routes.lecturer.exam.edit
               .replace(":courseId", courseId ?? "")
-              .replace(":examId", params.examId ?? "")
+              .replace(":examId", examId ?? "")
           );
       } finally {
         dispatch(setLoading(false));
       }
     };
     handleFetchData();
-  }, [codeQuestionId, dispatch, isEdit, navigate]);
+  }, [
+    codeQuestionId,
+    courseId,
+    dispatch,
+    examId,
+    isCreateExam,
+    isEdit,
+    isLecturerCreateQuestionBank,
+    isQuestionBank,
+    navigate,
+    params.categoryId,
+    t
+  ]);
 
   const handleChange = (_: React.SyntheticEvent, newTab: string) => {
     setActiveTab(newTab);

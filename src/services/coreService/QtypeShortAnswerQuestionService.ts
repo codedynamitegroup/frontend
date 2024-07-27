@@ -33,7 +33,7 @@ export class ShortAnswerQuestionService {
         baseURL: coreServiceApiUrl,
         isAuthorization: true
       }).put(`${API.CORE.QUESTION.SHORT_ANSWER_QUESTION.UPDATE}`, shortAnswerQuestionData);
-      if (response.status === 201) {
+      if (response.status === 200) {
         return response.data;
       }
     } catch (error: any) {

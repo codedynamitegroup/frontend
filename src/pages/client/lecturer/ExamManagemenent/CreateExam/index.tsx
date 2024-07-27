@@ -303,7 +303,8 @@ export default function ExamCreated() {
               navigate(
                 `${navigateString
                   .replace(":courseId", courseId ?? "")
-                  .replace(":questionId", params.row.id ?? "")}`
+                  .replace(":questionId", params.row.id ?? "")}`,
+                { state: { isCreateExam: true } }
               );
             }}
           />,
