@@ -32,7 +32,7 @@ const SynchronizeManagement = () => {
   });
   const { loggedUser } = useAuth();
 
-  const steps = ["Nhập thông tin", "Đồng bộ", "Webhook"];
+  const steps = ["Enter information", "Synchronize", "Webhook"];
 
   const getContentPage = (index: number) => {
     switch (index) {

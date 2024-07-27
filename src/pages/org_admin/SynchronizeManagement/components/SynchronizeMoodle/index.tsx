@@ -138,21 +138,21 @@ const SynchronizeMoodle: React.FC = () => {
       <Box>
         <Box className={classes.stepWrapper}>
           <NumberCircle status={userStatus}>1</NumberCircle>
-          <Typography variant='body1'>Người dùng</Typography>
+          <Typography variant='body1'>Users</Typography>
         </Box>
         <StatusBox status={userStatus}>{userStatus}</StatusBox>
       </Box>
       <Box>
         <Box className={classes.stepWrapper}>
           <NumberCircle status={courseStatus}>2</NumberCircle>
-          <Typography variant='body1'>Khóa học</Typography>
+          <Typography variant='body1'>Courses</Typography>
         </Box>
         <StatusBox status={courseStatus}>{courseStatus}</StatusBox>
       </Box>
       <Box>
         <Box className={classes.stepWrapper}>
           <NumberCircle status={otherResourcesStatus}>3</NumberCircle>
-          <Typography variant='body1'>Các tài nguyên khác</Typography>
+          <Typography variant='body1'>Other resources</Typography>
         </Box>
         <StatusBox status={otherResourcesStatus}>{otherResourcesStatus}</StatusBox>
       </Box>
@@ -163,7 +163,7 @@ const SynchronizeMoodle: React.FC = () => {
           onClick={handleSynchronize}
           loading={isSynchronizing}
         >
-          ĐỒNG BỘ
+          Synchronize
         </LoadingButton>
       </Box>
     </Grid>

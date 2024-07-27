@@ -92,12 +92,12 @@ const StepperComponent: React.FC<Props> = ({ steps, getContentPage }) => {
           className={classes.fixedBottom}
         >
           <Button color='inherit' disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
-            Trở về
+            Back
           </Button>
           <Box />
           {activeStep !== steps.length && (
             <Button type='submit' variant='contained' onClick={handleComplete}>
-              {completedSteps() === totalSteps() - 1 ? "Hoàn thành" : "Tiếp tục"}
+              {completedSteps() === totalSteps() - 1 ? "Hoàn thành" : "Continue"}
             </Button>
           )}
         </Box>

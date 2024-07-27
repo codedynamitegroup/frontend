@@ -24,9 +24,9 @@ const DataInput = () => {
             <Box>
               <InputTextFieldColumn
                 {...field}
-                label={t("Nhập đường liên kết")}
-                title={t("Đường dẫn liên kết của Moodle")}
-                placeholder={t("Nhập đường liên kết")}
+                label={t("Enter URL...")}
+                title={t("Moodle URL")}
+                placeholder={t("Enter URL...")}
                 required
                 fullWidth
                 className={classes.inputField}
@@ -48,10 +48,10 @@ const DataInput = () => {
             <Box>
               <InputTextFieldColumn
                 {...field}
-                label={t("APIKEY")}
+                label={t("API KEY")}
                 title={t("API KEY")}
                 required
-                placeholder='Nhập API KEY'
+                placeholder='Enter API KEY...'
                 fullWidth
                 className={classes.inputField}
                 error={!!error}
@@ -65,11 +65,11 @@ const DataInput = () => {
           )}
         />
         <Typography variant='body2' className={classes.guideText}>
-          Để đọc hướng dẫn vui lòng
+          To read the instructions please
           <a href={`#${routes.org_admin.guide.root}`} target='_blank' rel='noopener noreferrer'>
-            {t(" nhấn vào đây ")}
+            {" click here "}
           </a>
-          để đọc
+          to read
         </Typography>
       </Grid>
       <Grid item xs={6}>
