@@ -77,7 +77,8 @@ export class OrganizationService {
   static async createOrganizationByContactUs(createOrganizationRequest: CreateOrganizationRequest) {
     try {
       const response = await api({
-        baseURL: authServiceApiUrl
+        baseURL: authServiceApiUrl,
+        isAuthorization: true
       }).post(
         `${API.AUTH.ORGANIZATION.CREATE_ORGANIZATION_BY_CONTACT_US}`,
         createOrganizationRequest
