@@ -180,7 +180,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
       defaultMark: Number(formSubmittedData?.defaultScore),
       qType: "SHORT_ANSWER",
       answers: formSubmittedData.answers,
-      questionBankCategoryId: isQuestionBank ? categoryId : undefined,
+      questionBankCategoryId: isQuestionBank || props.isAI ? categoryId : undefined,
       isOrgQuestionBank: isOrgQuestionBank,
       caseSensitive: Boolean(formSubmittedData?.caseSensitive)
     };
@@ -196,7 +196,7 @@ const CreateShortAnswerQuestion = (props: Props) => {
           )
         );
 
-        if (isLecturerCreateQuestionBank)
+        if (isLecturerCreateQuestionBank || props.isAI)
           navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
         else if (isOrgAdminQuestionBank)
           navigate(routes.org_admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));

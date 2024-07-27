@@ -209,7 +209,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
       defaultMark: Number(formSubmittedData?.defaultScore),
       qType: "MULTIPLE_CHOICE",
       answers: formSubmittedData.answers,
-      questionBankCategoryId: isQuestionBank ? categoryId : undefined,
+      questionBankCategoryId: isQuestionBank || props.isAI ? categoryId : undefined,
       isOrgQuestionBank: isOrgQuestionBank,
       single: Number(formSubmittedData.single) === 1,
       shuffleAnswers: Boolean(Number(formSubmittedData.shuffleAnswer)),
@@ -233,7 +233,7 @@ const CreateMultichoiceQuestion = (props: Props) => {
             })
           )
         );
-        if (isLecturerCreateQuestionBank)
+        if (isLecturerCreateQuestionBank || props.isAI)
           navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
         else if (isOrgAdminQuestionBank)
           navigate(routes.org_admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));

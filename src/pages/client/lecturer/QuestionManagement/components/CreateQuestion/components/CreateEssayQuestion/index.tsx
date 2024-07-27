@@ -246,7 +246,7 @@ const CreateEssayQuestion = (props: Props) => {
       generalFeedback: formSubmittedData?.generalDescription,
       defaultMark: Number(formSubmittedData?.defaultScore),
       qType: "ESSAY",
-      questionBankCategoryId: isQuestionBank ? categoryId : undefined,
+      questionBankCategoryId: isQuestionBank || props.isAI ? categoryId : undefined,
       isOrgQuestionBank: isOrgQuestionBank,
       responseFormat: formSubmittedData.responseFormat,
       responseRequired: Number(formSubmittedData.responseRequired),
@@ -276,7 +276,7 @@ const CreateEssayQuestion = (props: Props) => {
             })
           )
         );
-        if (isLecturerCreateQuestionBank)
+        if (isLecturerCreateQuestionBank || props.isAI)
           navigate(routes.lecturer.question_bank.detail.replace(":categoryId", categoryId ?? ""));
         else if (isOrgAdminQuestionBank)
           navigate(routes.org_admin.question_bank.detail.replace(":categoryId", categoryId ?? ""));
