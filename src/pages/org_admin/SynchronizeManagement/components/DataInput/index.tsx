@@ -25,7 +25,8 @@ const DataInput = () => {
               <InputTextFieldColumn
                 {...field}
                 label={t("Nhập đường liên kết")}
-                title={t("Nhập đường liên kết")}
+                title={t("Đường dẫn liên kết của Moodle")}
+                placeholder={t("Nhập đường liên kết")}
                 required
                 fullWidth
                 className={classes.inputField}
@@ -47,9 +48,10 @@ const DataInput = () => {
             <Box>
               <InputTextFieldColumn
                 {...field}
-                label={t("Nhập api key")}
-                title={t("Nhập api key")}
+                label={t("APIKEY")}
+                title={t("API KEY")}
                 required
+                placeholder='Nhập API KEY'
                 fullWidth
                 className={classes.inputField}
                 error={!!error}

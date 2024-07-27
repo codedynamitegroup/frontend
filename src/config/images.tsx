@@ -92,6 +92,15 @@ import step5_1 from "assets/img/org_admin/guide/step5/step5-1.png";
 import step5_2 from "assets/img/org_admin/guide/step5/step5-2.png";
 import step5_3 from "assets/img/org_admin/guide/step5/step5-3.png";
 
+import step1_1 from "assets/img/org_admin/guide/webhook/step1-1.png";
+import step1_2 from "assets/img/org_admin/guide/webhook/step1-2.png";
+import step1_3 from "assets/img/org_admin/guide/webhook/step1-3.png";
+import step1_4 from "assets/img/org_admin/guide/webhook/step1-4.png";
+import step1_5 from "assets/img/org_admin/guide/webhook/step1-5.png";
+import step1_6 from "assets/img/org_admin/guide/webhook/step1-6.png";
+import step1_7 from "assets/img/org_admin/guide/webhook/step1-7.png";
+import step1_8 from "assets/img/org_admin/guide/webhook/step1-8.png";
+
 const images = {
   course: {
     courseAssignment,
@@ -173,6 +182,18 @@ const images = {
         step5_1,
         step5_2,
         step5_3
+      },
+      webhook: {
+        step1: {
+          step1_1,
+          step1_2,
+          step1_3,
+          step1_4,
+          step1_5,
+          step1_6,
+          step1_7,
+          step1_8
+        }
       }
     }
   }

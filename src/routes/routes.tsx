@@ -400,7 +400,7 @@ export const routes = {
       detail: "/org-admin/synchronize/:synchronizeId"
     },
     guide: {
-      root: "/org-admin/guide"
+      root: "/org-admin/guide-sync-moodle"
     },
     course_type: {
       root: "/org-admin/course-type",

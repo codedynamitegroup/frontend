@@ -7,6 +7,8 @@ import React from "react";
 import { Box, Grid } from "@mui/material";
 import classes from "./styles.module.scss";
 import { useFormContext } from "react-hook-form";
+import { RootState } from "store";
+import { useSelector } from "react-redux";
 
 interface Props {
   steps: string[];
@@ -17,6 +19,7 @@ const StepperComponent: React.FC<Props> = ({ steps, getContentPage }) => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState<{ [k: number]: boolean }>({});
   const { handleSubmit, trigger } = useFormContext();
+  const sidebarStatus = useSelector((state: RootState) => state.sidebarStatus);
 
   const totalSteps = () => steps.length;
 
@@ -58,47 +61,47 @@ const StepperComponent: React.FC<Props> = ({ steps, getContentPage }) => {
   };
 
   return (
-    <Grid item xs={12}>
-      <Stepper nonLinear activeStep={activeStep}>
-        {steps.map((label, index) => (
-          <Step key={label} completed={completed[index]}>
-            <StepButton color='inherit' onClick={handleStep(index)}>
-              {label}
-            </StepButton>
-          </Step>
-        ))}
-      </Stepper>
-      <Box className={classes.stepWrapper}>
-        {allStepsCompleted() ? (
-          <React.Fragment>
-            <Typography sx={{ mt: 2, mb: 1 }}>
-              All steps completed - you&apos;re finished
-            </Typography>
-            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Box sx={{ flex: "1 1 auto" }} />
-              <Button onClick={handleReset}>Reset</Button>
-            </Box>
-          </React.Fragment>
-        ) : (
-          <Box>
-            {getContentPage(activeStep)}
-            <Box className={classes.fixedBottom}>
-              <Button
-                color='inherit'
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                Trở về
-              </Button>
-              <Box />
-              {activeStep !== steps.length && (
-                <Button type='submit' variant='contained' onClick={handleComplete}>
-                  {completedSteps() === totalSteps() - 1 ? "Hoàn thành" : "Tiếp tục"}
-                </Button>
-              )}
-            </Box>
-          </Box>
+    <Grid item xs={12} className={classes.root}>
+      <Box className={classes.container}>
+        <Stepper nonLinear activeStep={activeStep}>
+          {steps.map((label, index) => (
+            <Step key={label} completed={completed[index]}>
+              <StepButton color='inherit' onClick={handleStep(index)}>
+                {label}
+              </StepButton>
+            </Step>
+          ))}
+        </Stepper>
+        <Box className={classes.stepWrapper}>
+          {allStepsCompleted() ? (
+            <React.Fragment>
+              <Typography sx={{ mt: 2, mb: 1 }}>
+                All steps completed - you&apos;re finished
+              </Typography>
+              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                <Box sx={{ flex: "1 1 auto" }} />
+                <Button onClick={handleReset}>Reset</Button>
+              </Box>
+            </React.Fragment>
+          ) : (
+            <Box>{getContentPage(activeStep)}</Box>
+          )}
+        </Box>
+      </Box>
+      <Box
+        sx={{
+          width: sidebarStatus.isOpen ? `calc(100% - ${sidebarStatus.sidebarWidth}px)` : "100%"
+        }}
+        className={classes.fixedBottom}
+      >
+        <Button color='inherit' disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
+          Trở về
+        </Button>
+        <Box />
+        {activeStep !== steps.length && (
+          <Button type='submit' variant='contained' onClick={handleComplete}>
+            {completedSteps() === totalSteps() - 1 ? "Hoàn thành" : "Tiếp tục"}
+          </Button>
         )}
       </Box>
     </Grid>
