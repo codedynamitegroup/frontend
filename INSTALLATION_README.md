@@ -1,7 +1,7 @@
-# Hướng dẫn cài đặt hệ thống hỗ trợ sinh viên rèn luyện kỹ năng lập trình có tích hợp AI và thông tin trang web được dũng sẵn
+# Hướng dẫn cài đặt hệ thống hỗ trợ sinh viên rèn luyện kỹ năng lập trình có tích hợp AI và thông tin trang web được dựng sẵn
 
 ## Mục lục
-- [Hướng dẫn cài đặt hệ thống hỗ trợ sinh viên rèn luyện kỹ năng lập trình có tích hợp AI và thông tin trang web được dũng sẵn](#hướng-dẫn-cài-đặt-hệ-thống-hỗ-trợ-sinh-viên-rèn-luyện-kỹ-năng-lập-trình-có-tích-hợp-ai-và-thông-tin-trang-web-được-dũng-sẵn)
+- [Hướng dẫn cài đặt hệ thống hỗ trợ sinh viên rèn luyện kỹ năng lập trình có tích hợp AI và thông tin trang web được dựng sẵn](#hướng-dẫn-cài-đặt-hệ-thống-hỗ-trợ-sinh-viên-rèn-luyện-kỹ-năng-lập-trình-có-tích-hợp-ai-và-thông-tin-trang-web-được-dựng-sẵn)
   - [Mục lục](#mục-lục)
   - [Các bước cài đặt và triển khai hệ thống](#các-bước-cài-đặt-và-triển-khai-hệ-thống)
     - [Cài đặt các thư viện và công cụ cần thiết](#cài-đặt-các-thư-viện-và-công-cụ-cần-thiết)
