@@ -241,7 +241,7 @@ const ShortAnswerExamQuestion = (props: ShortAnswerExamQuestionProps) => {
               overlay
               label={
                 <ParagraphBody textAlign={"center"} fontSize='.8rem' fontWeight='400'>
-                  {answerOfQuestion.answer}
+                  <div dangerouslySetInnerHTML={{ __html: answerOfQuestion.answer }} />
                 </ParagraphBody>
               }
             />

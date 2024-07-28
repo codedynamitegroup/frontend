@@ -303,7 +303,7 @@ const MultipleChoiceExamQuestion = (props: MultipleChoiceExamQuestionProps) => {
               overlay
               label={
                 <ParagraphBody textAlign={"center"} fontSize='.8rem' fontWeight='400'>
-                  {answer.answer}
+                  <div dangerouslySetInnerHTML={{ __html: answer.answer }} />
                 </ParagraphBody>
               }
             />
