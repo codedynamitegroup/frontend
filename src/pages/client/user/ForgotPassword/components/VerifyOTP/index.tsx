@@ -129,7 +129,7 @@ export default function VerifyOTP() {
                 translation-key='common_send'
                 isTypeSubmit
               >
-                Tiếp tục
+                Continue
               </LoadButton>
             </form>
             <Box className={classes.back} mt={2}>

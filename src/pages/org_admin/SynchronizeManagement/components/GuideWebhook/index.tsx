@@ -18,57 +18,58 @@ interface Step {
 export default function GuideWebhook() {
   const stepsData: Step[] = [
     {
-      title: "Cài đặt plugin WebHooks",
+      title: "Install WebHooks plugin",
       contents: [
         {
           description:
-            "Đầu tiên, bạn cần vào Site administration và chọn Plugins sau đó chọn Install plugins.",
+            "First, you need to go to Site administration and select Plugins then select Install plugins.",
           imageSrc: images.org_admin.guide.webhook.step1.step1_1,
           imageAlt: "Vào site administraction"
         },
         {
           description:
-            "Truy cập thư mục plugin của Moodle và tải xuống plugin WebHooks bằng cách nhấn vào nút Tải xuống.",
+            "Go to Moodle's plugin directory and download the WebHooks plugin by clicking the Download button.",
           imageSrc: images.org_admin.guide.webhook.step1.step1_2,
-          imageAlt: "Tải xuống plugin WebHooks"
+          imageAlt: "Download WebHooks plugin"
         },
         {
           description:
-            "Quay lại trang Cài đặt plugin trong Moodle. Chọn Choose a file..., chọn tệp ZIP plugin WebHooks đã tải xuống và nhấn Install plugin from the ZIP file.",
+            "Return to the Install plugin page in Moodle. Select Choose a file..., select the downloaded WebHooks plugin ZIP file, and click Install plugin from the ZIP file.",
           imageSrc: images.org_admin.guide.webhook.step1.step1_3,
-          imageAlt: "Tải lên plugin WebHooks"
+          imageAlt: "Upload WebHooks plugin"
         }
       ]
     },
     {
-      title: "Tạo dịch vụ WebHook",
+      title: "Create WebHook service",
       contents: [
         {
-          description: "Bạn cần vào Site administration và chọn Server sau đó chọn Webhook",
+          description:
+            "You need to go to Site administration and select Server then select Webhook",
           imageSrc: images.org_admin.guide.webhook.step1.step1_4,
-          imageAlt: "Truy cập vào Cài đặt máy chủ"
+          imageAlt: "Go to Server Settings"
         },
         {
-          description: "Nhấn vào nút Add service để tạo một dịch vụ WebHook mới.",
+          description: "Click the Add service button to create a new WebHook service.",
           imageSrc: images.org_admin.guide.webhook.step1.step1_5,
-          imageAlt: "Thêm dịch vụ WebHook mới"
+          imageAlt: "Add new WebHook service"
         },
         {
           description:
-            "Nhập Tên và URL của dịch vụ WebHook của bạn. Tên: CodeDynamiteWebhook, URL: https://api.codedynamite.click/course/webhook/receive",
+            "Enter the Name and URL of your WebHook service. Name: CodeDynamiteWebhook, URL: https://api.codedynamite.click/course/webhook/receive",
           imageSrc: images.org_admin.guide.webhook.step1.step1_6,
-          imageAlt: "Cấu hình dịch vụ bên ngoài"
+          imageAlt: "External service configuration"
         },
         {
           description:
-            "Chọn các sự kiện bạn muốn WebHook lắng nghe bằng cách đánh dấu vào các ô tương ứng.",
+            "Select the events you want the WebHook to listen for by checking the corresponding boxes.",
           imageSrc: images.org_admin.guide.webhook.step1.step1_7,
           imageAlt: "Chọn sự kiện cho WebHook"
         },
         {
-          description: "Cuộn xuống và nhấn nút Save changes để áp dụng cài đặt của bạn.",
+          description: "Scroll down and press the Save changes button to apply your settings.",
           imageSrc: images.org_admin.guide.webhook.step1.step1_8,
-          imageAlt: "Lưu thay đổi"
+          imageAlt: "Save changes"
         }
       ]
     }
@@ -77,7 +78,7 @@ export default function GuideWebhook() {
   return (
     <Grid className={classes.root}>
       <Container>
-        <Typography className={classes.title}>Hướng dẫn thiết lập webhook</Typography>
+        <Typography className={classes.title}>Webhooks setup guide</Typography>
       </Container>
 
       {stepsData.map((step, index) => (
