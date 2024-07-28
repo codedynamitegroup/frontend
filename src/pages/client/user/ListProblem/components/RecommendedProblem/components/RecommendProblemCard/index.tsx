@@ -46,7 +46,9 @@ const RecommendProblemCard = ({ recommendProblem }: Props) => {
         <Grid item xs={6}>
           <Box className={classes.iconRecommendProblem}>
             <PeopleAltIcon className={classes.iconPeople} />
-            <ParagraphBody>{recommendProblem.numberStudiedPeople} Người đã làm bài</ParagraphBody>
+            <ParagraphBody>
+              {recommendProblem.numberStudiedPeople} {t("list_problem_people_attend")}
+            </ParagraphBody>
           </Box>
           <Box className={classes.iconRecommendProblem}>
             <img src={images.icLevel} alt='icon level' className={classes.iconLevel} />
