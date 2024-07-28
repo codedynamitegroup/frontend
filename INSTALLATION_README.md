@@ -161,20 +161,20 @@ Lúc này, người dùng có thể mở trình duyệt và truy cập vào đư
 
 - **Tài khoản:** ndqkhanh852@gmail.com  
   **Mật khẩu:** Hh123456@  
-  **Role:** Người dùng bình thường
+  **Vai trò:** Người dùng bình thường
 
 - **Tài khoản:** nguyenquoctuan385@gmail.com  
   **Mật khẩu:** Hh123456@  
-  **Role:** Sinh viên
+  **Vai trò:** Sinh viên
 
 - **Tài khoản:** kayonkiu@gmail.com  
   **Mật khẩu:** Hh123456@  
-  **Role:** Giảng viên
+  **Vai trò:** Giảng viên
 
 - **Tài khoản:** dcthong852@gmail.com  
   **Mật khẩu:** Hh123456@  
-  **Role:** Quản trị viên hệ thống
+  **Vai trò:** Quản trị viên hệ thống
 
 - **Tài khoản:** tgtien852@gmail.com  
   **Mật khẩu:** Hh123456@  
-  **Role:** Quản trị viên tổ chức
+  **Vai trò:** Quản trị viên tổ chức
