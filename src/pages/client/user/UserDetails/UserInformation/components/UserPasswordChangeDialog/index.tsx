@@ -81,9 +81,9 @@ const UserPasswordChangeDialog = ({
   const [isUpdatedPasswordLoading, setIsUpdatedPasswordLoading] = useState(false);
   const dispatch = useDispatch();
 
-  const handleUpdatePassword = (data: IFormDataUpdatePassword) => {
+  const handleUpdatePassword = async (data: IFormDataUpdatePassword) => {
     setIsUpdatedPasswordLoading(true);
-    UserService.updatePasswordUser({
+    await UserService.updatePasswordUser({
       oldPassword: data.oldPassword,
       newPassword: data.newPassword
     })
@@ -121,11 +121,7 @@ const UserPasswordChangeDialog = ({
       minWidth='600px'
       {...props}
     >
-      <Box
-        component='form'
-        className={classes.formBody}
-        onSubmit={handleSubmit(handleUpdatePassword)}
-      >
+      <form className={classes.formBody} onSubmit={handleSubmit(handleUpdatePassword)}>
         <img
           src={images.changePasswordThumbnail}
           alt='password'
@@ -164,15 +160,15 @@ const UserPasswordChangeDialog = ({
               btnType={BtnType.Primary}
               colorname='--white'
               autoFocus
+              isTypeSubmit
               translation-key='user_detail_change_password'
               width='100%'
-              isTypeSubmit
             >
               {t("user_detail_change_password")}
             </LoadButton>
           </Grid>
         </Grid>
-      </Box>
+      </form>
     </CustomDialog>
   );
 };
