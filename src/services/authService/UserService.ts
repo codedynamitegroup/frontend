@@ -38,6 +38,27 @@ export class UserService {
       });
     }
   }
+  static async refreshToken(accessToken: string, refreshToken: string) {
+    try {
+      const response = await api({
+        baseURL: authServiceApiUrl
+      }).post(`${API.AUTH.USER.REFRESH_TOKEN}`, {
+        refreshToken: refreshToken,
+        accessToken: accessToken
+      });
+
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error: any) {
+      return Promise.reject({
+        code: error.response?.data?.code || 503,
+        status: error.response?.data?.status || "Service Unavailable",
+        message: error.response?.data?.message || error.message
+      });
+    }
+  }
+
   static async linkSSO(accessToken: string, provider: ESocialLoginProvider, email: string) {
     try {
       const response = await api({

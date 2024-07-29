@@ -18,6 +18,9 @@ import { OrganizationService } from "services/authService/OrganizationService";
 import { InputPhone } from "components/common/inputs/InputPhone";
 import useAuth from "hooks/useAuth";
 import JoyButton from "@mui/joy/Button";
+import { UserService } from "services/authService/UserService";
+import { User } from "models/authService/entity/user";
+import { setLogin } from "reduxes/Auth";
 
 interface IFormData {
   businessEmail: string;
@@ -30,7 +33,7 @@ interface IFormData {
 export default function BusinessContact() {
   const { t } = useTranslation();
   const [isSubmitBusinessContact, setIsSubmitBusinessContact] = useState(false);
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, loggedUser } = useAuth();
   const dispatch = useDispatch();
 
   const schema = useMemo(() => {
@@ -53,19 +56,46 @@ export default function BusinessContact() {
   });
 
   const handleSubmitContactUs = async (data: IFormData) => {
+    if (loggedUser === null) return;
     const createOrganizationData: CreateOrganizationRequest = {
       email: data.businessEmail,
       phone: data.businessPhone,
       name: data.businessName,
       address: data.businessAddress,
-      description: data.businessDescription
+      description: data.businessDescription,
+      createdBy: loggedUser.userId
     };
     setIsSubmitBusinessContact(true);
-    OrganizationService.createOrganizationByContactUs(createOrganizationData)
+    await OrganizationService.createOrganizationByContactUs(createOrganizationData)
       .then(async (response) => {
-        dispatch(
-          setSuccessMess("Your request has been sent successfully. We will contact you soon!")
-        );
+        const accessToken = localStorage.getItem("access_token") || "";
+        const refreshToken = localStorage.getItem("refresh_token") || "";
+        const provider = localStorage.getItem("provider");
+        try {
+          const user: User = await UserService.getUserByEmail();
+          if (user) {
+            dispatch(
+              setLogin({ user: user, token: accessToken, provider: provider ? provider : null })
+            );
+          }
+          await UserService.refreshToken(accessToken, refreshToken)
+            .then((res) => {
+              localStorage.setItem("access_token", res.accessToken);
+              localStorage.setItem("refresh_token", res.refreshToken);
+              dispatch(
+                setSuccessMess("Created organization successfully. Please click profile to see!")
+              );
+            })
+            .catch((e) => {
+              console.log(e);
+            })
+            .finally(() => {
+              setIsSubmitBusinessContact(false);
+            });
+        } catch (error) {
+          setIsSubmitBusinessContact(false);
+          console.log(error);
+        }
       })
       .catch((error: any) => {
         dispatch(setErrorMess("Failed to send request. Please try again!"));
@@ -74,9 +104,6 @@ export default function BusinessContact() {
           status: error.response?.status || "Service Unavailable",
           message: error.response?.message || error.message
         });
-      })
-      .finally(() => {
-        setIsSubmitBusinessContact(false);
       });
   };
 
