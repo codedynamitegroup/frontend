@@ -84,42 +84,48 @@ export default function CustomDialog({
       </DialogTitle>
       <Divider />
 
-      <Box
-        component='form'
-        autoComplete='off'
-        onSubmit={
-          onHandleSubmit
-            ? (e) => {
-                e.preventDefault();
-                onHandleSubmit();
-              }
-            : undefined
-        }
-      >
-        <DialogContent>{children}</DialogContent>
-        {actionsDisabled && actionsDisabled === true ? null : (
-          <DialogActions>
-            <JoyButton
-              onClick={onHandleCancel ? onHandleCancel : handleClose}
-              variant='outlined'
-              translation-key='common_cancel'
-              disabled={cancelDisabled}
-            >
-              {cancelText || t("common_cancel")}
-            </JoyButton>
-            <JoyButton
-              loading={isConfirmLoading}
-              onClick={onHanldeConfirm ? onHanldeConfirm : handleClose}
-              autoFocus
-              disabled={confirmDisabled}
-              translation-key='common_confirm'
-            >
-              {confirmText || t("common_confirm")}
-            </JoyButton>
-          </DialogActions>
-        )}
-        {customActions && customActions}
-      </Box>
+      {actionsDisabled && !customActions ? (
+        <Box>
+          <DialogContent>{children}</DialogContent>
+        </Box>
+      ) : (
+        <Box
+          component='form'
+          autoComplete='off'
+          onSubmit={
+            onHandleSubmit
+              ? (e) => {
+                  e.preventDefault();
+                  onHandleSubmit();
+                }
+              : undefined
+          }
+        >
+          <DialogContent>{children}</DialogContent>
+          {actionsDisabled && actionsDisabled === true ? null : (
+            <DialogActions>
+              <JoyButton
+                onClick={onHandleCancel ? onHandleCancel : handleClose}
+                variant='outlined'
+                translation-key='common_cancel'
+                disabled={cancelDisabled}
+              >
+                {cancelText || t("common_cancel")}
+              </JoyButton>
+              <JoyButton
+                loading={isConfirmLoading}
+                onClick={onHanldeConfirm ? onHanldeConfirm : handleClose}
+                autoFocus
+                disabled={confirmDisabled}
+                translation-key='common_confirm'
+              >
+                {confirmText || t("common_confirm")}
+              </JoyButton>
+            </DialogActions>
+          )}
+          {customActions && customActions}
+        </Box>
+      )}
     </Dialog>
   );
 }

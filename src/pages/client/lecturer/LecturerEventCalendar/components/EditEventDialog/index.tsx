@@ -199,7 +199,7 @@ const EditEventDialog = ({
             rules={{ required: true }}
             render={({ field: { ref, ...field } }) => (
               <>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={3}>
                   <TitleWithInfoTip
                     translate-key='calendar_event_date'
                     title={t("calendar_event_date")}
@@ -207,7 +207,7 @@ const EditEventDialog = ({
                     // tooltipDescription={t("contest_start_time_tooltip")}
                   />
                 </Grid>
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12} md={7}>
                   <CustomDateTimePicker
                     value={moment(field.value)}
                     onHandleValueChange={(newValue) => {
@@ -238,13 +238,13 @@ const EditEventDialog = ({
             rules={{ required: true }}
             render={({ field: { ref, ...field } }) => (
               <>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={3}>
                   <TitleWithInfoTip
                     translate-key='calendar_event_type'
                     title={t("calendar_event_type")}
                   />
                 </Grid>
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12} md={7}>
                   <BasicSelect
                     labelId='select-assignment-section-label'
                     value={field.value}
@@ -286,10 +286,10 @@ const EditEventDialog = ({
               rules={{ required: true }}
               render={({ field: { ref, ...field } }) => (
                 <>
-                  <Grid item xs={12} md={4}>
+                  <Grid item xs={12} md={3}>
                     <TitleWithInfoTip translate-key='common_course' title={t("common_course")} />
                   </Grid>
-                  <Grid item xs={12} md={8}>
+                  <Grid item xs={12} md={7}>
                     <BasicSelect
                       labelId='select-assignment-section-label'
                       value={field.value || ""}
@@ -334,13 +334,13 @@ const EditEventDialog = ({
               rules={{ required: true }}
               render={({ field: { ref, ...field } }) => (
                 <>
-                  <Grid item xs={12} md={4}>
+                  <Grid item xs={12} md={3}>
                     <TitleWithInfoTip
                       translate-key='detail_problem_description'
                       title={t("detail_problem_description")}
                     />
                   </Grid>
-                  <Grid item xs={12} md={8}>
+                  <Grid item xs={12} md={7}>
                     <TextEditor
                       value={field.value}
                       onChange={(newValue) => {
@@ -371,7 +371,7 @@ const EditEventDialog = ({
           >
             <Grid
               item
-              xs={4}
+              xs={3}
               sx={{
                 marginTop: "10px"
               }}
@@ -380,7 +380,7 @@ const EditEventDialog = ({
                 {t("calendar_event_time_range")}
               </TextTitle>
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={7}>
               <RadioGroup
                 aria-label={"duration"}
                 name={"duration"}
