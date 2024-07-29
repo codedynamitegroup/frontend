@@ -24,13 +24,6 @@ import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import ErrorMessage from "components/text/ErrorMessage";
 import JoyButton from "@mui/joy/Button";
 import { InputPhone } from "components/common/inputs/InputPhone";
-import Button, { BtnType } from "components/common/buttons/Button";
-import { useMsal } from "@azure/msal-react";
-import { loginRequest } from "services/authService/azure.config";
-import { AuthenticationResult } from "@azure/msal-browser";
-import { ESocialLoginProvider } from "models/authService/enum/ESocialLoginProvider";
-import { TokenResponse, useGoogleLogin } from "@react-oauth/google";
-import MicrosoftLogin from "react-microsoft-login";
 import useAuth from "hooks/useAuth";
 
 interface IFormDataUpdateProfileUser {
@@ -99,7 +92,7 @@ const UserInformationDetailsDialog = ({
         firstName: user.firstName,
         lastName: user.lastName,
         dob: format(user.dob ? user.dob : Date.now(), "dd-MM-yyyy"),
-        phone: user.phone
+        phone: user.phone ? user.phone : ""
       });
     }
   }, [user]);
@@ -109,7 +102,7 @@ const UserInformationDetailsDialog = ({
 
   const handleUpdateProfileUser = async (data: IFormDataUpdateProfileUser) => {
     setIsUpdateProfileLoading(true);
-    UserService.updateProfileUser({
+    await UserService.updateProfileUser({
       email: user?.email,
       firstName: data.firstName,
       lastName: data.lastName,
@@ -140,72 +133,6 @@ const UserInformationDetailsDialog = ({
       .finally(() => {
         setIsUpdateProfileLoading(false);
       });
-  };
-
-  const { instance } = useMsal();
-
-  const signInWithMicrosoft = async () => {
-    const accounts = instance.getAllAccounts();
-
-    if (accounts.length === 0) {
-      return;
-    }
-
-    const request = {
-      ...loginRequest,
-      account: accounts[0]
-    };
-
-    const accessToken = await instance
-      .acquireTokenSilent(request)
-      .then((response: AuthenticationResult) => {
-        return response.accessToken;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
-    if (!accessToken) {
-      return;
-    }
-
-    UserService.linkSSO(accessToken, ESocialLoginProvider.MICROSOFT, loggedUser.email)
-      .then((response) => {
-        dispatch(setSuccessMess("Linked with Microsoft successfully"));
-      })
-      .catch((error: any) => {
-        dispatch(setErrorMess("Failed to login!! Please try again later"));
-        console.error("Failed to login", {
-          code: error.response?.code || 503,
-          status: error.response?.status || "Service Unavailable",
-          message: error.response?.message || error.message
-        });
-      });
-  };
-
-  const signInWithGoogle = useGoogleLogin({
-    onSuccess: async (tokenResponse: TokenResponse) => {
-      UserService.linkSSO(tokenResponse.access_token, ESocialLoginProvider.GOOGLE, loggedUser.email)
-        .then((response) => {
-          dispatch(setSuccessMess("Linked with google successfully"));
-        })
-        .catch((error: any) => {
-          dispatch(setErrorMess("Failed to login!! Please try again later"));
-          console.error("Failed to login", {
-            code: error.response?.code || 503,
-            status: error.response?.status || "Service Unavailable",
-            message: error.response?.message || error.message
-          });
-        });
-    },
-    onError: (error: any) => {
-      console.log(error);
-    },
-    flow: "implicit"
-  });
-
-  const microsoftLoggedHandler = (error: any, result: any) => {
-    signInWithMicrosoft();
   };
 
   return (
@@ -360,25 +287,6 @@ const UserInformationDetailsDialog = ({
                   </ParagraphBody>
                 )}
               </Grid>
-
-              <Grid
-                item
-                xs={3}
-                sx={{
-                  display: "flex",
-                  alignItems: "center"
-                }}
-              >
-                {!user?.isLinkedWithGoogle && (
-                  <Button
-                    btnType={BtnType.Text}
-                    translation-key='user_detail_dialog_link'
-                    onClick={() => signInWithGoogle()}
-                  >
-                    {t("user_detail_dialog_link")}
-                  </Button>
-                )}
-              </Grid>
             </Grid>
             <Divider />
 
@@ -425,31 +333,6 @@ const UserInformationDetailsDialog = ({
                   <ParagraphBody translation-key='user_detail_dialog_not_linked'>
                     {t("user_detail_dialog_not_linked")}
                   </ParagraphBody>
-                )}
-              </Grid>
-              <Grid
-                item
-                xs={3}
-                sx={{
-                  display: "flex",
-                  alignItems: "center"
-                }}
-              >
-                {!user?.isLinkedWithMicrosoft && (
-                  <MicrosoftLogin
-                    clientId={process.env.REACT_APP_MICROSOFT_CLIENT_ID || ""}
-                    redirectUri={process.env.REACT_APP_MICROSOFT_REDIRECT_URL || ""}
-                    authCallback={microsoftLoggedHandler}
-                    children={
-                      <Button
-                        btnType={BtnType.Text}
-                        onClick={() => {}}
-                        translation-key='user_detail_dialog_link'
-                      >
-                        {t("user_detail_dialog_link")}
-                      </Button>
-                    }
-                  />
                 )}
               </Grid>
             </Grid>

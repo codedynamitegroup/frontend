@@ -26,7 +26,7 @@ const UserInformation = () => {
   });
 
   useEffect(() => {
-    if (loggedUser) {
+    if (loggedUser && !data.userInfo) {
       setData({
         ...data,
         userInfo: loggedUser
