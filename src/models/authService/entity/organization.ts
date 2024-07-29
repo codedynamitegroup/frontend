@@ -22,6 +22,7 @@ export interface CreateOrganizationRequest {
   name: string;
   phone: string;
   address: string;
+  createdBy: string;
 }
 
 export interface UpdateOrganizationBySystemAdminRequest {

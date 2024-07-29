@@ -19,6 +19,7 @@ import CustomBreadCrumb from "components/common/Breadcrumb";
 import { CreateOrganizationRequest } from "models/authService/entity/organization";
 import { OrganizationService } from "services/authService/OrganizationService";
 import { InputPhone } from "components/common/inputs/InputPhone";
+import useAuth from "hooks/useAuth";
 
 interface IFormDataType {
   email: string;
@@ -33,6 +34,7 @@ const CreateOrganization = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [submitLoading, setSubmitLoading] = useState(false);
+  const { loggedUser } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
   const schema = useMemo(() => {
     return yup.object().shape({
@@ -58,12 +60,14 @@ const CreateOrganization = () => {
 
   const submitHandler = async (data: any) => {
     const formSubmittedData: IFormDataType = { ...data };
+    if (loggedUser === null) return;
     const createdOrganizationRequest: CreateOrganizationRequest = {
       email: formSubmittedData.email,
       description: formSubmittedData.description,
       name: formSubmittedData.name,
       address: formSubmittedData.address,
-      phone: formSubmittedData.phone
+      phone: formSubmittedData.phone,
+      createdBy: loggedUser.userId
     };
     await handleCreateOrganization(createdOrganizationRequest);
   };
