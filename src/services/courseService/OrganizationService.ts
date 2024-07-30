@@ -27,6 +27,17 @@ export class OrganizationService {
     });
   }
 
+  static async getOrganization(id: string) {
+    try {
+      const response = await this.apiClient.get(
+        `${API.COURSE.ORGANIZATION.GET_ORGANIZATION_BY_ID}`.replace(":id", id)
+      );
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return this.handleError(error);
+    }
+  }
+
   static async updateOrganization(id: string, data: UpdateOrganizationCommand) {
     try {
       const response = await this.apiClient.put(

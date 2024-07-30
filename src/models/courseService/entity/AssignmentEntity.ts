@@ -2,6 +2,7 @@ import { AssignmentResourceEntity } from "./AssignmentResourceEntity";
 
 export interface AssignmentEntity {
   id: string;
+  sectionId: string;
   courseName: string;
   moodleId: number;
   title: string;

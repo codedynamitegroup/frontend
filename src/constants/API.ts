@@ -96,7 +96,8 @@ export const API = {
     },
     SYNCHRONIZE_MOODLE: {
       SYNCHRONIZE_MOODLE: "/course/synchronize-moodle/:id",
-      GET_BY_ORGANIZATION_ID_AND_STEP: "/course/synchronize-moodle"
+      GET_BY_ORGANIZATION_ID_AND_STEP: "/course/synchronize-moodle",
+      GET_ALL: "/course/synchronize-moodle/all/:id"
     },
     RUBRIC_USER: {
       GET_ALL_BY_USER_ID: "/course/rubric-user/users/:id",
@@ -206,7 +207,7 @@ export const API = {
       SUBMISSION_DETAIL: "/course/exam/question/submit/:id",
       ONGOING_SUBMISSION_DETAIL: "/course/exam/latest-submission",
       SET_GRADE_STATUS: "/course/exam/grading/submission/:id",
-      GET_CURRENT_SUBMISSION: "/course/exam/:id/student/submission/:submissionId",
+      GET_CURRENT_SUBMISSION: "/course/exam/:id/student/submission/:submissionId"
     },
     EXAM_QUESTION: {
       DEFAULT: "/course/exam/:examId/question"

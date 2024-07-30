@@ -31,9 +31,6 @@ const StepperComponent: React.FC<Props> = ({ steps, getContentPage }) => {
   const allStepsCompleted = () => completedSteps() === totalSteps();
 
   const handleNext = async () => {
-    const isValid = await trigger();
-    if (!isValid) return;
-
     const newActiveStep =
       isLastStep() && !allStepsCompleted()
         ? steps.findIndex((step, i) => !(i in completed))
