@@ -114,7 +114,7 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
       }
     } catch (error) {
       console.error("Error generating text:", error);
-      dispatch(setErrorMess("Code stubs generated successfully!"));
+      dispatch(setErrorMess("Code stubs generated failed!"));
     } finally {
       setIsLoading(false);
     }
