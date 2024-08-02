@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
 import { jsonrepair } from "jsonrepair";
 import i18next from "i18next";
 import { ICodeConverterRequest } from "pages/admin/CodeQuestionManagement/Details/components/CodeStubs";
@@ -11,7 +11,13 @@ async function CodeConverterAI(
   code_stub: string,
   program_language_converted_request: ICodeConverterRequest[]
 ) {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+  const safetySettings = [
+    {
+      category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+      threshold: HarmBlockThreshold.BLOCK_NONE
+    }
+  ];
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest", safetySettings });
   const AI_ROLE = `
 I. YOUR ROLE:
 	- You are Code Converter AI, a large language model trained on a massive dataset of text and code.
@@ -66,7 +72,7 @@ I. SYSTEM_INSTRUCTIONS:
 					++ For example, if the original code snippet has a method definition with no implementation, the converted code should also have the same method definition with no implementation.
 				+ Ensure that the converted code is syntactically correct and follows the best practices of the target language.
 				+ The input data must be read from the console and the output data must be written into the console. Do not use syntax related to file input/output.
-				+ The comment "Your code goes here" is for students to solve it, not for you.
+				+ The comment "your code goes here" is for students to solve it, not for you.
 				
 				+ Note for each programming language to ensure the correct input/output method:
 					1. Java (OpenJDK 14.0.1):
@@ -127,7 +133,7 @@ I. SYSTEM_INSTRUCTIONS:
 					- Do not use functions related to file I/O such as fopen, fread, fwrite.
 			
 					6. Go (1.13.5):
-					- Use ""bufio.NewReader"" and ""os.Stdin"" to read input from the console. Use ""reader.ReadString('\\\n')"" to read a line from the console.
+					- Use ""bufio.NewReader"" and ""os.Stdin"" to read input from the console. Use ""reader.ReadString('\\n')"" to read a line from the console.
 					- Use ""fmt.Println"" to write output to the console.
 					- Do not use functions related to file I/O such as os.Open.
 					- Go language has reader.ReadString('\\n') should be reader.ReadString('\\\\n').
@@ -284,14 +290,20 @@ I. SYSTEM_INSTRUCTIONS:
     });
 
     return chunks.map(async (chunk) => {
-      result = await chat.sendMessageStream(INPUT(chunk));
-      response = await result.response;
-      text = await response.text();
-      const cleanText = text.replace(/```/g, "").replace(/json/g, "");
-      const repaired = jsonrepair(cleanText);
-      const json = JSON.parse(repaired);
-      let chunkResponses = [...json];
-      return chunkResponses;
+      console.log(chunk);
+      try {
+        result = await chat.sendMessageStream(INPUT(chunk));
+        response = await result.response;
+        text = await response.text();
+        const cleanText = text.replace(/```/g, "").replace(/json/g, "");
+        const repaired = jsonrepair(cleanText);
+        const json = JSON.parse(repaired);
+        let chunkResponses = [...json];
+        return chunkResponses;
+      } catch (error) {
+        console.log("chunks", chunk);
+        console.log(error);
+      }
     });
   } catch (error) {
     Promise.reject(error);
