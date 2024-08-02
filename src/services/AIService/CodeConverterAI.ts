@@ -66,10 +66,11 @@ I. SYSTEM_INSTRUCTIONS:
 					++ For example, if the original code snippet has a method definition with no implementation, the converted code should also have the same method definition with no implementation.
 				+ Ensure that the converted code is syntactically correct and follows the best practices of the target language.
 				+ The input data must be read from the console and the output data must be written into the console. Do not use syntax related to file input/output.
+				+ The comment "Your code goes here" is for students to solve it, not for you.
 				
 				+ Note for each programming language to ensure the correct input/output method:
 					1. Java (OpenJDK 14.0.1):
-					- Use ""BufferedReader"" to read input from the console.
+					- Use ""Scanner scanner = new Scanner(System.in)"" to read input from the console.
 					- Use ""System.out.println"" to write output to the console.
 					- Do not use classes and methods related to file I/O such as FileReader or FileWriter.
 					
@@ -79,7 +80,7 @@ I. SYSTEM_INSTRUCTIONS:
 					- Do not use functions related to file I/O such as open().
 
 					3. C++ (GCC 8.3.0):
-					- Use ""getline(std::cin, ...)"" to read input from the console.
+					- Use ""std::cin"" to read input from the console.
 					- Use ""std::cout"" to write output to the console.
 					- Do not use functions related to file I/O such as ifstream or ofstream.
 
@@ -117,8 +118,7 @@ I. SYSTEM_INSTRUCTIONS:
 
 							function main() {
 								console.log('Hello, World!');
-						}
-
+							}
 						""
 
 					5. C (GCC 8.3.0):
@@ -127,7 +127,7 @@ I. SYSTEM_INSTRUCTIONS:
 					- Do not use functions related to file I/O such as fopen, fread, fwrite.
 			
 					6. Go (1.13.5):
-					- Use ""bufio.NewReader"" and ""os.Stdin"" to read input from the console. Use ""reader.ReadString('\\n')"" to read a line from the console.
+					- Use ""bufio.NewReader"" and ""os.Stdin"" to read input from the console. Use ""reader.ReadString('\\\n')"" to read a line from the console.
 					- Use ""fmt.Println"" to write output to the console.
 					- Do not use functions related to file I/O such as os.Open.
 					- Go language has reader.ReadString('\\n') should be reader.ReadString('\\\\n').
@@ -152,7 +152,7 @@ I. SYSTEM_INSTRUCTIONS:
 				[
 					{
 						"program_language": "Java (OpenJDK 14.0.1)",
-						"code_stub": "import java.io.*;\nimport java.math.*;\nimport java.security.*;\nimport java.text.*;\nimport java.util.*;\nimport java.util.concurrent.*;\nimport java.util.regex.*;\n\nclass Result {\n\n    /*\n     * Complete the 'sumOfTwoIntegers' function below.\n     *\n     * The function is expected to return an INTEGER.\n     * The function accepts following parameters:\n     *  1. INTEGER a\n     *  2. INTEGER b\n     */\n\n    public static int sumOfTwoIntegers(int a, int b) {\n    // Write your code here\n     \n    }\n\n}\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));\n\n        int a = Integer.parseInt(bufferedReader.readLine().trim());\n\n        int b = Integer.parseInt(bufferedReader.readLine().trim());\n\n        int result = Result.sumOfTwoIntegers(a, b);\n\n        System.out.println(result);\n\n        bufferedReader.close();\n    }\n}"
+						"code_stub": "import java.util.Scanner;\n\nclass SumCalculator {\n    public int calculateSum(int[] arr) {\n        //your code goes here\n    }\n}\npublic class Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n\n        // Read number of elements (n)\n        int n = scanner.nextInt();\n\n        // Initialize array\n        int[] arr = new int[n];\n\n        // Read elements into the array\n        for (int i = 0; i < n; i++) {\n            arr[i] = scanner.nextInt();\n        }\n\n        // Create an instance of SumCalculator class\n        SumCalculator calculator = new SumCalculator();\n\n        // Calculate sum using the class method\n        int sum = calculator.calculateSum(arr);\n\n        // Output the sum\n        System.out.println(sum);\n\n        scanner.close();\n    }\n}"
 					},
 					{
 						"program_language": "Python (3.8.1)",
@@ -185,6 +185,10 @@ I. SYSTEM_INSTRUCTIONS:
 					{
 						"program_language": "C# (Mono 6.6.0.161)",
 						"code_stub": "using System;\n\nclass Solution\n{\n    /*\n     * Complete the 'sumOfTwoIntegers' function below.\n     *\n     * The function is expected to return an INTEGER.\n     * The function accepts following parameters:\n     *  1. INTEGER a\n     *  2. INTEGER b\n     */\n    \n    public static int sumOfTwoIntegers(int a, int b)\n    {\n        // Write your code here\n        return a + b;\n    }\n\n    public static void Main(string[] args)\n    {\n        int a = Convert.ToInt32(Console.ReadLine().Trim());\n        int b = Convert.ToInt32(Console.ReadLine().Trim());\n\n        int result = sumOfTwoIntegers(a, b);\n\n        Console.WriteLine(result);\n    }\n}"
+					},
+					{
+						"program_language": "Swift (5.2.3)",
+						"code_stub": "import Foundation\n\nfunc sumOfTwoIntegers(a: Int, b: Int) -> Int {\n    //your code goes here\n}\n\nfunc main() {\n    let a = Int(readLine()!)!\n    let b = Int(readLine()!)!\n    print(sumOfTwoIntegers(a: a, b: b))\n}\n"
 					}
 				]
 			"""
