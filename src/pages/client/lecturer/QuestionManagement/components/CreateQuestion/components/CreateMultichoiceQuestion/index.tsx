@@ -195,7 +195,6 @@ const CreateMultichoiceQuestion = (props: Props) => {
   const answerPoint = AnswerPoint.map((point) => point.percentNumber);
 
   const submitHandler = async (data: any) => {
-    console.log(data);
     setSubmitLoading(true);
     const formSubmittedData: FormData = { ...data };
     const newQuestion: PostMultipleChoiceQuestion = {

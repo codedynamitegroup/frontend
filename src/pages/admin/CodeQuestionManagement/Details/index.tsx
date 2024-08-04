@@ -313,10 +313,6 @@ const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
       dispatch(setSuccessMess(t(isEdit ? "common_update_success" : "common_create_success")));
       navigate("/admin/code-questions");
     }
-
-    console.log("dirty", codeQuestionFormMethod.formState.dirtyFields);
-    console.log(data);
-    console.log(codeQuestionFormMethod.getValues("testCases"));
   };
   return (
     <>

@@ -105,7 +105,6 @@ const AdminCodeQuestionManagement = () => {
       .then((data: PaginationList<CodeQuestionEntity>) => {
         setCodeQuestions(data.codeQuestions);
         setTotalItem(data.totalItems);
-        console.log(data);
       })
       .catch((err) => console.error(err))
       .finally(() => {

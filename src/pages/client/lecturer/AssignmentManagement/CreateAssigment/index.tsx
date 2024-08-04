@@ -267,7 +267,6 @@ export default function AssignmentCreated() {
   }, []);
 
   const submitHandler = async (data: any) => {
-    console.log(data);
     if (!textSubmission && !fileSubmission) {
       setShake(true);
       setTimeout(() => setShake(false), 2000); // Reset shake a
