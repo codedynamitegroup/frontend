@@ -168,16 +168,13 @@ const CodeQuestionLesson = ({
   });
 
   useEffect(() => {
-    setSelectedLanguage(
-      codeQuestion?.languages !== undefined && codeQuestion?.languages.length > 0
-        ? {
-            id: codeQuestion?.languages[0].id,
-            sourceCode: codeQuestion?.languages[0].sourceCode ?? ""
-          }
-        : { id: "", sourceCode: "" }
-    );
-    setLanguageList(codeQuestion?.languages);
-  }, [codeQuestion?.languages]);
+    if (selectedLanguage.id === "" && programmingLanguageAvailable.length > 0) {
+      setSelectedLanguage({
+        id: programmingLanguageAvailable[0].id,
+        sourceCode: programmingLanguageAvailable[0].sourceCode ?? ""
+      });
+    }
+  }, [programmingLanguageAvailable, selectedLanguage.id]);
 
   useEffect(() => {
     const language = mapLanguages.get(selectedLanguage.id);
