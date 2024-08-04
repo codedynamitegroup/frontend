@@ -135,7 +135,6 @@ const CreateTrueFalseQuestion = (props: Props) => {
   const user: User = useSelector(selectCurrentUser);
 
   const submitHandler = async (data: any) => {
-    console.log(data);
     setSubmitLoading(true);
 
     const formSubmittedData: FormData = { ...data };

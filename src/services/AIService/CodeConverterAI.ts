@@ -67,42 +67,47 @@ I. SYSTEM_INSTRUCTIONS:
 				+ You need to include the entire code snippet, including imports libraries, class definitions, method implementations, class main methods, etc.
 				+ In ""Java (OpenJDK 14.0.1)"" the class name must be "Main".
 				+ In ""C# (Mono 6.6.0.161)"" the class name must be "Result".
-				+ If code has '\\n', add '\\' before it, to ensure multiline strings are preserved. Example - '\\\\n'. Go language has reader.ReadString('\\n') should be reader.ReadString('\\\\n'). Javascript language has inputString.split('\\n') should be inputString.split('\\\\n')
+				+ If code has '\\n', add '\\' before it, to ensure multiline strings are preserved. Example - '\\\\n'. Go language has reader.ReadString('\\n') should be reader.ReadString('\\\\n').
 				+ Do not {{provide solution}} to the problem. If method which is provided is {{empty}}, keep it {{empty}}.
 					++ For example, if the original code snippet has a method definition with no implementation, the converted code should also have the same method definition with no implementation.
 				+ Ensure that the converted code is syntactically correct and follows the best practices of the target language.
 				+ The input data must be read from the console and the output data must be written into the console. Do not use syntax related to file input/output.
 				+ The comment "your code goes here" is for students to solve it, not for you.
-				
+
 				+ Note for each programming language to ensure the correct input/output method:
 					1. Java (OpenJDK 14.0.1):
 					- Use ""Scanner scanner = new Scanner(System.in)"" to read input from the console.
 					- Use ""System.out.println"" to write output to the console.
 					- Do not use classes and methods related to file I/O such as FileReader or FileWriter.
-					
+					- Ensure the code is compatible with Java (OpenJDK 14.0.1).
+
 					2. Python (3.8.1):
 					- Use ""input()"" to read input from the console.
 					- Use ""print()"" to write output to the console.
 					- Do not use functions related to file I/O such as open().
+					- Ensure the code is compatible with Python 3.8.1.
 
 					3. C++ (GCC 8.3.0):
 					- Use ""std::cin"" to read input from the console.
 					- Use ""std::cout"" to write output to the console.
 					- Do not use functions related to file I/O such as ifstream or ofstream.
+					- Ensure the code is compatible with C++ (GCC 8.3.0).
 
 					4. JavaScript (Node.js 12.14.0):
 					- Use ""process.stdin"" to read input from the console. Do not use ""process.stdout"" to write output.
 					- Use ""console.log()"" to write output to the console.
 					- Do not use ""process.stdout"" to write output. Instead, use ""console.log()"".
-					- Javascript language has inputString.split('\\n') should be inputString.split('\\\\n')
 					- Do not use modules related to file I/O such as fs.
-					- Not allowed use this method: 
+					- Ensure the code is compatible with JavaScript (Node.js 12.14.0).
+					- Not allowed use this method:
 						""
 							const readline = require('readline').createInterface({
 							});
 						""
 					- Use this method:
 						""
+							'use strict';
+
 							process.stdin.resume();
 							process.stdin.setEncoding('utf-8');
 
@@ -114,7 +119,7 @@ I. SYSTEM_INSTRUCTIONS:
 							});
 
 							process.stdin.on('end', function() {
-									inputString = inputString.split('\\n');
+									inputString = inputString.trim().split(/\\s+/);
 									main();
 							});
 
@@ -122,37 +127,43 @@ I. SYSTEM_INSTRUCTIONS:
 									return inputString[currentLine++];
 							}
 
-							function main() {
-								console.log('Hello, World!');
+							class Solution {
+								console.log("Hello World");
 							}
+
 						""
 
 					5. C (GCC 8.3.0):
 					- Use ""scanf"" to read input from the console.
 					- Use ""printf"" to write output to the console.
 					- Do not use functions related to file I/O such as fopen, fread, fwrite.
-			
+					- Ensure the code is compatible with C (GCC 8.3.0).
+
 					6. Go (1.13.5):
 					- Use ""bufio.NewReader"" and ""os.Stdin"" to read input from the console. Use ""reader.ReadString('\\n')"" to read a line from the console.
 					- Use ""fmt.Println"" to write output to the console.
 					- Do not use functions related to file I/O such as os.Open.
 					- Go language has reader.ReadString('\\n') should be reader.ReadString('\\\\n').
-					
+					- Ensure the code is compatible with Go (1.13.5).
+
 					7. PHP (7.4.1):
 					- Use ""fgets(STDIN)"" to read input from the console.
 					- Use ""echo"" to write output to the console.
 					- Do not use functions related to file I/O such as fopen, fwrite.
-			
+					- Ensure the code is compatible with PHP (7.4.1).
+
 					8. Pascal (FPC 3.0.4):
 					- Use ""ReadLn"" to read input from the console.
 					- Use ""WriteLn"" to write output to the console.
 					- Do not use functions related to file I/O such as AssignFile, Reset, Rewrite.
-	
+					- Ensure the code is compatible with Pascal (FPC 3.0.4).
+
 					9. C# (Mono 6.6.0.161)
 					- Use Console.ReadLine to read from the console.
 					- Use Console.WriteLine to write to the console.
 					- Do not use classes and methods related to file I/O such as StreamReader, StreamWriter.
-	
+					- Ensure the code is compatible with C# (Mono 6.6.0.161)
+
 		4. Example Output:
 			"""
 				[
@@ -170,7 +181,7 @@ I. SYSTEM_INSTRUCTIONS:
 					},
 					{
 						"program_language": "JavaScript (Node.js 12.14.0)",
-						"code_stub": "'use strict';\n\nconst os = require('os');\n\nprocess.stdin.resume();\nprocess.stdin.setEncoding('utf-8');\n\nlet inputString = '';\nlet currentLine = 0;\n\nprocess.stdin.on('data', function(inputStdin) {\n    inputString += inputStdin;\n});\n\nprocess.stdin.on('end', function() {\n    inputString = inputString.split(os.EOL);\n    main();\n});\n\nfunction readLine() {\n    return inputString[currentLine++];\n}\n\nfunction sumOfTwoIntegers(a, b) {\n    // Write your code here\n    return a + b;\n}\n\nfunction main() {\n    const a = parseInt(readLine().trim(), 10);\n    const b = parseInt(readLine().trim(), 10);\n    const result = sumOfTwoIntegers(a, b);\n    console.log(result);\n}"
+						"code_stub": "'use strict';\n\nprocess.stdin.resume();\nprocess.stdin.setEncoding('utf-8');\n\nlet inputString = '';\nlet currentLine = 0;\n\nprocess.stdin.on('data', function(inputStdin) {\n    inputString += inputStdin;\n});\n\nprocess.stdin.on('end', function() {\n    inputString = inputString.trim().split(/\\s+/);\n    main();\n});\n\nfunction readLine() {\n    return inputString[currentLine++];\n}\n\nclass Solution {\n    threeSumClosest(nums, target) {\n        if (nums.length < 3) {\n            return 0;\n        }\n        nums.sort((a, b) => a - b);\n        let closestSum = nums[0] + nums[1] + nums[2];\n        for (let i = 0; i < nums.length - 2; i++) {\n            let left = i + 1;\n            let right = nums.length - 1;\n            while (left < right) {\n                let currentSum = nums[i] + nums[left] + nums[right];\n                if (Math.abs(currentSum - target) < Math.abs(closestSum - target)) {\n                    closestSum = currentSum;\n                }\n                if (currentSum < target) {\n                    left++;\n                } else {\n                    right--;\n                }\n            }\n        }\n        return closestSum;\n    }\n}\n\nfunction main() {\n    const n = parseInt(readLine().trim(), 10);\n    const nums = [];\n    for (let i = 0; i < n; i++) {\n        nums.push(parseInt(readLine().trim(), 10));\n    }\n    const target = parseInt(readLine().trim(), 10);\n    const solution = new Solution();\n    const result = solution.threeSumClosest(nums, target);\n    console.log(result);\n}\n"
 					},
 					{
 						"program_language": "C (GCC 8.3.0)",
@@ -290,20 +301,28 @@ I. SYSTEM_INSTRUCTIONS:
     });
 
     return chunks.map(async (chunk) => {
-      console.log(chunk);
-      try {
-        result = await chat.sendMessageStream(INPUT(chunk));
-        response = await result.response;
-        text = await response.text();
-        const cleanText = text.replace(/```/g, "").replace(/json/g, "");
-        const repaired = jsonrepair(cleanText);
-        const json = JSON.parse(repaired);
-        let chunkResponses = [...json];
-        return chunkResponses;
-      } catch (error) {
-        console.log("chunks", chunk);
-        console.log(error);
+      let attempts = 0;
+      let success = false;
+      let chunkResponses: any[] = [];
+
+      while (attempts < 5 && !success) {
+        try {
+          result = await chat.sendMessageStream(INPUT(chunk));
+          response = await result.response;
+          text = await response.text();
+          const cleanText = text.replace(/```/g, "").replace(/json/g, "");
+          const repaired = jsonrepair(cleanText);
+          const json = JSON.parse(repaired);
+          chunkResponses = [...json];
+          success = true;
+        } catch (e) {
+          console.error("Hello error", e);
+          attempts++;
+          if (attempts === 5) throw new Error("Failed to parse JSON after 5 attempts");
+        }
       }
+
+      return chunkResponses;
     });
   } catch (error) {
     Promise.reject(error);

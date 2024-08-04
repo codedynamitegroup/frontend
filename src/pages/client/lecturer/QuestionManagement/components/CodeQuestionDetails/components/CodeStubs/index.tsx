@@ -58,7 +58,7 @@ const CodeQuestionCodeStubs = memo((props: Props) => {
     keyName: "plid"
   });
   const availableLanguage = programmingLanguageMethod.getValues("programmingLanguages");
-  console.log(availableLanguage);
+
   const selectedLanguageNames: ICodeConverterRequest[] = availableLanguage
     .filter((value) => value.choosen)
     .map((value) => ({ program_language: value.name }));
