@@ -155,7 +155,9 @@ export default function HomePage() {
         <Grid container>
           <Container className={classes.courseContainer}>
             <Grid item xs={12} className={classes.courseContent}>
-              <Heading3 className={classes.courseHeading}>{t("home_learn_to_code")}</Heading3>
+              <Heading3 className={classes.courseHeading} nonoverflow>
+                {t("home_learn_to_code")}
+              </Heading3>
               {data.isLoading ? (
                 <Box
                   sx={{
@@ -250,7 +252,7 @@ export default function HomePage() {
               )}
             </Grid>
             <Grid item xs={12} className={classes.courseContent}>
-              <Heading3 className={classes.courseHeading}>
+              <Heading3 className={classes.courseHeading} nonoverflow>
                 {t("home_data_structures_and_algorithms")}
               </Heading3>
 
