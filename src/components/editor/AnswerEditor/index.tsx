@@ -141,7 +141,7 @@ const AnswerEditor = (props: AnswerEditorProps) => {
                   defaultValue={-1}
                   render={({ field: { onChange, value } }) => (
                     <Select
-                      value={value}
+                      value={calculateFraction(value)}
                       onChange={(event, newValue) => onChange(newValue)}
                       sx={{ borderRadius: "12px", height: "40px" }}
                     >
@@ -203,7 +203,7 @@ const AnswerEditor = (props: AnswerEditorProps) => {
                   defaultValue={-1}
                   render={({ field: { onChange, value } }) => (
                     <Select
-                      value={value}
+                      value={calculateFraction(value)}
                       onChange={(event, newValue) => onChange(newValue)}
                       sx={{ borderRadius: "12px", height: "40px" }}
                     >
@@ -278,3 +278,14 @@ const AnswerEditor = (props: AnswerEditorProps) => {
 };
 
 export default AnswerEditor;
+
+const calculateFraction = (fraction: number) => {
+  for (let i = 0; i < AnswerPoint.length; i++) {
+    if (AnswerPoint[i].percentNumber === fraction) {
+      return AnswerPoint[i].percentNumber;
+    } else if (fraction > AnswerPoint[i].percentNumber && i - 1 >= 0) {
+      return AnswerPoint[i - 1].percentNumber;
+    }
+  }
+  return 0;
+};
