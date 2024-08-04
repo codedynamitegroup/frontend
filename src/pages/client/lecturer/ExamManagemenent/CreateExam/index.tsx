@@ -1152,7 +1152,7 @@ export default function ExamCreated() {
                     </Grid>
                     <Grid item xs={4}>
                       <TitleWithInfoTip
-                        title={"Đơn vị"}
+                        title={t("unit")}
                         fontSize='12px'
                         color='var(--gray-60)'
                         gutterBottom

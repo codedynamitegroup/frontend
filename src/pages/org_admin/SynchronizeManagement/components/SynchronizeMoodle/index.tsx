@@ -10,6 +10,7 @@ import { setInfoMess } from "reduxes/AppStatus";
 import { SocketData } from "reduxes/Socket";
 import { NotificationService } from "services/courseService/NotificationService";
 import { RootState } from "store";
+import { SynchStateEntity } from "models/courseService/entity/SynchStateEntity";
 
 enum Statuses {
   PENDING = "PENDING",
@@ -75,9 +76,33 @@ const SynchronizeMoodle: React.FC = () => {
   const [courseStatus, setCourseStatus] = useState<Statuses>(Statuses.PENDING);
   const [otherResourcesStatus, setOtherResourcesStatus] = useState<Statuses>(Statuses.PENDING);
   const [isSynchronizing, setIsSynchronizing] = useState(false);
+  const [state, setState] = useState<SynchStateEntity | null>(null);
   const { loggedUser, isLoggedIn } = useAuth();
   const socketState = useSelector((state: RootState) => state.socket);
   const dispatch = useDispatch();
+
+  const fetchSynchStateByOrganizationId = async (id: string) => {
+    try {
+      const response = await SynchronizeMoodleService.getByOrganizationId(id);
+      for (let i = 0; i < response.length; i++) {
+        if (response[i].step === "USER") {
+          setUserStatus(response[i].status);
+        } else if (response[i].step === "COURSE") {
+          setCourseStatus(response[i].status);
+        } else if (response[i].step === "RESOURCE") {
+          setOtherResourcesStatus(response[i].status);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (loggedUser.organization.organizationId) {
+      fetchSynchStateByOrganizationId(loggedUser.organization.organizationId);
+    }
+  }, []);
 
   const fetchStatusFromDB = async (id: string) => {
     try {
@@ -110,8 +135,6 @@ const SynchronizeMoodle: React.FC = () => {
   useEffect(() => {
     if (isLoggedIn && socketState && socketState.socket) {
       socketState.socket.on("course_step_sync_completed", (data: SocketData) => {
-        console.log("CC");
-        console.log("course_step_sync_completed", data);
         if (data.message.userTo.userId === loggedUser.userId) {
           if (data.message.subject === "USER_SYNC_COMPLETED") {
             setUserStatus(Statuses.SUCCESS);

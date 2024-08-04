@@ -410,6 +410,7 @@ export default function AssignmentCreated() {
       setValue("intro", assignment.intro);
       setValue("activity", assignment.activity);
       setValue("maxScore", assignment.maxScore);
+      setValue("sectionId", assignment.sectionId);
       setValue(
         "timeOpen",
         assignment.timeOpen instanceof Date

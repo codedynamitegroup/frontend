@@ -52,4 +52,15 @@ export class SynchronizeMoodleService {
       return this.handleError(error);
     }
   }
+
+  static async getByOrganizationId(organizationId: string) {
+    try {
+      const response = await this.apiClient.get(
+        `${API.COURSE.SYNCHRONIZE_MOODLE.GET_ALL}`.replace(":id", organizationId)
+      );
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return this.handleError(error);
+    }
+  }
 }
