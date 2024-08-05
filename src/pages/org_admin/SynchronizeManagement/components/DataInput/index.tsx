@@ -48,7 +48,6 @@ const DataInput = () => {
         <Controller
           name='moodleUrl'
           control={control}
-          defaultValue=''
           render={({ field, fieldState: { error } }) => (
             <Box>
               <InputTextFieldColumn
@@ -72,7 +71,6 @@ const DataInput = () => {
         <Controller
           name='apiKey'
           control={control}
-          defaultValue=''
           render={({ field, fieldState: { error } }) => (
             <Box>
               <InputTextFieldColumn

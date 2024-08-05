@@ -30,9 +30,10 @@ export interface UpdateOrganizationBySystemAdminRequest {
 }
 
 export interface UpdateOrganizationByOrgAdminRequest {
-  name: string;
+  name?: string;
   description?: string;
-  email: string;
-  phone: string;
-  moodleUrl: string;
+  email?: string;
+  phone?: string;
+  moodleUrl?: string;
+  apiKey?: string;
 }
