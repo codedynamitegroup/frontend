@@ -281,9 +281,14 @@ export default AnswerEditor;
 
 const calculateFraction = (fraction: number) => {
   for (let i = 0; i < AnswerPoint.length; i++) {
-    if (AnswerPoint[i].percentNumber === fraction) {
+    // const roundedNumb = Math.round((AnswerPoint[i].percentNumber + Number.EPSILON) * 100) / 100;
+    const roundedNumb = Number(AnswerPoint[i].percentNumber.toFixed(2));
+    const roundedFraction = Number(fraction.toFixed(2));
+    console.log(roundedNumb, roundedFraction);
+
+    if (roundedNumb === roundedFraction) {
       return AnswerPoint[i].percentNumber;
-    } else if (fraction > AnswerPoint[i].percentNumber && i - 1 >= 0) {
+    } else if (roundedFraction >= roundedNumb && i - 1 >= 0) {
       return AnswerPoint[i - 1].percentNumber;
     }
   }

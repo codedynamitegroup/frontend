@@ -96,6 +96,7 @@
   "common_remove": "Remove",
   "common_question": "Question",
   "common_feedback": "Feedback",
+  "enter_feedback": "Enter feedback",
   "common_feedback_by_ai": "Feedback by AI",
   "common_enter_grade": "Enter grade",
   "common_see_evaluating": "View Evaluating",
@@ -1271,6 +1272,7 @@
   "common_no_data_description": "Start generating high-quality questions for your course by adding your inputs",
   "create_question_ai": "Create question with AI",
   "exam_submisison_total_student_score": "Total student grade",
+  "common_required": "Answer feedback is required",
 
   "update_grade": "Update grade",
   "correct_answer": "Correct answer",
