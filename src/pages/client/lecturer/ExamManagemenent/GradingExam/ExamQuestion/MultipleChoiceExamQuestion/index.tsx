@@ -348,7 +348,7 @@ const MultipleChoiceExamQuestion = (props: MultipleChoiceExamQuestionProps) => {
                   title={t("common_feedback")}
                   roundedBorder={true}
                   required
-                  placeholder={t("common_feedback")}
+                  placeholder={t("enter_feedback")}
                   backgroundColor='white'
                   tooltipDescription={t("common_feedback")}
                   {...field}
