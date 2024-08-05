@@ -371,7 +371,9 @@ export default function UserDashboard() {
                     <Skeleton variant='text' />
                   ) : (
                     <ParagraphBody fontWeight={500} translation-key='dashboard_participant_num'>
-                      {t("dashboard_participant_num", { participantNum: 1000 })}
+                      {t("dashboard_participant_num", {
+                        participantNum: firstMostPopularContest?.numOfParticipants || 0
+                      })}
                     </ParagraphBody>
                   )}
 
