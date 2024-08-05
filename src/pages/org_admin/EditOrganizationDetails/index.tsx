@@ -92,10 +92,10 @@ const EditOrganizationDetails = () => {
   );
 
   useEffect(() => {
-    if (loggedUser && loggedUser.organization.organizationId) {
+    if (loggedUser?.organization?.organizationId) {
       handleGetOrganizationById(loggedUser.organization.organizationId);
     }
-  }, [organization, handleGetOrganizationById, loggedUser]);
+  }, [handleGetOrganizationById, loggedUser]);
 
   const submitHandler = async (data: any) => {
     const formSubmittedData: IFormDataType = { ...data };
