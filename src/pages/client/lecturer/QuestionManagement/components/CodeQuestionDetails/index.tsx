@@ -264,6 +264,9 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
     }
   };
 
+  console.log("isCloneData", isCloneData);
+  console.log("isCreateExam", isCreateExam);
+
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const onSubmit = async (data: CodeQuestionFormData) => {
     setLoadingSubmit(true);
