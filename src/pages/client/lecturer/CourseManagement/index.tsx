@@ -143,7 +143,18 @@ const LecturerCourses = () => {
       <Heading1 className={classes.pageTitle} translation-key='course_list_title'>
         {t("course_list_title")}
       </Heading1>
-      <SearchBar onSearchClick={setSearchText} />
+      <Box className={classes.featureGroup}>
+        <SearchBar onSearchClick={setSearchText} />
+        <Box className={classes.filterContainer}>
+          <ChipMultipleFilter
+            label={t("course_filter")}
+            defaultChipList={courseTypes.map((courseType) => courseType.name)}
+            filterList={selectedCategories}
+            onFilterListChangeHandler={handleCategoryFilterChange}
+            translation-key='course_filter'
+          />
+        </Box>
+      </Box>
       {isLoading ? (
         <Box
           sx={{
@@ -158,94 +169,37 @@ const LecturerCourses = () => {
           <CircularProgress />
         </Box>
       ) : (
-        <>
-          <Box className={classes.featureGroup}>
-            <Box className={classes.filterContainer}>
-              <ChipMultipleFilter
-                label={t("course_filter")}
-                defaultChipList={courseTypes.map((courseType) => courseType.name)}
-                filterList={selectedCategories}
-                onFilterListChangeHandler={handleCategoryFilterChange}
-                translation-key='course_filter'
+        <Box className={classes.gridContainer}>
+          {filteredCourses.map((course) => (
+            <Box className={classes.courseCard} key={course.id}>
+              <CourseList
+                courseId={course.id}
+                courseAvatarUrl={"https://picsum.photos/200"}
+                courseCategory={course.courseType.name}
+                courseName={course.name}
+                teacherList={course.teachers}
               />
             </Box>
-
-            <ToggleButtonGroup
-              className={classes.changeViewButtonGroup}
-              value={viewType}
-              exclusive
-              onChange={handleViewChange}
-            >
-              <ToggleButton value={EView.listView} aria-label='list'>
-                <ViewListIcon />
-              </ToggleButton>
-              <ToggleButton value={EView.cardView} aria-label='module'>
-                <ViewCardIcon />
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </Box>
-
-          {viewType === EView.cardView ? (
-            <Box sx={{ flexGrow: 1 }} className={classes.gridContainer}>
-              <Grid container spacing={2}>
-                {filteredCourses.map((course, index) => (
-                  <Grid
-                    className={classes.gridItem}
-                    item
-                    key={course.id}
-                    xs={12}
-                    sm={6}
-                    md={4}
-                    lg={3}
-                  >
-                    <CourseCard
-                      index={index}
-                      courseId={course.id}
-                      courseAvatarUrl={"https://picsum.photos/200"}
-                      courseCategory={course.courseType.name}
-                      courseName={course.name}
-                      teacherList={course.teachers}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            </Box>
-          ) : (
-            <Box sx={{ flexGrow: 1, marginTop: "20px" }} className={classes.gridContainer}>
-              <Grid container spacing={4}>
-                {filteredCourses.map((course) => (
-                  <Grid item xs={12} sm={12} md={12} lg={12} key={course.id}>
-                    <CourseList
-                      courseId={course.id}
-                      courseAvatarUrl={"https://picsum.photos/200"}
-                      courseCategory={course.courseType.name}
-                      courseName={course.name}
-                      teacherList={course.teachers}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            </Box>
-          )}
-        </>
+          ))}
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: "flex",
+              justifyContent: "center"
+            }}
+          >
+            <CustomPagination
+              count={courseState.totalPages}
+              page={pageNo}
+              handlePageChange={handlePageChange}
+              showFirstButton
+              showLastButton
+              size={"large"}
+            />
+          </Grid>
+        </Box>
       )}
-      <Grid
-        item
-        xs={12}
-        sx={{
-          display: "flex",
-          justifyContent: "center"
-        }}
-      >
-        <CustomPagination
-          count={courseState.totalPages}
-          page={pageNo}
-          handlePageChange={handlePageChange}
-          showFirstButton
-          showLastButton
-          size={"large"}
-        />
-      </Grid>
     </Box>
   );
 };

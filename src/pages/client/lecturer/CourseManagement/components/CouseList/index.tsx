@@ -1,22 +1,16 @@
-import classes from "./styles.module.scss";
-
-import Paper from "@mui/material/Paper";
-import Grid from "@mui/material/Grid";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import IconButton from "@mui/material/IconButton";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemText from "@mui/material/ListItemText";
-import Link from "@mui/material/Link";
+import React from "react";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
-import Heading5 from "components/text/Heading5";
-import Heading4 from "components/text/Heading4";
-import { routes } from "routes/routes";
-import { Box } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
-import { UserCourseEntity } from "models/courseService/entity/UserCourseEntity";
+import Stack from "@mui/material/Stack";
 import { useTranslation } from "react-i18next";
+import classes from "./styles.module.scss";
+import { UserCourseEntity } from "models/courseService/entity/UserCourseEntity";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
+import { useNavigate } from "react-router-dom";
+import { routes } from "routes/routes";
 
 interface ListProps {
   courseId: string;
@@ -28,62 +22,38 @@ interface ListProps {
 
 const CourseList = (props: ListProps) => {
   const { t } = useTranslation();
+  const { courseId, courseAvatarUrl, courseCategory, courseName, teacherList } = props;
+  const navigate = useNavigate();
+  const handleCardClick = () => {
+    navigate(routes.lecturer.course.information.replace(":courseId", courseId));
+  };
 
   return (
-    <Grid className={classes.container}>
-      <Grid container spacing={1}>
-        <Grid item xs={12} container direction='column'>
-          <Grid item xs className={classes.courseInfo}>
-            <Box className={classes.courseInfoWrapper}>
-              <Heading4 gutterBottom variant='subtitle1' colorname='--blue-3'>
-                <Link
-                  component={RouterLink}
-                  to={routes.lecturer.course.information.replace(":courseId", props.courseId)}
-                  underline='hover'
-                  color='inherit'
-                >
-                  {props.courseName} - {props.courseCategory}
-                </Link>
-              </Heading4>
-            </Box>
-          </Grid>
-          <Grid item xs className={classes.teacherListGridContainer}>
-            {props.teacherList.map((teacher) => (
-              <ListItem key={teacher.userId}>
-                <ListItemAvatar className={classes.teacherAvatarContainer}>
-                  <Avatar
-                    sx={{
-                      bgcolor: `${generateHSLColorByRandomText(`${teacher?.firstName} ${teacher?.lastName}`)}`
-                    }}
-                    alt={"avatar"}
-                    src={""}
-                    className={classes.teacherAvatar}
-                  >
-                    {teacher?.firstName.charAt(0)}
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  classes={{
-                    primary: classes.primaryTeacherText,
-                    secondary: classes.secondaryTeacherText
-                  }}
-                  primary={
-                    <Link
-                      component={RouterLink}
-                      to={routes.user.profile.replace(":userId", teacher.userId)}
-                      underline='hover'
-                    >
-                      {teacher.lastName} {teacher.firstName}
-                    </Link>
-                  }
-                  secondary={t("role_lecturer")}
-                />
-              </ListItem>
-            ))}
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
+    <Card className={classes.courseCard} onClick={handleCardClick}>
+      <CardContent>
+        <Typography variant='h5' component='div' className={classes.courseName}>
+          {courseName}
+        </Typography>
+        <Chip label={courseCategory} className={classes.courseType} />
+        <Stack direction='row' spacing={2} className={classes.courseInstructors}>
+          {teacherList.slice(0, 5).map((instructor, index) => (
+            <Stack direction='row' spacing={1} key={index} className={classes.instructor}>
+              <Avatar
+                sx={{
+                  bgcolor: `${generateHSLColorByRandomText(`${instructor.firstName} ${instructor.lastName}`)}`
+                }}
+                className={classes.avatar}
+              >
+                {instructor.firstName.charAt(0)}
+              </Avatar>
+              <Typography variant='body2' className={classes.instructorName}>
+                {instructor.firstName + " " + instructor.lastName}
+              </Typography>
+            </Stack>
+          ))}
+        </Stack>
+      </CardContent>
+    </Card>
   );
 };
 

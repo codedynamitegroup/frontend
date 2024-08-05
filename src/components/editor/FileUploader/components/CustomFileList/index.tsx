@@ -8,6 +8,8 @@ import { ExtFile } from "@files-ui/react";
 import { saveAs } from "file-saver";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
+import { standardlizeUTCStringToLocaleString } from "utils/moment";
+import moment from "moment";
 
 interface CustomFileListProps {
   files?: ExtFile[];
@@ -16,6 +18,13 @@ interface CustomFileListProps {
 
 export default function CustomFileList({ files = [], treeView = true }: CustomFileListProps) {
   const { t, i18n } = useTranslation();
+  const [currentLang, setCurrentLang] = React.useState(() => {
+    return i18next.language;
+  });
+
+  React.useEffect(() => {
+    setCurrentLang(i18next.language);
+  }, [i18next.language]);
 
   const handleDownload = async (fileId: string | number | undefined) => {
     if (fileId === undefined) return;
@@ -29,75 +38,6 @@ export default function CustomFileList({ files = [], treeView = true }: CustomFi
       console.error("File not found");
     }
   };
-
-  function formatTimestamp(timestamp: number, language: "en" | "vi"): string {
-    // Create a new Date object from the timestamp
-    const date = new Date(timestamp);
-
-    // Check if the date is valid
-    if (isNaN(date.getTime())) {
-      throw new Error("Invalid timestamp");
-    }
-
-    // Define arrays of month names and AM/PM for both languages
-    const monthNames = {
-      en: [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      vi: [
-        "Tháng Một",
-        "Tháng Hai",
-        "Tháng Ba",
-        "Tháng Tư",
-        "Tháng Năm",
-        "Tháng Sáu",
-        "Tháng Bảy",
-        "Tháng Tám",
-        "Tháng Chín",
-        "Tháng Mười",
-        "Tháng Mười Một",
-        "Tháng Mười Hai"
-      ]
-    };
-
-    const ampmNames = {
-      en: { AM: "AM", PM: "PM" },
-      vi: { AM: "SA", PM: "CH" }
-    };
-
-    // Extract the date components
-    const day = date.getUTCDate();
-    const month = monthNames[language][date.getUTCMonth()];
-    const year = date.getUTCFullYear();
-
-    // Extract the time components
-    let hours = date.getUTCHours();
-    const minutes = date.getUTCMinutes();
-
-    // Determine AM/PM
-    const ampm = hours >= 12 ? ampmNames[language].PM : ampmNames[language].AM;
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-
-    // Format minutes to always have two digits
-    const minutesStr = minutes < 10 ? "0" + minutes : minutes.toString();
-
-    // Construct the formatted date string
-    const formattedDate = `${day} ${month} ${year}, ${hours}:${minutesStr} ${ampm}`;
-
-    return formattedDate;
-  }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -152,7 +92,10 @@ export default function CustomFileList({ files = [], treeView = true }: CustomFi
                 {file.name}
               </a>
               <p>
-                {formatTimestamp(file.file!!.lastModified, i18next.language === "en" ? "en" : "vi")}
+                {standardlizeUTCStringToLocaleString(
+                  moment(file.file!!.lastModified).toString() as string,
+                  currentLang
+                )}
               </p>
             </div>
           ))}

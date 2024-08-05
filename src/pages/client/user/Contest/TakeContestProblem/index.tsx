@@ -178,12 +178,8 @@ export default function TakeContestProblem() {
       language.pLanguage.headCode !== undefined &&
       language.pLanguage.tailCode !== undefined
     ) {
-      // const headCode: string = language.pLanguage.headCode;
-      // const bodyCode: string = selectedLanguage.sourceCode;
-      // const tailCode: string = language.pLanguage.tailCode;
       const sourceCode: string = selectedLanguage.sourceCode;
       dispatch(setSourceCode(sourceCode));
-      // dispatch(setHeadBodyTailCode({ headCode, bodyCode, tailCode }));
       dispatch(setLanguageId(language.pLanguage.judge0Id));
       dispatch(setSystemLanguageId(language.pLanguage.id));
       dispatch(setCpuTimeLimit(language.pLanguage.timeLimit));
@@ -195,7 +191,6 @@ export default function TakeContestProblem() {
     const newSelectedLanguageId = event.target.value;
     const oldLanguage = mapLanguages.get(selectedLanguage.id);
     if (oldLanguage !== undefined && languageList !== undefined) {
-      console.log(selectedLanguage.sourceCode);
       let newLangList = languageList.map((value, index) => {
         if (index === oldLanguage.index)
           return { ...value, sourceCode: selectedLanguage.sourceCode };
