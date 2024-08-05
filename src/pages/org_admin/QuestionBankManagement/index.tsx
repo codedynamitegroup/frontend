@@ -92,7 +92,7 @@ const OrgAdminQuestionBankManagement = () => {
     QuestionBankCategoryService.deleteQuestionBankCategory(deletedCategoryId)
       .then(() => {
         dispatch(setSuccessMess("Delete category successfully"));
-        dispatch(clearCategories());
+        handleGetQuestionBankCategories({ search: searchText });
       })
       .catch((error) => {
         console.error("error", error);

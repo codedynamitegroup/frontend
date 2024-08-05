@@ -139,7 +139,7 @@ const QuestionBankManagement = () => {
     QuestionBankCategoryService.deleteQuestionBankCategory(deletedCategoryId)
       .then(() => {
         dispatch(setSuccessMess("Delete category successfully"));
-        dispatch(clearCategories());
+        handleGetQuestionBankCategories({});
       })
       .catch((error) => {
         console.error("error", error);

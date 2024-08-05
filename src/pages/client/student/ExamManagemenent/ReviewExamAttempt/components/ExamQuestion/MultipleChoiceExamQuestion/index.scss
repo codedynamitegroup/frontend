@@ -1,0 +1,27 @@
+.text-editor-review-question-answer {
+  border: 0;
+  height: fit-content !important;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  .ql-disabled {
+    border: 0;
+  }
+  .ql-container {
+    padding: 0;
+    margin: 0;
+    border: 0;
+
+    .ql-editor {
+      padding: 0px !important;
+      margin: 0;
+      height: fit-content;
+      line-height: 1.5;
+    }
+  }
+}
+
+.sheet-radio-group {
+  padding: 10px 15px !important;
+}

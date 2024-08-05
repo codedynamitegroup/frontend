@@ -14,6 +14,7 @@ import SentimentDissatisfiedRoundedIcon from "@mui/icons-material/SentimentDissa
 import Heading6 from "components/text/Heading6";
 import ParagraphSmall from "components/text/ParagraphSmall";
 import ReactQuill from "react-quill";
+import "./index.scss";
 
 interface MultipleChoiceExamQuestionProps {
   questionIndex: number;
@@ -212,15 +213,24 @@ const MultipleChoiceExamQuestion = (props: MultipleChoiceExamQuestionProps) => {
                 </Box>
               )}
               {questionMultiChoice?.question?.generalFeedback && (
-                <ParagraphSmall>{questionMultiChoice?.question?.generalFeedback}</ParagraphSmall>
+                <ReactQuill
+                  readOnly={true}
+                  theme={"bubble"}
+                  value={questionMultiChoice?.question?.generalFeedback}
+                  className={`text-editor-review-question-answer`}
+                />
               )}
               <ParagraphSmall fontWeight={"500"}>
                 {`${questionMultiChoice?.single ? t("correct_answer_non_plural") : t("correct_answer_plural")}:`}
               </ParagraphSmall>
               {correctAnswerList?.map((answer) => (
-                <ParagraphSmall key={answer}>
-                  {answerList?.find((item) => item.value === answer)?.label}
-                </ParagraphSmall>
+                <ReactQuill
+                  readOnly={true}
+                  theme={"bubble"}
+                  key={answer}
+                  value={answerList?.find((item) => item.value === answer)?.label}
+                  className={`text-editor-review-question-answer`}
+                />
               ))}
             </Card>
           </Grid>
