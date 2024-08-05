@@ -223,7 +223,6 @@ export default function DetailProblem() {
     setTestCaseTab(1);
     dispatch(setExecuteResultLoading(true));
     if (currentExecuteData.test_cases) {
-      console.log("currentExecuteData", currentExecuteData);
       Promise.all(
         currentExecuteData.test_cases.map((value) =>
           ExecuteService.execute(
