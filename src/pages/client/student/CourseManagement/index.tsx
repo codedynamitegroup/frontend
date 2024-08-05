@@ -32,7 +32,6 @@ enum EView {
 const StudentCourses: React.FC = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [courseTypes, setCourseTypes] = useState<CourseTypeEntity[]>([]);
-  // const [courses, setCourses] = useState<CourseEntity[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedIdCategories, setSelectedIdCategories] = useState<string[]>([]);
@@ -136,12 +135,24 @@ const StudentCourses: React.FC = () => {
       fetchCourses({ search: searchText, courseType: selectedIdCategories, pageNo: value - 1 });
     }
   };
+
   return (
     <Box id={classes.coursesBody}>
       <Heading1 className={classes.pageTitle} translation-key='course_list_title'>
         {t("course_list_title")}
       </Heading1>
-      <SearchBar onSearchClick={setSearchText} />
+      <Box className={classes.featureGroup}>
+        <SearchBar onSearchClick={setSearchText} />
+        <Box className={classes.filterContainer}>
+          <ChipMultipleFilter
+            label={t("course_filter")}
+            defaultChipList={courseTypes.map((courseType) => courseType.name)}
+            filterList={selectedCategories}
+            onFilterListChangeHandler={handleCategoryFilterChange}
+            translation-key='course_filter'
+          />
+        </Box>
+      </Box>
       {isLoading ? (
         <Box
           sx={{
@@ -156,64 +167,17 @@ const StudentCourses: React.FC = () => {
           <CircularProgress />
         </Box>
       ) : (
-        <Box className={classes.featureGroup}>
-          <Box className={classes.filterContainer}>
-            <ChipMultipleFilter
-              label={t("course_filter")}
-              defaultChipList={courseTypes.map((courseType) => courseType.name)}
-              filterList={selectedCategories}
-              onFilterListChangeHandler={handleCategoryFilterChange}
-              translation-key='course_filter'
-            />
-          </Box>
-
-          <ToggleButtonGroup
-            className={classes.changeViewButtonGroup}
-            value={viewType}
-            exclusive
-            onChange={handleViewChange}
-          >
-            <ToggleButton value={EView.listView} aria-label='list'>
-              <ViewListIcon />
-            </ToggleButton>
-            <ToggleButton value={EView.cardView} aria-label='module'>
-              <ViewCardIcon />
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Box>
-      )}
-      <Box
-        sx={{ flexGrow: 1, marginTop: viewType === EView.cardView ? "0" : "20px" }}
-        className={classes.gridContainer}
-      >
-        <Grid container spacing={viewType === EView.cardView ? 2 : 4}>
+        <Box className={classes.gridContainer}>
           {filteredCourses.map((course) => (
-            <Grid
-              item
-              xs={12}
-              sm={viewType === EView.cardView ? 6 : 12}
-              md={viewType === EView.cardView ? 4 : 12}
-              lg={viewType === EView.cardView ? 3 : 12}
-              key={course.id}
-            >
-              {viewType === EView.cardView ? (
-                <CourseCard
-                  courseId={course.id}
-                  courseAvatarUrl={"https://picsum.photos/200"}
-                  courseCategory={course.courseType.name}
-                  courseName={course.name}
-                  teacherList={course.teachers}
-                />
-              ) : (
-                <CourseList
-                  courseId={course.id}
-                  courseAvatarUrl={"https://picsum.photos/200"}
-                  courseCategory={course.courseType.name}
-                  courseName={course.name}
-                  teacherList={course.teachers}
-                />
-              )}
-            </Grid>
+            <Box className={classes.courseCard} key={course.id}>
+              <CourseList
+                courseId={course.id}
+                courseAvatarUrl={"https://picsum.photos/200"}
+                courseCategory={course.courseType.name}
+                courseName={course.name}
+                teacherList={course.teachers}
+              />
+            </Box>
           ))}
           <Grid
             item
@@ -232,8 +196,8 @@ const StudentCourses: React.FC = () => {
               size={"large"}
             />
           </Grid>
-        </Grid>
-      </Box>
+        </Box>
+      )}
     </Box>
   );
 };
