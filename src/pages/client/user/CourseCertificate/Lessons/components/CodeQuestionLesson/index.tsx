@@ -198,7 +198,6 @@ const CodeQuestionLesson = ({
     const newSelectedLanguageId = event.target.value;
     const oldLanguage = mapLanguages.get(selectedLanguage.id);
     if (oldLanguage !== undefined && languageList !== undefined) {
-      // console.log(selectedLanguage.sourceCode);
       let newLangList = languageList.map((value: any, index) => {
         if (index === oldLanguage.index)
           return { ...value, sourceCode: selectedLanguage.sourceCode };
@@ -221,7 +220,6 @@ const CodeQuestionLesson = ({
     setTestCaseTab(1);
     dispatch(setExecuteResultLoading(true));
     if (currentExecuteData.test_cases) {
-      console.log("currentExecuteData", currentExecuteData);
       Promise.all(
         currentExecuteData.test_cases.map((value) =>
           ExecuteService.execute(
@@ -267,7 +265,7 @@ const CodeQuestionLesson = ({
         cerCourseId: courseId
       })
         .then((data) => {
-          console.log("create submit response", data);
+          // console.log("create submit response", data);
           navigate(
             routes.user.course_certificate.detail.lesson.submission
               .replace(":courseId", courseId)
@@ -275,7 +273,7 @@ const CodeQuestionLesson = ({
           );
         })
         .catch((err) => {
-          console.log(err);
+          console.log("create submit error", err);
         })
         .finally(() => setSubmisisonLoading(false));
     }
