@@ -236,7 +236,8 @@ export default function PickQuestionFromQuestionBankDialog({
         `/lecturer/courses/${courseId}/questions/code/create/${selectedRowId[0].questionId}/clone-data`,
         {
           state: {
-            categoryName: categoryList?.find((item) => item.value === category)?.label
+            categoryName: categoryList?.find((item) => item.value === category)?.label,
+            isCreateExam: true
           }
         }
       );
