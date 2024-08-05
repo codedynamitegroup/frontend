@@ -115,7 +115,7 @@ const EditUserDetails = () => {
             firstName: userResponse.firstName,
             lastName: userResponse.lastName,
             dob: format(userResponse.dob ? userResponse.dob : Date.now(), "dd-MM-yyyy"),
-            phone: userResponse.phone,
+            phone: userResponse.phone ? userResponse.phone : "",
             roleName: roleName,
             isDeleted: userResponse.isDeleted
           });
@@ -225,10 +225,10 @@ const EditUserDetails = () => {
               />
             )}
             <Grid container spacing={1} columns={12}>
-              <Grid item xs={4}>
+              <Grid item xs={3}>
                 <TextTitle translation-key='common_phone'>{t("common_phone")}</TextTitle>
               </Grid>
-              <Grid item xs={7} display={"flex"} flexDirection={"column"} gap={"10px"}>
+              <Grid item xs={9} display={"flex"} flexDirection={"column"} gap={"10px"}>
                 <Controller
                   control={control}
                   name='phone'
@@ -275,10 +275,10 @@ const EditUserDetails = () => {
               width='100%'
             />
             <Grid container spacing={1} columns={12}>
-              <Grid item xs={4}>
+              <Grid item xs={3}>
                 <TextTitle translation-key='common_DOB'>{t("common_DOB")}</TextTitle>
               </Grid>
-              <Grid item xs={7}>
+              <Grid item xs={9}>
                 <Controller
                   control={control}
                   name='dob'
@@ -303,12 +303,12 @@ const EditUserDetails = () => {
               </Grid>
             </Grid>
             <Grid container spacing={1} columns={12}>
-              <Grid item xs={4} display={"flex"} flexDirection={"row"} alignItems={"center"}>
+              <Grid item xs={3} display={"flex"} flexDirection={"row"} alignItems={"center"}>
                 <TextTitle translation-key='common_is_blocked'>{t("common_is_blocked")}</TextTitle>
               </Grid>
               <Grid
                 item
-                xs={7}
+                xs={9}
                 display={"flex"}
                 flexDirection={"row"}
                 alignItems={"center"}
@@ -333,7 +333,7 @@ const EditUserDetails = () => {
                 <Grid container spacing={1} columns={12}>
                   <Grid
                     item
-                    xs={4}
+                    xs={3}
                     sx={{
                       display: "flex",
                       alignItems: "center"
@@ -359,7 +359,7 @@ const EditUserDetails = () => {
                   </Grid>
                   <Grid
                     item
-                    xs={7}
+                    xs={9}
                     sx={{
                       display: "flex",
                       alignItems: "center"
@@ -381,7 +381,7 @@ const EditUserDetails = () => {
                 <Grid container spacing={1} columns={12}>
                   <Grid
                     item
-                    xs={4}
+                    xs={3}
                     sx={{
                       display: "flex",
                       alignItems: "center"
@@ -407,7 +407,7 @@ const EditUserDetails = () => {
                   </Grid>
                   <Grid
                     item
-                    xs={7}
+                    xs={9}
                     sx={{
                       display: "flex",
                       alignItems: "center"
