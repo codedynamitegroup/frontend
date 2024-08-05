@@ -103,12 +103,32 @@ const ContestList = () => {
   }, [isLoggedIn, navigate, searchParams]);
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    navigate({
-      pathname: routes.user.contest.root,
-      search: createSearchParams({
-        page: value.toString()
-      }).toString()
-    });
+    if (startTimeFilter === ContestStartTimeFilterEnum.ALL) {
+      navigate({
+        pathname: routes.user.contest.root,
+        search: createSearchParams({
+          page: value.toString()
+        }).toString()
+      });
+    } else {
+      const filter =
+        startTimeFilter === ContestStartTimeFilterEnum.MY_CONTEST
+          ? "my-contest"
+          : startTimeFilter === ContestStartTimeFilterEnum.UPCOMING
+            ? "upcoming"
+            : startTimeFilter === ContestStartTimeFilterEnum.HAPPENING
+              ? "happening"
+              : startTimeFilter === ContestStartTimeFilterEnum.ENDED
+                ? "ended"
+                : "";
+      navigate({
+        pathname: routes.user.contest.root,
+        search: createSearchParams({
+          filter,
+          page: value.toString()
+        }).toString()
+      });
+    }
   };
 
   const handleButtonGroupChange = (

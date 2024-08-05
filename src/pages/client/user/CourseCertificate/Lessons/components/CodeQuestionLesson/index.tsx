@@ -177,30 +177,27 @@ const CodeQuestionLesson = ({
   }, [programmingLanguageAvailable, selectedLanguage.id]);
 
   useEffect(() => {
-    const language = mapLanguages.get(selectedLanguage.id);
-    if (
-      language !== undefined &&
-      language.pLanguage.headCode !== undefined &&
-      language.pLanguage.tailCode !== undefined
-    ) {
-      // const headCode: string = language.pLanguage.headCode;
-      // const bodyCode: string = selectedLanguage.sourceCode;
-      // const tailCode: string = language.pLanguage.tailCode;
-      const sourceCode: string = selectedLanguage.sourceCode;
-      dispatch(setSourceCode(sourceCode));
-      // dispatch(setHeadBodyTailCode({ headCode, bodyCode, tailCode }));
-      dispatch(setLanguageId(language.pLanguage.judge0Id));
-      dispatch(setSystemLanguageId(language.pLanguage.id));
-      dispatch(setCpuTimeLimit(language.pLanguage.timeLimit));
-      dispatch(setMemoryLimit(language.pLanguage.memoryLimit));
+    if (programmingLanguageAvailable.length > 0) {
+      const language = programmingLanguageAvailable[0];
+      if (
+        language !== undefined &&
+        language.headCode !== undefined &&
+        language.tailCode !== undefined
+      ) {
+        const sourceCode: string = selectedLanguage.sourceCode;
+        dispatch(setSourceCode(sourceCode));
+        dispatch(setLanguageId(language.judge0Id));
+        dispatch(setSystemLanguageId(language.id));
+        dispatch(setCpuTimeLimit(language.timeLimit));
+        dispatch(setMemoryLimit(language.memoryLimit));
+      }
     }
-  }, [selectedLanguage]);
+  }, [dispatch, programmingLanguageAvailable, selectedLanguage]);
 
   const handleChangeLanguage = (event: SelectChangeEvent) => {
     const newSelectedLanguageId = event.target.value;
     const oldLanguage = mapLanguages.get(selectedLanguage.id);
     if (oldLanguage !== undefined && languageList !== undefined) {
-      // console.log(selectedLanguage.sourceCode);
       let newLangList = languageList.map((value: any, index) => {
         if (index === oldLanguage.index)
           return { ...value, sourceCode: selectedLanguage.sourceCode };
@@ -268,7 +265,7 @@ const CodeQuestionLesson = ({
         cerCourseId: courseId
       })
         .then((data) => {
-          console.log("create submit response", data);
+          // console.log("create submit response", data);
           navigate(
             routes.user.course_certificate.detail.lesson.submission
               .replace(":courseId", courseId)
@@ -276,7 +273,7 @@ const CodeQuestionLesson = ({
           );
         })
         .catch((err) => {
-          console.log(err);
+          console.log("create submit error", err);
         })
         .finally(() => setSubmisisonLoading(false));
     }
