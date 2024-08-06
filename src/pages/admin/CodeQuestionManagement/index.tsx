@@ -62,7 +62,7 @@ const AdminCodeQuestionManagement = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(100);
   const [page, setPage] = useState(0);
   const [searchText, setSearchText] = useState("");
   const [codeQuestions, setCodeQuestions] = useState<CodeQuestionEntity[]>([]);

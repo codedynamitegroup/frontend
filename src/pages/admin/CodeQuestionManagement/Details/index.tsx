@@ -34,6 +34,7 @@ import { TestCaseSerivce } from "services/codeAssessmentService/TestCaseService"
 import FormSchema from "./schema/FormSchema";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import CustomBreadCrumb from "components/common/Breadcrumb";
+import { encodeBase64 } from "utils/base64";
 
 interface Props {
   isCloneData?: boolean;
@@ -138,7 +139,7 @@ const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
                   value.bodyCode = current.bodyCode;
                 }
               } else {
-                value.choosen = false;
+                value.choosen = true;
               }
             });
             codeQuestion.programmingLanguages = programmingLanguage;
@@ -323,9 +324,8 @@ const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
       <FormProvider {...codeQuestionFormMethod}>
         <form onSubmit={codeQuestionFormMethod.handleSubmit(onSubmit)}>
           <Box>
-            {/* <Button
+            <Button
               onClick={() => {
-                console.log(codeQuestionFormMethod.getValues("programmingLanguages"));
                 let availableLanguage = codeQuestionFormMethod.getValues("programmingLanguages");
                 let s = "";
                 availableLanguage.forEach((value) => {
@@ -335,8 +335,21 @@ const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
                 navigator.clipboard.writeText(s.slice(0, -1) + ";");
               }}
             >
-              copy
-            </Button> */}
+              language
+            </Button>
+            <Button
+              onClick={() => {
+                const data = codeQuestionFormMethod.getValues();
+                let s = `INSERT INTO public.qtype_code_questions(user_id, id, question_id ,dsl_template , name ,problem_statement ,input_format ,output_format ,copy_state ,failure_messages ,constraints, max_grade, difficulty)
+VALUES
+    ('b029f559-52a8-4699-b595-71161498ed8c', '${codeQuestion?.id ?? ""}', '${codeQuestion?.questionId ?? ""}', 'template', '${data.name}', E'${data.problemStatement}', E'${data.inputFormat}', E'${data.outputFormat}', 'CREATED', '', E'${data.constraints}', 10, '${data.difficulty}');
+`;
+
+                navigator.clipboard.writeText(s);
+              }}
+            >
+              info
+            </Button>
             <Box className={classes.body}>
               <CustomBreadCrumb
                 breadCrumbData={[
