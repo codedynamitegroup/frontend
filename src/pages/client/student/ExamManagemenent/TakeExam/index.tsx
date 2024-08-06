@@ -933,6 +933,9 @@ export default function TakeExam() {
                         isOptionEqualToValue={(option, value) =>
                           option.questionData.name === value.questionData.name
                         }
+                        onChange={(event, value) => {
+                          if (value) handleQuestionNavigateButton(value.questionData?.id);
+                        }}
                       />
                       <TitleWithInfoTip
                         title={t("take_exam_question_sort_question")}
