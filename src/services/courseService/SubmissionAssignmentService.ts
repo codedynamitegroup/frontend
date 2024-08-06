@@ -73,6 +73,7 @@ export class SubmissionAssignmentService {
     }
   }
   static async getSubmissionAssignmentByAssignmentId(
+    courseId: string,
     assignmentId: string,
     {
       isGraded = null,
@@ -88,7 +89,7 @@ export class SubmissionAssignmentService {
   ) {
     try {
       const response = await this.apiClient.get(`${API.COURSE.SUBMISSION_ASSIGNMENT.GET_ALL}`, {
-        params: { assignmentId, isGraded, search, pageNo, pageSize }
+        params: { courseId, assignmentId, isGraded, search, pageNo, pageSize }
       });
       return this.handleResponse(response);
     } catch (error: any) {

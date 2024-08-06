@@ -77,9 +77,13 @@ const LecturerCourseAssignmentDetails = () => {
       console.error(error);
     }
   };
-  const handleGetSubmissionAssignmentByAssignment = async (assignmentId: string) => {
+  const handleGetSubmissionAssignmentByAssignment = async (
+    courseId: string,
+    assignmentId: string
+  ) => {
     try {
       const response = await SubmissionAssignmentService.getSubmissionAssignmentByAssignmentId(
+        courseId,
         assignmentId,
         {
           isGraded: null,
@@ -103,7 +107,7 @@ const LecturerCourseAssignmentDetails = () => {
     handleCountStudentInCourse(courseId ?? "");
     handleCountSubmissionToGrade(assignmentId ?? "");
     handleCountSubmission(assignmentId ?? "");
-    handleGetSubmissionAssignmentByAssignment(assignmentId ?? "");
+    handleGetSubmissionAssignmentByAssignment(courseId ?? "", assignmentId ?? "");
   }, [assignmentId, courseId]);
 
   function calculateTimeDifference(

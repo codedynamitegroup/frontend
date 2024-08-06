@@ -197,6 +197,7 @@ export default function AssignmentGrading() {
 
   const handleGetSubmissionAssignmentByAssignment = useCallback(
     async (
+      courseId: string,
       assignmentId: string,
       isGraded: Boolean | null = null,
       search: string = "",
@@ -206,6 +207,7 @@ export default function AssignmentGrading() {
       dispatch(setLoading(true));
       try {
         const response = await SubmissionAssignmentService.getSubmissionAssignmentByAssignmentId(
+          courseId,
           assignmentId,
           {
             isGraded,
@@ -226,8 +228,9 @@ export default function AssignmentGrading() {
   );
 
   useEffect(() => {
-    if (assignmentId) {
+    if (assignmentId && courseId) {
       handleGetSubmissionAssignmentByAssignment(
+        courseId,
         assignmentId,
         gradingStatus === 0 ? null : gradingStatus === 1 ? false : true
       );
@@ -316,8 +319,9 @@ export default function AssignmentGrading() {
     console.log(selectedRowId);
   };
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    if (assignmentId) {
+    if (assignmentId && courseId) {
       handleGetSubmissionAssignmentByAssignment(
+        courseId,
         assignmentId,
         gradingStatus === 0 ? null : gradingStatus === 1 ? false : true,
         searchValue,

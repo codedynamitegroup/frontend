@@ -31,6 +31,7 @@ import CustomFileList from "components/editor/FileUploader/components/CustomFile
 import { SubmissionAssignmentFileEntity } from "models/courseService/entity/SubmissionAssignmentFileEntity";
 import { AssignmentResourceEntity } from "models/courseService/entity/AssignmentResourceEntity";
 import { SubmissionAssignmentEntity } from "models/courseService/entity/SubmissionAssignmentEntity";
+import course from "reduxes/courseService/course";
 
 export enum SubmissionStatusSubmitted {
   SUBMITTED = "Đã nộp",
@@ -98,10 +99,14 @@ const LecturerCourseAssignmentSubmissions = () => {
     return 2;
   };
 
-  const handleGetSubmissionAssignmentByAssignment = async (assignmentId: string) => {
+  const handleGetSubmissionAssignmentByAssignment = async (
+    courseId: string,
+    assignmentId: string
+  ) => {
     dispatch(setLoading({ isLoading: true }));
     try {
       const response = await SubmissionAssignmentService.getSubmissionAssignmentByAssignmentId(
+        courseId,
         assignmentId,
         {
           isGraded: null,
@@ -182,7 +187,7 @@ const LecturerCourseAssignmentSubmissions = () => {
   };
 
   useEffect(() => {
-    handleGetSubmissionAssignmentByAssignment(assignmentId ?? "");
+    handleGetSubmissionAssignmentByAssignment(courseId ?? "", assignmentId ?? "");
   }, [assignmentId]);
 
   const submissionList = submissionAssignmentState?.submissionAssignments.map(

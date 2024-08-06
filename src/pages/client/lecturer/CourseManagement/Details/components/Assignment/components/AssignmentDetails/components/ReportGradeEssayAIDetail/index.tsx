@@ -210,6 +210,7 @@ export default function ReportGradeEssayAIDetail() {
 
   const handleGetSubmissionAssignmentByAssignment = useCallback(
     async (
+      courseId: string,
       assignmentId: string,
       isGraded: Boolean | null = null,
       search: string = "",
@@ -219,6 +220,7 @@ export default function ReportGradeEssayAIDetail() {
       dispatch(setLoading(true));
       try {
         const response = await SubmissionAssignmentService.getSubmissionAssignmentByAssignmentId(
+          courseId,
           assignmentId,
           {
             isGraded,
@@ -238,8 +240,9 @@ export default function ReportGradeEssayAIDetail() {
   );
 
   useEffect(() => {
-    if (assignmentId) {
+    if (assignmentId && courseId) {
       handleGetSubmissionAssignmentByAssignment(
+        courseId,
         assignmentId,
         gradingStatus === 0 ? null : gradingStatus === 1 ? false : true
       );
@@ -342,8 +345,9 @@ export default function ReportGradeEssayAIDetail() {
     details: GridCallbackDetails<any>
   ) => {};
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    if (assignmentId) {
+    if (assignmentId && courseId) {
       handleGetSubmissionAssignmentByAssignment(
+        courseId,
         assignmentId,
         gradingStatus === 0 ? null : gradingStatus === 1 ? false : true,
         searchValue,
