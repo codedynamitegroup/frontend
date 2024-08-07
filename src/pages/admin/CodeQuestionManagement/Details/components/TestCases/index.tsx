@@ -1,4 +1,4 @@
-import { Box, TextField } from "@mui/material";
+import { Box } from "@mui/material";
 import React, { useState } from "react";
 import classes from "./styles.module.scss";
 import Button, { BtnType } from "components/common/buttons/Button";
@@ -19,6 +19,7 @@ import {
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
+import { CSVLink } from "react-csv";
 import EditIcon from "@mui/icons-material/Edit";
 import ConfirmAlert from "components/common/dialogs/ConfirmAlert";
 import { useTranslation } from "react-i18next";
@@ -198,12 +199,6 @@ const CodeQuestionTestCases = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files;
     if (file) {
-      // append({
-      //   id: "new",
-      //   inputData: "value.input",
-      //   outputData: "value.output",
-      //   isSample: false
-      // });
       Papa.parse<ITestCaseCsv>(file[0], {
         complete: (result) => {
           // console.log(result);
@@ -235,20 +230,23 @@ const CodeQuestionTestCases = () => {
           fontStyle={"italic"}
           fontWeight={"400"}
           colorname='--gray-50'
+          width={"65%"}
         >
           {t("code_management_detail_test_case_description")}{" "}
+          <CSVLink
+            data={[
+              { input: "1\n2", output: "3" },
+              { input: "2\n2", output: "4" }
+            ]}
+            filename='testcase_example.csv'
+          >
+            {t("common_sample")}
+          </CSVLink>
         </Heading5>
+
         <Box className={classes["btn-wrapper"]}>
           <Button
             component='label'
-            // onClick={() => {
-            //   append({
-            //     id: "new",
-            //     inputData: "value.input",
-            //     outputData: "value.output",
-            //     isSample: false
-            //   });
-            // }}
             btnType={BtnType.Outlined}
             translation-key='code_management_detail_read_csv'
           >

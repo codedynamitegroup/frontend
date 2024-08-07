@@ -883,7 +883,7 @@
 
   "code_management_detail_stub": "Code template",
   "code_management_detail_info_description": "Below is some essential information about your code question",
-  "code_management_detail_test_case_description": "To evaluate the correctness of the user's code, you need additional test cases",
+  "code_management_detail_test_case_description": "To evaluate the correctness of the user's code, you need additional test cases or you can import csv file. See csv example format:",
   "code_management_detail_read_csv": "Read csv",
   "code_management_detail_add_test_case": "Add test case",
   "code_management_detail_update_test_case": "Update test case",

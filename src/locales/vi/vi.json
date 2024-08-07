@@ -876,7 +876,7 @@
 
   "code_management_detail_stub": "Code mẫu",
   "code_management_detail_info_description": "Dưới đây là một số thông tin cần thiết về câu hỏi code của bạn",
-  "code_management_detail_test_case_description": "Để đánh giá tính chính xác của mã của người dùng, bạn cần thêm các trường hợp kiểm thử",
+  "code_management_detail_test_case_description": "Để đánh giá tính chính xác của mã của người dùng, bạn cần thêm các trường hợp kiểm thử hoặc nhập file csv. Xem ví dụ dịnh dạng file csv:",
   "code_management_detail_read_csv": "Đọc tệp csv",
   "code_management_detail_delete_confirm": "Xác nhận xoá",
   "code_management_detail_delete_confirm_question": "Bạn có chắc chắn muốn xóa test case này?",
