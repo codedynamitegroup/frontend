@@ -220,6 +220,9 @@ const OrgAdminCodeQuestionDetails = ({ isCloneData }: Props) => {
 
   const [activeTab, setActiveTab] = useState("0");
 
+  //IMPORTANT, this log is for preventing bug, do not remove it
+  console.log("dirty", codeQuestionFormMethod.formState.dirtyFields);
+
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const onSubmit = async (data: CodeQuestionFormData) => {
     setLoadingSubmit(true);

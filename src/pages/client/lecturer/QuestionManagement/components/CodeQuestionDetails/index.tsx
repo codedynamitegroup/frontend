@@ -265,6 +265,10 @@ const LecturerCodeQuestionDetails = ({ isCloneData }: Props) => {
   };
 
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+
+  //IMPORTANT, this log is for preventing bug, do not remove it
+  console.log("dirty", codeQuestionFormMethod.formState.dirtyFields);
+
   const onSubmit = async (data: CodeQuestionFormData) => {
     setLoadingSubmit(true);
     try {
