@@ -8,7 +8,8 @@ import {
   Rating,
   Skeleton,
   Stack,
-  TextareaAutosize
+  TextareaAutosize,
+  TextField
 } from "@mui/material";
 import CustomPagination from "components/common/pagination/CustomPagination";
 import ParagraphBody from "components/text/ParagraphBody";
@@ -23,12 +24,12 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
 import { ReviewService } from "services/coreService/ReviewService";
+import badwordsUtils from "utils/badWordsNext";
 import { showEmailWithAsterisks } from "utils/email";
 import { generateHSLColorByRandomText } from "utils/generateColorByText";
 import { standardlizeUTCStringToLocaleString } from "utils/moment";
 import { calcPercentageInHundred } from "utils/number";
 import classes from "./styles.module.scss";
-import badwordsUtils from "utils/badWordsNext";
 
 const CertificateCourseReviews = ({
   reviewMetadata,
@@ -504,7 +505,19 @@ const CertificateCourseReviews = ({
                           </Stack>
                         </Stack>
                       </Stack>
-                      <ParagraphBody>{badwordsUtils.filter(review.content || "")}</ParagraphBody>
+                      <TextField
+                        multiline
+                        fullWidth
+                        value={badwordsUtils.filter(review.content || "")}
+                        sx={{
+                          "& fieldset": {
+                            border: "none"
+                          }
+                        }}
+                        inputProps={{
+                          readOnly: true
+                        }}
+                      />
                     </Stack>
                     <Divider
                       sx={{
