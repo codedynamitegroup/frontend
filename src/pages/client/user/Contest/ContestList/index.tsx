@@ -155,6 +155,7 @@ const ContestList = () => {
           page: "1"
         }).toString()
       });
+      setSearchText("");
     } else {
       navigate({
         pathname: routes.user.contest.root,
@@ -162,6 +163,7 @@ const ContestList = () => {
           page: "1"
         }).toString()
       });
+      setSearchText("");
     }
   };
 
