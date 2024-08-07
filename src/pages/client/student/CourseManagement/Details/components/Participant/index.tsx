@@ -1,11 +1,9 @@
 import { Avatar, Box, CircularProgress, Grid, Stack } from "@mui/material";
-import Link from "@mui/material/Link";
 import Heading1 from "components/text/Heading1";
 import { GridColDef } from "@mui/x-data-grid/models/colDef";
 import { GridRowSelectionModel } from "@mui/x-data-grid/models/gridRowSelectionModel";
 import { GridCallbackDetails } from "@mui/x-data-grid/models/api/gridCallbackDetails";
 import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps";
-import CourseParticipantFeatureBar from "./components/FeatureBar";
 import CustomDataGrid from "components/common/CustomDataGrid";
 import { GridRowParams } from "@mui/x-data-grid";
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
@@ -21,6 +19,7 @@ import Heading5 from "components/text/Heading5";
 import classes from "./styles.module.scss";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
 import { routes } from "routes/routes";
+
 interface CourseParticipantProps {
   id: string;
   no: number;
@@ -52,6 +51,7 @@ const StudentCourseParticipant = () => {
       value: t("common_all")
     }
   ]);
+
   const handleGetCourseUser = useCallback(
     async ({
       search,
@@ -62,16 +62,9 @@ const StudentCourseParticipant = () => {
       pageNo?: number;
       pageSize?: number;
     }) => {
-      if (
-        !courseId ||
-        (courseId === courseUserState.courseId && courseUserState.users.length > 0)
-      ) {
-        return;
-      }
-
       dispatch(setLoadingCourseUser(true));
       try {
-        const getCourseUserResponse = await CourseUserService.getUserByCourseId(courseId, {
+        const getCourseUserResponse = await CourseUserService.getUserByCourseId(courseId!, {
           search,
           pageNo,
           pageSize
@@ -83,7 +76,7 @@ const StudentCourseParticipant = () => {
             currentPage: getCourseUserResponse.currentPage,
             totalItems: getCourseUserResponse.totalItems,
             totalPages: getCourseUserResponse.totalPages,
-            courseId: courseId
+            courseId: courseId!
           })
         );
       } catch (error) {
@@ -91,12 +84,12 @@ const StudentCourseParticipant = () => {
       }
       dispatch(setLoadingCourseUser(false));
     },
-    [courseId, courseUserState.users, courseUserState.courseId, dispatch]
+    [courseId, dispatch]
   );
 
   useEffect(() => {
-    handleGetCourseUser({ search: searchValue });
-  }, [searchValue, handleGetCourseUser]);
+    handleGetCourseUser({ search: searchValue, pageNo: page, pageSize: pageSize });
+  }, [searchValue, page, pageSize, handleGetCourseUser]);
 
   const tableHeading: GridColDef[] = [
     {
@@ -179,25 +172,21 @@ const StudentCourseParticipant = () => {
       renderCell: (params) => <ParagraphBody>{params.row.role}</ParagraphBody>
     }
   ];
-  const dataGridToolbar = { enableToolbar: true };
+
   const rowSelectionHandler = (
     selectedRowId: GridRowSelectionModel,
     details: GridCallbackDetails<any>
   ) => {};
+
   const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
+    console.log(model.page);
     setPage(model.page);
     setPageSize(model.pageSize);
-    handleGetCourseUser({ search: searchValue, pageNo: model.page, pageSize: model.pageSize });
   };
 
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      handleGetCourseUser({
-        search: value
-      });
-    },
-    [handleGetCourseUser]
-  );
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchValue(value);
+  }, []);
 
   const courseParticipantListTable: CourseParticipantProps[] = useMemo(() => {
     if (courseUserState.users.length > 0) {
@@ -223,15 +212,19 @@ const StudentCourseParticipant = () => {
 
   const handleApplyFilter = useCallback(() => {
     handleGetCourseUser({
-      search: searchValue
+      search: searchValue,
+      pageNo: page,
+      pageSize: pageSize
     });
-  }, [handleGetCourseUser, searchValue]);
+  }, [handleGetCourseUser, searchValue, page, pageSize]);
 
   const handleCancelFilter = useCallback(() => {
     handleGetCourseUser({
-      search: searchValue
+      search: searchValue,
+      pageNo: page,
+      pageSize: pageSize
     });
-  }, [handleGetCourseUser, searchValue]);
+  }, [handleGetCourseUser, searchValue, page, pageSize]);
 
   return (
     <Box className={classes.participantBody}>
@@ -275,7 +268,6 @@ const StudentCourseParticipant = () => {
           dataList={courseParticipantListTable}
           tableHeader={tableHeading}
           onSelectData={rowSelectionHandler}
-          dataGridToolBar={dataGridToolbar}
           page={page}
           pageSize={pageSize}
           totalElement={totalElement}

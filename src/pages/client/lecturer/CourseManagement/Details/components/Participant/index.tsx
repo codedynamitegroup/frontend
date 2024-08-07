@@ -1,3 +1,4 @@
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Avatar, Box, Grid, Stack } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import classes from "./styles.module.scss";
@@ -9,7 +10,6 @@ import { GridPaginationModel } from "@mui/x-data-grid/models/gridPaginationProps
 import CustomDataGrid from "components/common/CustomDataGrid";
 import { GridRowParams } from "@mui/x-data-grid";
 import { useTranslation } from "react-i18next";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCourseUser, setLoadingCourseUser } from "reduxes/courseService/courseUser";
 import { CourseUserService } from "services/courseService/CourseUserService";
@@ -51,6 +51,7 @@ const LecturerCourseParticipant = () => {
       value: t("common_all")
     }
   ]);
+
   const handleGetCourseUser = useCallback(
     async ({
       search,
@@ -61,10 +62,8 @@ const LecturerCourseParticipant = () => {
       pageNo?: number;
       pageSize?: number;
     }) => {
-      if (
-        !courseId ||
-        (courseId === courseUserState.courseId && courseUserState.users.length > 0)
-      ) {
+      console.log("Fetching data with pageNo:", pageNo, "pageSize:", pageSize); // Log for debugging
+      if (!courseId) {
         return;
       }
 
@@ -90,12 +89,12 @@ const LecturerCourseParticipant = () => {
       }
       dispatch(setLoadingCourseUser(false));
     },
-    [courseId, courseUserState.users, courseUserState.courseId, dispatch]
+    [courseId, dispatch]
   );
 
   useEffect(() => {
-    handleGetCourseUser({ search: searchValue });
-  }, [searchValue, handleGetCourseUser]);
+    handleGetCourseUser({ search: searchValue, pageNo: page, pageSize: pageSize });
+  }, [searchValue, page, pageSize, handleGetCourseUser]);
 
   const tableHeading: GridColDef[] = [
     {
@@ -183,20 +182,18 @@ const LecturerCourseParticipant = () => {
     selectedRowId: GridRowSelectionModel,
     details: GridCallbackDetails<any>
   ) => {};
-  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    setPage(model.page);
-    setPageSize(model.pageSize);
-    handleGetCourseUser({ search: searchValue, pageNo: model.page, pageSize: model.pageSize });
-  };
 
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      handleGetCourseUser({
-        search: value
-      });
+  const pageChangeHandler = useCallback(
+    (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
+      setPage(model.page);
+      setPageSize(model.pageSize);
     },
-    [handleGetCourseUser]
+    []
   );
+
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchValue(value);
+  }, []);
 
   const courseParticipantListTable: CourseParticipantProps[] = useMemo(() => {
     if (courseUserState.users.length > 0) {
@@ -221,15 +218,19 @@ const LecturerCourseParticipant = () => {
 
   const handleApplyFilter = useCallback(() => {
     handleGetCourseUser({
-      search: searchValue
+      search: searchValue,
+      pageNo: page,
+      pageSize: pageSize
     });
-  }, [handleGetCourseUser, searchValue]);
+  }, [handleGetCourseUser, searchValue, page, pageSize]);
 
   const handleCancelFilter = useCallback(() => {
     handleGetCourseUser({
-      search: searchValue
+      search: searchValue,
+      pageNo: page,
+      pageSize: pageSize
     });
-  }, [handleGetCourseUser, searchValue]);
+  }, [handleGetCourseUser, searchValue, page, pageSize]);
 
   return (
     <Box className={classes.participantBody}>
