@@ -92,7 +92,8 @@ export const API = {
   },
   COURSE: {
     FILE: {
-      DOWNLOAD_ESSAY_ATTACHMENT_FILE: "/course/file/download"
+      DOWNLOAD_ESSAY_ATTACHMENT_FILE: "/course/file/download",
+      EXPORT_GRADE: "/course/file/export/grade"
     },
     SYNCHRONIZE_MOODLE: {
       SYNCHRONIZE_MOODLE: "/course/synchronize-moodle/:id",

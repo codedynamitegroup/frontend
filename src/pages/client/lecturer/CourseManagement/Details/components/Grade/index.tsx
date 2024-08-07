@@ -15,6 +15,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { StudentAssignmentList } from "models/courseService/entity/StudentAssignmentList";
 import { useParams } from "react-router-dom";
 import CustomSearchFeatureBar from "components/common/featurebar/CustomSearchFeaturebar";
+import { Button, Card } from "@mui/joy";
+import CustomDialog from "components/common/dialogs/CustomDialog";
+import { CourseFileService } from "services/courseService/CourseFileService";
+import ParagraphBody from "components/text/ParagraphBody";
 
 function CustomAssignmentEdit(props: GridColumnMenuItemProps) {
   const { customEditHandler, customEditValue } = props;
@@ -93,6 +97,8 @@ const LecturerCourseGrade = () => {
     () => studentAssignmentGrades?.totalItems || 0,
     [studentAssignmentGrades?.totalItems]
   );
+  const [openExportDialog, setOpenExportDialog] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
   const handleGetRetrieveStudentAssignmentGrades = useCallback(
     async ({
@@ -223,8 +229,53 @@ const LecturerCourseGrade = () => {
     //   search: searchValue
     // });
   }, [searchValue]);
+
+  const handleExportGrade = useCallback(() => {
+    if (!courseId) return;
+    setConfirmLoading(true);
+
+    CourseFileService.exportGrade(courseId, "CSV")
+      .then(() => {
+        console.log("Export grade successfully");
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setOpenExportDialog(false);
+        setConfirmLoading(false);
+      });
+  }, []);
+
   return (
     <Box className={classes.gradeBody}>
+      <CustomDialog
+        isConfirmLoading={false}
+        open={openExportDialog}
+        title={"Export grade"}
+        handleClose={() => setOpenExportDialog(false)}
+        onHandleCancel={() => setOpenExportDialog(false)}
+        onHanldeConfirm={() => handleExportGrade()}
+        children={
+          <>
+            <ParagraphBody fontWeight={500}>{t("export_confirm")}</ParagraphBody>
+            <Card
+              variant='soft'
+              color='warning'
+              sx={{
+                margin: "10px 0"
+              }}
+            >
+              <ParagraphBody>
+                {t("export_total_student_description")}: {participantList.length}
+              </ParagraphBody>
+              <ParagraphBody>
+                {t("export_total_assignment_exam_description")}: {courseAssignmentList.length}
+              </ParagraphBody>
+            </Card>
+          </>
+        }
+      />
       <Grid item xs={12}>
         <Heading1 translation-key='course_grade_title'>{t("course_grade_title")}</Heading1>
       </Grid>
@@ -256,6 +307,15 @@ const LecturerCourseGrade = () => {
           onHandleApplyFilter={handleApplyFilter}
           onHandleCancelFilter={handleCancelFilter}
         />
+      </Grid>
+      <Grid>
+        <Button
+          onClick={() => {
+            setOpenExportDialog(true);
+          }}
+        >
+          {t("export_grade")}
+        </Button>
       </Grid>
       <Grid item xs={12}>
         <CustomDataGrid
