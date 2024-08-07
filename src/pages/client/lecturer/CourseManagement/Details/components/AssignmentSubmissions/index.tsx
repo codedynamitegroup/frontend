@@ -23,7 +23,7 @@ import { SubmissionAssignmentService } from "services/courseService/SubmissionAs
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setSubmissionAssignments } from "reduxes/courseService/submission_assignment";
 import { RootState } from "store";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import { AssignmentService } from "services/courseService/AssignmentService";
@@ -55,8 +55,8 @@ const LecturerCourseAssignmentSubmissions = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { courseId, assignmentId } = useParams<{ courseId: string; assignmentId: string }>();
-  const totalSubmissionCount = 20;
-  const totalStudent = 30;
+  const [searchValue, setSearchValue] = useState<string>("");
+
   const visibleColumnList = { id: false, name: true, email: true, role: true, action: true };
   const dataGridToolbar = { enableToolbar: true };
   const rowSelectionHandler = (
@@ -65,15 +65,16 @@ const LecturerCourseAssignmentSubmissions = () => {
   ) => {
     console.log(selectedRowId);
   };
-  const pageChangeHandler = (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
-    console.log(model);
-  };
-  const page = 0;
-  const pageSize = 5;
-  const totalElement = 100;
 
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const submissionAssignmentState = useSelector((state: RootState) => state.submissionAssignment);
   const assignmentState = useSelector((state: RootState) => state.assignment);
+
+  const totalElement = useMemo(
+    () => submissionAssignmentState.totalItems || 0,
+    [submissionAssignmentState.totalItems]
+  );
 
   const handleGetAssignmentDetails = async (id: string) => {
     try {
@@ -99,31 +100,54 @@ const LecturerCourseAssignmentSubmissions = () => {
     return 2;
   };
 
-  const handleGetSubmissionAssignmentByAssignment = async (
-    courseId: string,
-    assignmentId: string
-  ) => {
-    dispatch(setLoading({ isLoading: true }));
-    try {
-      const response = await SubmissionAssignmentService.getSubmissionAssignmentByAssignmentId(
-        courseId,
-        assignmentId,
-        {
-          isGraded: null,
-          search: "",
-          pageNo: 0,
-          pageSize: 10
-        }
-      );
-      dispatch(setSubmissionAssignments(response));
-      dispatch(setLoading({ isLoading: false }));
-    } catch (error) {
-      console.error("Failed to fetch submission assignment", error);
-      dispatch(setLoading({ isLoading: false }));
-    }
-  };
+  const handleGetSubmissionAssignmentByAssignment = useCallback(
+    async (
+      courseId: string,
+      assignmentId: string,
+      pageNo: number,
+      pageSize: number,
+      searchValue: string
+    ) => {
+      dispatch(setLoading({ isLoading: true }));
+      try {
+        const response = await SubmissionAssignmentService.getSubmissionAssignmentByAssignmentId(
+          courseId,
+          assignmentId,
+          {
+            isGraded: null,
+            search: searchValue,
+            pageNo,
+            pageSize
+          }
+        );
+        console.log(response);
+        dispatch(setSubmissionAssignments(response));
+        dispatch(setLoading({ isLoading: false }));
+      } catch (error) {
+        console.error("Failed to fetch submission assignment", error);
+        dispatch(setLoading({ isLoading: false }));
+      }
+    },
+    [dispatch]
+  );
 
-  console.log(submissionAssignmentState.submissionAssignments);
+  useEffect(() => {
+    handleGetSubmissionAssignmentByAssignment(
+      courseId ?? "",
+      assignmentId ?? "",
+      page,
+      pageSize,
+      searchValue
+    );
+  }, [
+    courseId,
+    assignmentId,
+    page,
+    pageSize,
+    searchValue,
+    handleGetSubmissionAssignmentByAssignment
+  ]);
+
   function countStudentsAndSubmissions(
     submissionAssignments: SubmissionAssignmentEntity[]
   ): SubmissionSummary {
@@ -186,10 +210,6 @@ const LecturerCourseAssignmentSubmissions = () => {
     }
   };
 
-  useEffect(() => {
-    handleGetSubmissionAssignmentByAssignment(courseId ?? "", assignmentId ?? "");
-  }, [assignmentId]);
-
   const submissionList = submissionAssignmentState?.submissionAssignments.map(
     (submissionAssignment, index) => {
       return {
@@ -242,7 +262,6 @@ const LecturerCourseAssignmentSubmissions = () => {
       };
     }
   );
-  console.log(submissionList);
   const hasOnlineText = submissionList.some((submission) => submission.submission_online_text);
   function addAttributesAndStylesToImages(html: string, className: string, css: string): string {
     const parser = new DOMParser();
@@ -414,6 +433,15 @@ const LecturerCourseAssignmentSubmissions = () => {
   const rowClickHandler = (params: GridRowParams<any>) => {
     console.log(params);
   };
+
+  const pageChangeHandler = useCallback(
+    (model: GridPaginationModel, details: GridCallbackDetails<any>) => {
+      console.log("Page change:", model.page, model.pageSize); // Log for debugging
+      setPage(model.page);
+      setPageSize(model.pageSize);
+    },
+    []
+  );
 
   return (
     <Box className={classes.assignmentBody}>
