@@ -11,7 +11,8 @@ import {
   Menu,
   MenuItem,
   Pagination,
-  Stack
+  Stack,
+  TextField
 } from "@mui/material";
 import ParagraphBody from "components/text/ParagraphBody";
 import Heading4 from "components/text/Heading4";
@@ -51,6 +52,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "routes/routes";
 import ConfirmDelete from "components/common/dialogs/ConfirmDelete";
 import cloneDeep from "lodash.clonedeep";
+import badwordsUtils from "utils/badWordsNext";
 
 type FormCommentValue = {
   comment: string;
@@ -553,7 +555,15 @@ export default function DetailSolution({ handleSolutionDetail, selectedSolutionI
                             </Stack>
                             <Box className={classes.commentText}>
                               {!isOpenEditCommentForm[index] && (
-                                <Markdown children={comment.content} remarkPlugins={[gfm]} />
+                                <TextField
+                                  fullWidth
+                                  value={badwordsUtils.filter(comment.content ?? "")}
+                                  sx={{
+                                    "& fieldset": { border: "none" }
+                                  }}
+                                  inputProps={{ readOnly: true }}
+                                  multiline
+                                />
                               )}
                               {isOpenEditCommentForm[index] && (
                                 <Box className={classes.commentBox}>
