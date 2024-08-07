@@ -11,7 +11,9 @@ import { UserService } from "services/authService/UserService";
 export default function useAuth() {
   const loggedUser: User = useSelector(selectCurrentUser);
   const isBelongToOrganization =
-    loggedUser && loggedUser?.organization !== null && loggedUser?.organization.isDeleted === false;
+    loggedUser && loggedUser?.organization !== null && loggedUser?.organization.isDeleted === false
+      ? true
+      : false;
   const loginStatus: Boolean = useSelector(selectLoginStatus);
   const dispatch = useDispatch();
   const navigate = useNavigate();
