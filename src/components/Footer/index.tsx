@@ -56,21 +56,6 @@ export default function Footer() {
             </Link>
           </ParagraphBody>
         </Grid>
-
-        <Grid item xs={6} md={3} className={classes.footerListItem}>
-          <Heading5 colorname='--gray-20' translation-key='footer_about_title'>
-            {t("footer_about_title")}
-          </Heading5>
-          <ParagraphBody colorname='--gray-20'>
-            <Link
-              to={routes.user.organization.root}
-              className={classes.textLink}
-              translation-key='header_create_organization'
-            >
-              {t("header_create_organization")}
-            </Link>
-          </ParagraphBody>
-        </Grid>
       </Grid>
 
       <Grid container id={classes.footerBottom}>
