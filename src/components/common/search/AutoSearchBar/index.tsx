@@ -29,7 +29,7 @@ const AutoSearchBar = ({ value, setValue, onHandleChange, placeHolder, maxWidth 
     }
     timeoutRef.current = setTimeout(() => {
       onHandleChange(e.target.value);
-    }, 250);
+    }, 800);
   };
 
   const handleRemoveAllTextButton = () => {

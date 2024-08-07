@@ -1,9 +1,6 @@
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import {
   Box,
-  Button,
   Card,
-  Chip,
   CircularProgress,
   Container,
   Grid,
@@ -386,80 +383,8 @@ const CourseCertificates = () => {
                     isLoading={certificateCourseData.isLoading}
                     value={searchText}
                     setValue={setSearchText}
-                    options={certificateCourseData.certificateCourses}
+                    options={[]}
                     onHandleChange={searchHandle}
-                    renderOption={(props, option: CertificateCourseEntity, { inputValue }) => {
-                      return (
-                        <li
-                          {...props}
-                          key={option.certificateCourseId}
-                          style={{
-                            paddingLeft: "10px",
-                            paddingRight: "10px"
-                          }}
-                        >
-                          <Button
-                            sx={{
-                              display: "flex",
-                              width: "100%",
-                              justifyContent: "flex-start",
-                              textTransform: "capitalize"
-                            }}
-                            onClick={() => {
-                              navigate(
-                                `${routes.user.course_certificate.detail.introduction.replace(":courseId", option.certificateCourseId)}`
-                              );
-                            }}
-                          >
-                            <Stack
-                              direction='row'
-                              alignItems='space-between'
-                              justifyContent='space-between'
-                              gap={1}
-                              width={"100%"}
-                            >
-                              <Stack
-                                direction='row'
-                                alignItems='center'
-                                justifyContent='flex-start'
-                                textAlign={"left"}
-                                gap={1}
-                              >
-                                <img
-                                  style={{ width: "20px", height: "20px" }}
-                                  src={option.topic.thumbnailUrl}
-                                  alt={option.name}
-                                />
-                                {option.name}
-                                <Chip
-                                  size='small'
-                                  label={
-                                    option.skillLevel === SkillLevelEnum.BASIC
-                                      ? t("common_easy")
-                                      : option?.skillLevel === SkillLevelEnum.INTERMEDIATE
-                                        ? t("common_medium")
-                                        : option?.skillLevel === SkillLevelEnum.ADVANCED
-                                          ? t("common_hard")
-                                          : ""
-                                  }
-                                  variant='outlined'
-                                />
-                              </Stack>
-                              <Stack
-                                direction='row'
-                                alignItems='center'
-                                justifyContent='flex-end'
-                                gap={1}
-                                translate-key='common_view_details'
-                              >
-                                {t("common_view_details")}
-                                <ArrowForwardIosIcon />
-                              </Stack>
-                            </Stack>
-                          </Button>
-                        </li>
-                      );
-                    }}
                   />
                 </Box>
 
