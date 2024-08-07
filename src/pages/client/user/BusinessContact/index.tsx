@@ -33,7 +33,7 @@ interface IFormData {
 export default function BusinessContact() {
   const { t } = useTranslation();
   const [isSubmitBusinessContact, setIsSubmitBusinessContact] = useState(false);
-  const { isLoggedIn, loggedUser } = useAuth();
+  const { isLoggedIn, loggedUser, isBelongToOrganization } = useAuth();
   const dispatch = useDispatch();
 
   const schema = useMemo(() => {
@@ -179,7 +179,13 @@ export default function BusinessContact() {
                 />
               </Grid>
               <Tooltip
-                title={isLoggedIn === false ? t("business_contact_submit_register_tooltip") : ""}
+                title={
+                  isLoggedIn === false
+                    ? t("business_contact_submit_register_tooltip")
+                    : isBelongToOrganization
+                      ? t("You have already belonged to organization")
+                      : ""
+                }
                 placement='top'
                 arrow
               >
@@ -190,7 +196,7 @@ export default function BusinessContact() {
                     type='submit'
                     translation-key='business_create_organization'
                     fullWidth
-                    disabled={isLoggedIn === false}
+                    disabled={isLoggedIn === false || isBelongToOrganization === true}
                   >
                     {t("business_create_organization")}
                   </JoyButton>

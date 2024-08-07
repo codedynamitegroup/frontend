@@ -37,4 +37,26 @@ export class CourseFileService {
       saveAs(blob, filename);
     } catch (error: any) {}
   }
+
+  static async exportGrade(courseId: String, fileType: String) {
+    try {
+      const response = await this.apiClient.get(`${API.COURSE.FILE.EXPORT_GRADE}`, {
+        params: {
+          courseId,
+          fileType
+        },
+        responseType: "blob"
+      });
+
+      // Extract filename from response headers
+      const contentDisposition = response.headers["content-disposition"];
+      const filename = contentDisposition?.split("filename=")[1]?.split(";")[0]?.replace(/"/g, "");
+
+      // Create a new Blob object using the response data
+      const blob = new Blob([response.data], { type: response.headers["content-type"] });
+
+      // Use file-saver to save the file
+      saveAs(blob, filename);
+    } catch (error: any) {}
+  }
 }

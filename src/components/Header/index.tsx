@@ -308,7 +308,8 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
                 </Link>
               </ParagraphBody>
             )}
-            {!isBelongToOrganization &&
+            {loggedUser &&
+              !isBelongToOrganization &&
               !activeRoute(routes.admin.homepage.root) &&
               !activeRoute(routes.org_admin.homepage.root) && (
                 <ParagraphBody

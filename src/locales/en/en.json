@@ -1273,6 +1273,10 @@
   "create_question_ai": "Create question with AI",
   "exam_submisison_total_student_score": "Total student grade",
   "common_required": "Answer feedback is required",
+  "export_confirm": "Are you sure you want to export this data? It consist of: ",
+  "export_total_student_description": "Total of student(s)",
+  "export_total_assignment_exam_description": "Total of assignment(s) and exam(s)",
+  "export_grade": "Export grade",
 
   "update_grade": "Update grade",
   "correct_answer": "Correct answer",
