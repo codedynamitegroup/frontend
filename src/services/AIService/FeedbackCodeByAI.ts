@@ -90,7 +90,7 @@ async function* feedbackCodeByAI(
   sourceCodeSubmission: ISourceCodeSubmission,
   codeQuestion: ICodeQuestion
 ) {
-  const language = i18next.language === "en-US" ? "English" : "Vietnamese";
+  const language = i18next.language === "en" ? "English" : "Vietnamese";
 
   const AI_ROLE = `
 I. YOUR ROLE:
