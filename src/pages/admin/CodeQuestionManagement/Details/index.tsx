@@ -167,12 +167,17 @@ const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
 
   // console.log(codeQuestion);
   const [activeTab, setActiveTab] = useState("0");
-  console.log(codeQuestionFormMethod.formState.errors);
+  console.log("error", codeQuestionFormMethod.formState.errors);
   // console.log(programmingLanguage);
+
+  //IMPORTANT, this log is for preventing bug, do not remove it
+  console.log("dirty", codeQuestionFormMethod.formState.dirtyFields);
 
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const onSubmit = async (data: CodeQuestionFormData) => {
+    console.log(data);
     setLoadingSubmit(true);
+    let updated = false;
     try {
       if (isEdit && isCloneData !== true) {
         const dirtyFields = codeQuestionFormMethod.formState.dirtyFields;
@@ -204,6 +209,7 @@ const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
 
         let updateInform: Promise<any> | undefined = undefined;
         if ((isDirtyInform || isDirtyTags) && codeQuestionId !== undefined) {
+          updated = true;
           let dataTagMap = new Set<string>();
           data.tags.forEach((value) => dataTagMap.add(value));
           let deleteTagIds = codeQuestion?.tags.filter((value) => !dataTagMap.has(value));
@@ -227,6 +233,7 @@ const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
         let dirtyTC = dirtyFields?.testCases;
 
         if (isDirtyTestCase && codeQuestion !== undefined) {
+          updated = true;
           console.log("here");
           const dataTC = data.testCases;
           let mapTCs = new Map<string, TestCaseEntity>();
@@ -262,6 +269,7 @@ const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
         let updateLanguages: Promise<any> | undefined = undefined;
 
         if (isDirtyLanguages && codeQuestion !== undefined) {
+          updated = true;
           let updatedLanguages = data.programmingLanguages
             .filter((value) => value.choosen)
             .map((value) => ({
@@ -284,6 +292,7 @@ const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
 
         await Promise.all([updateInform, updateTestCases, updateLanguages]);
       } else {
+        updated = true;
         await CodeQuestionService.createCodeQuestion({
           name: data.name,
           problemStatement: data.problemStatement,
@@ -310,8 +319,10 @@ const AdminCodeQuestionDetails = ({ isCloneData }: Props) => {
       dispatch(setErrorMess(t("common_can_not_save")));
     } finally {
       setLoadingSubmit(false);
-      dispatch(setSuccessMess(t(isEdit ? "common_update_success" : "common_create_success")));
-      navigate("/admin/code-questions");
+      if (updated) {
+        dispatch(setSuccessMess(t(isEdit ? "common_update_success" : "common_create_success")));
+        navigate("/admin/code-questions");
+      }
     }
   };
   return (

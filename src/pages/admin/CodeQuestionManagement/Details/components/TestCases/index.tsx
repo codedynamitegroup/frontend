@@ -1,5 +1,5 @@
 import { Box, TextField } from "@mui/material";
-import React, { memo, useState } from "react";
+import React, { useState } from "react";
 import classes from "./styles.module.scss";
 import Button, { BtnType } from "components/common/buttons/Button";
 import TestCasePopup from "./components/PopupTestCase";
@@ -23,34 +23,26 @@ import EditIcon from "@mui/icons-material/Edit";
 import ConfirmAlert from "components/common/dialogs/ConfirmAlert";
 import { useTranslation } from "react-i18next";
 import { TestCaseEntity } from "models/codeAssessmentService/entity/TestCaseEntity";
-import { Controller, useFieldArray, useFormContext } from "react-hook-form";
-import TextArea from "@uiw/react-md-editor/lib/components/TextArea/index.nohighlight";
-
-type Props = {};
+import { useFieldArray, useFormContext } from "react-hook-form";
+import Papa from "papaparse";
+import { setErrorMess, setSuccessMess } from "reduxes/AppStatus";
+import { useAppDispatch } from "hooks";
 
 type TestCaseFormValue = {
   testCases: TestCaseEntity[];
 };
+interface ITestCaseCsv {
+  input: string;
+  output: string;
+}
 
 const CodeQuestionTestCases = () => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const [openTestCasePopup, setOpenTestCasePopup] = useState<boolean>(false);
   const [openConfirmAlert, setOpenConfirmAlert] = useState<boolean>(false);
-  const [itemEdit, setItemEdit] = useState<any>(null);
-  const {
-    register,
-    control: codeQuestionControl,
-    setValue,
-    getValues,
-    formState: { errors: codeQuestionFormErrors }
-  } = useFormContext<TestCaseFormValue>();
-  const {
-    fields,
-    remove: removeTC,
-    append,
-    update,
-    remove
-  } = useFieldArray({
+  const { control: codeQuestionControl } = useFormContext<TestCaseFormValue>();
+  const { fields, append, update, remove } = useFieldArray({
     control: codeQuestionControl,
     name: "testCases",
     keyName: "fieldArrayId"
@@ -73,6 +65,9 @@ const CodeQuestionTestCases = () => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
     }
+  };
+  const addNewTestCase = (data: TestCaseEntity) => {
+    append(data);
   };
 
   const handleEditClick = (id: GridRowId) => () => {
@@ -200,6 +195,37 @@ const CodeQuestionTestCases = () => {
   const handleDelete = () => {
     setOpenConfirmAlert(false);
   };
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files;
+    if (file) {
+      // append({
+      //   id: "new",
+      //   inputData: "value.input",
+      //   outputData: "value.output",
+      //   isSample: false
+      // });
+      Papa.parse<ITestCaseCsv>(file[0], {
+        complete: (result) => {
+          // console.log(result);
+          result.data.forEach((value) => {
+            append({
+              id: "new",
+              inputData: value.input,
+              outputData: value.output,
+              isSample: false
+            });
+          });
+          e.target.value = "";
+          if (result.errors.length > 0) {
+            dispatch(setErrorMess(t("code_management_cannot_read_csv")));
+          } else dispatch(setSuccessMess(t("code_management_read_csv_success")));
+        },
+        header: true,
+        dynamicTyping: true,
+        skipEmptyLines: true
+      });
+    }
+  };
 
   return (
     <Box className={classes["body"]}>
@@ -213,8 +239,21 @@ const CodeQuestionTestCases = () => {
           {t("code_management_detail_test_case_description")}{" "}
         </Heading5>
         <Box className={classes["btn-wrapper"]}>
-          <Button btnType={BtnType.Outlined} translation-key='code_management_detail_upload_zip'>
-            {t("code_management_detail_upload_zip")}
+          <Button
+            component='label'
+            // onClick={() => {
+            //   append({
+            //     id: "new",
+            //     inputData: "value.input",
+            //     outputData: "value.output",
+            //     isSample: false
+            //   });
+            // }}
+            btnType={BtnType.Outlined}
+            translation-key='code_management_detail_read_csv'
+          >
+            {t("code_management_detail_read_csv")}
+            <input type='file' hidden onChange={handleFileChange} />
           </Button>
           <Button
             translation-key='code_management_detail_add_test_case'
@@ -266,9 +305,7 @@ const CodeQuestionTestCases = () => {
       <TestCasePopup
         itemIndex={itemIndex}
         open={openTestCasePopup}
-        addNewMethod={(data: TestCaseEntity) => {
-          append(data);
-        }}
+        addNewMethod={addNewTestCase}
         updateMethod={(index, data) => {
           update(index, data);
         }}
